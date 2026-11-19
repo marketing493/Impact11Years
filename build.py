@@ -1,5 +1,5 @@
 """Bundle src/ into a single self-contained page.
-Writes index.html (standalone, open it in any browser) and dist/artifact.html (fragment for claude.ai Artifacts)."""
+Writes index.html (standalone, open it in any browser), public/index.html (Vercel output) and dist/artifact.html (fragment for claude.ai Artifacts)."""
 import base64, pathlib
 R = pathlib.Path(__file__).parent
 b64 = lambda p: 'data:image/png;base64,' + base64.b64encode((R / p).read_bytes()).decode()
@@ -31,4 +31,6 @@ body = f'''<header class="bar">
 (R / 'dist').mkdir(exist_ok=True)
 (R / 'dist/artifact.html').write_text(head + '\n' + body + '\n')
 (R / 'index.html').write_text('<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n' + head + '\n</head>\n<body>\n' + body + '\n</body>\n</html>\n')
+(R / 'public').mkdir(exist_ok=True)
+(R / 'public/index.html').write_text((R / 'index.html').read_text())
 print('built', len((R / 'index.html').read_text()) // 1024, 'KB')

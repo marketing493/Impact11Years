@@ -23,3 +23,15 @@ A gamified event app for the Impact Analytics 11th anniversary celebration (17 D
 - Run `python3 build.py` to rebuild `index.html` and `dist/artifact.html` after editing `src/`.
 
 Build notes beside each screen list the Supabase tables, row level security rules and server-side logic for the production build.
+
+## Deploy to Vercel
+
+The repo is ready for Vercel. `vercel.json` runs `python3 build.py` and serves the `public/` folder. No other setup is needed.
+
+1. In Vercel, choose **Add New > Project** and import `marketing493/Impact11Years`.
+2. Leave the settings as they are. Vercel reads them from `vercel.json`.
+3. Click **Deploy**.
+
+Every push to the repo redeploys the site. Pushes to the production branch update the live URL. Pushes to other branches get preview URLs.
+
+To deploy from your own machine instead, install the CLI with `npm i -g vercel`, run `vercel` in the repo folder, and then run `vercel --prod`.
