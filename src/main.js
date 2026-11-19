@@ -1,77 +1,63 @@
-/* ---------- quiz timer ---------- */
-setInterval(()=>{const r=S.run;if(!r||r.done||r.picked!==null||S.ov?.type!=='quiz'||S.lvlup)return;r.t=Math.max(0,r.t-.1);
- const ring=$('#qring'),sec=$('#qsec'),tm=$('#qtimer');if(ring){const c=2*Math.PI*24;ring.setAttribute('stroke-dashoffset',c*(1-r.t/20))}if(sec)sec.textContent=Math.ceil(r.t);if(tm)tm.classList.toggle('low',r.t<6);
- if(r.t<=0)pickAnswer(-1)},100);
-function pickAnswer(i){const r=S.run,q=QZ.find(x=>x.id===r.id),cur=q.qs[r.i];r.picked=i;r.bump=false;
- if(i===cur.a){r.combo++;r.best=Math.max(r.best,r.combo);const bonus=Math.round(r.t/20*20),gain=Math.round((40+bonus)*mult(r.combo));r.bonus+=bonus;r.pts+=gain;r.last=gain;r.ok++;r.steps[r.i]='ok';r.bump=r.combo>=2;pop('+'+gain)}
- else{r.combo=0;r.steps[r.i]='bad'}
- render()}
+/* ---------- routing + render ---------- */
+let GRID_I=null;
+function parseHash(){const h=location.hash.slice(1);
+ if(h.startsWith('event-')&&SUBS.some(s=>s[0]===h.slice(6))){S.route='event';S.sub=h.slice(6);return null}
+ if(h==='admin'){S.route='admin';return null}
+ if(h==='reminders'||h==='venue'){S.route='home';return h}
+ S.route='home';return null}
+function render(){
+ if(GRID_I){GRID_I.destroy();GRID_I=null}
+ $('#app').innerHTML=S.route==='event'?vEvent():S.route==='admin'?vAdmin():vHome();
+ const nav=S.route==='home'?'home':S.route==='admin'?'admin':'event-'+S.sub;
+ $$('[data-nav]').forEach(a=>{const k=a.dataset.nav;a.toggleAttribute('aria-current',false);if(k===nav||(k==='event-about'&&S.route==='event'&&!['schedule','venue'].includes(S.sub)))a.setAttribute('aria-current','page')});
+ $$('.bell .dot').forEach(d=>d.hidden=S.pwa.on&&('Notification' in window)&&Notification.permission==='granted');
+ const cv=$('#igrid');if(cv)GRID_I=new ImpactGrid(cv,{mode:S.gridMode,target:Date.parse(EVENT.starts),onTick:srCountdown});
+ mountScenes();ticks()}
+function srCountdown(diff){const el=$('#cd-sr');if(!el)return;const d=Math.floor(diff/864e5),h=Math.floor(diff%864e5/36e5),m=Math.floor(diff%36e5/6e4);el.textContent=diff>0?`${d} days, ${h} hours and ${m} minutes until ${EVENT.name}`:`${EVENT.name} is here`}
+function ticks(){$$('[data-rel]').forEach(el=>el.textContent=rel(+el.dataset.rel))}
+setInterval(ticks,30000);
+
+/* refresh: pick up organizer edits and roll sessions from next to now to past */
+let lastKey='';
+setInterval(async()=>{if(document.hidden||A_.modal)return;const before=JSON.stringify(S.acts)+S.acts.map(statusOf).join();
+ if(S.server){try{const r=await fetch('/api/activities',{cache:'no-store'});const j=await r.json();S.acts=sortActs(j.activities||[])}catch(e){}}
+ const after=JSON.stringify(S.acts)+S.acts.map(statusOf).join();if(after!==before&&S.route!=='admin'){render();scheduleLocal()}},60000);
 
 /* ---------- actions ---------- */
-const A={
- mode(a){S.mode=a;S.modal=null;try{history.replaceState(null,'','#'+({emp:'employee',adm:'admin',live:'stage'})[a])}catch(e){}scrollTo({top:0})},
- reset(){S=fresh(S.mode);FLASH=[];try{localStorage.removeItem(STORE)}catch(e){}toast('Demo reset')},
- tab(a){S.tab=a;S.ov=null},
- seg(a){const [ns,v]=a.split(':');if(ns==='annCat')S.annCat=v;else S.seg[ns]=v},
- quick(a){const [k,v]=a.split(':');S.lvlup=null;if(S.mode!=='emp')S.mode='emp';
-  if(k==='ov'){if(v==='quiz')return;S.ov={type:v}}else if(['event','play','ranks','me','home'].includes(k)){S.ov=null;S.tab=k;if(v)S.seg[k==='ranks'?'rank':k]=v}},
- go(a){const [k,...rest]=a.split(':');A[k](rest.join(':'))},
- close(){S.ov=null;S.run=null;S.g=null},
- claim(id){const q=QUESTS.find(x=>x[0]===id);S.claimed[id]=1;award(q[2],'Quest: '+q[1]);if(QUESTS.every(x=>S.claimed[x[0]])){setTimeout(()=>{confetti();toast('Every quest done for today','check')},300)}},
- annread(id){if(S.read[id]!==1){S.read[id]=1;S.readTaps++;if(S.readTaps===2)toast('Quest complete. Claim it on Home.','check')}},
- qstart(id){if(S.quizDone[id]){toast('You already played this quiz. One attempt each.');return}S.run={id,i:0,t:20,picked:null,ok:0,combo:0,best:0,pts:0,bonus:0,last:0,steps:[],rank0:rankOf()};S.ov={type:'quiz'};S.mode='emp'},
- pick(a){if(S.run&&S.run.picked===null)pickAnswer(+a)},
- qnext(){const r=S.run,q=QZ.find(x=>x.id===r.id);if(r.i<q.qs.length-1){r.i++;r.t=20;r.picked=null;r.bump=false;return}
-  r.done=true;S.quizDone[r.id]={pts:r.pts,ok:r.ok,best:r.best};if(r.id==='daily')S.streak++;award(r.pts,q.n);if(r.ok>=3)setTimeout(()=>confetti(),120)},
- gstart(id){S.ov={type:'game',id};if(ROUNDS[id])S.g={i:0,picked:null,score:0}},
- gpick(a){const G=S.g,rd=ROUNDS[S.ov.id][G.i];if(G.picked!==null)return;G.picked=+a;if(+a===rd.a){G.score+=50;pop('+50')}},
- gnext(){const G=S.g,R=ROUNDS[S.ov.id];if(G.i<R.length-1){G.i++;G.picked=null;return}const g=GAMES.find(x=>x.id===S.ov.id);S.gameDone[S.ov.id]=G.score;if(G.score)award(G.score,g.n);else toast('No points this time. Try another game.')},
- bcell(a){const i=+a;if(i===12)return;S.bingo=S.bingo.includes(i)?S.bingo.filter(x=>x!==i):[...S.bingo,i]},
- bclaim(){S.gameDone.bingo=150;award(150,'Office Bingo');confetti()},
- vote(a){S.vote=+a;S.votes[+a]++;toast('Vote counted. Claim the quest on Home.','check')},
- selfcheck(){S.checked=true;const t=new Date().toLocaleTimeString('en-IN',{timeZone:'Asia/Kolkata',hour:'2-digit',minute:'2-digit',hour12:false});S.cin.unshift({n:ME().name,t});award(50,'Checked in at the venue');confetti()},
- dpick(a){if(S.drop)return;const r=seeded(Date.now()),v=[...DROP_VALUES];for(let i=v.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[v[i],v[j]]=[v[j],v[i]]}S.drop={pick:+a,vals:v};S.dropAnim=true;award(v[+a],'Cell Drop');if(v[+a]===111)setTimeout(()=>confetti(),500)},
- lvlok(){S.lvlup=null},
- sim(){if(S.freeze)return;const r=Math.random;S.deltas={};const pool=S.emp.filter(e=>e!==ME());for(let k=0;k<4;k++){const e=pool[Math.floor(r()*pool.length)],n=60+Math.floor(r()*8)*20;e.pts+=n;S.deltas[e.name]='+'+n;addCells(n/10)}S.flip=true;setTimeout(()=>{S.deltas=null},50)},
- setpush(){S.push=!S.push;toast(S.push?'Push notifications on':'Push notifications off')},
- toast(m){toast(m)},
- /* admin */
- ap(a){S.ap=a;S.q=''},amode(a){S.mode='adm';S.ap=a},
- modal(a){const [t,i]=a.split(':');S.modal={type:t,i:+i}},mclose(){S.modal=null},mbg(a,el,ev){if(ev.target===el)S.modal=null;else return false},
- pub(a){const [k,i]=a.split(':'),rows=k==='announcements'?S.ann:S.d[k],r=rows[+i];r.status=r.status==='Published'?(k==='gallery'?'Pending':'Draft'):'Published';toast(`${r.status==='Published'?'Published':'Unpublished'}. Written to the audit log.`)},
- sub(a){const [i,st]=a.split(':'),s=S.d.submissions[+i];s.status=st;if(st==='Approved'){const e=S.emp.find(x=>x.name===s.by);if(e)award(50,s.game+' entry approved',e,S.role);toast(`Approved. ${s.by} earned 50 points.`)}else toast('Rejected. The entry stays hidden.')},
- freeze(){S.freeze=!S.freeze;toast(S.freeze?'Leaderboard frozen for employees':'Leaderboard is live again')},
- ascan(){const e=S.emp[+$('#ci-e').value];if(S.cin.some(c=>c.n===e.name)){toast(`${e.name} is already checked in. No new row written.`);return false}const t=new Date().toLocaleTimeString('en-IN',{timeZone:'Asia/Kolkata',hour:'2-digit',minute:'2-digit',hour12:false});S.cin.unshift({n:e.name,t});if(e===ME())S.checked=true;award(50,'Checked in at the venue',e,'Scan station');toast(`${e.name} checked in. 50 points added.`)},
- live(a){S.live=a;S.reveal=false},lstep(a){const i=SCREENS.findIndex(x=>x[0]===S.live);S.live=SCREENS[(i+ +a+SCREENS.length)%SCREENS.length][0];S.reveal=false},
- reveal(){S.reveal=!S.reveal},lqn(){S.lq++;S.reveal=false},auto(){S.auto=!S.auto}};
+const ACT={
+ gmode(m){S.gridMode=m},
+ gclear(){GRID_I&&GRID_I.clear();return false},
+ zone(z){S.zone=z;
+  /* update every scene in place so the 3D tilt is not reset */
+  $$('.zone').forEach(b=>{const on=b.dataset.arg===z;b.classList.toggle('on',on);b.classList.toggle('dim',!on);b.setAttribute('aria-pressed',on)});
+  $$('.zones button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.arg===z));
+  $$('.zonecard').forEach(c=>c.outerHTML=zoneCard());
+  if(S.route==='event'&&S.sub==='venue')document.getElementById('venue')?.scrollIntoView({behavior:'smooth',block:'start'});return false},
+ ics(id){ics(id);return false},
+ install(){doInstall();return false},remon(){remindersOn();return false},remoff(){remindersOff();return false},testnotif(){testNotif();return false},
+ aNew(){const last=S.acts[S.acts.length-1];A_.modal={id:null,a:{title:'',date:last?last.date:'2026-12-17',start:last?last.end:'10:00',end:last?shift(last.end,30):'10:30',location:'Main hall',category:'Stage',description:''}}},
+ aEdit(id){const a=S.acts.find(x=>x.id===id);if(a)A_.modal={id,a:{...a}}},
+ aClose(){A_.modal=null},aBg(_,el,ev){if(ev.target===el)A_.modal=null;else return false},
+ aDelAsk(id){A_.del=id;clearTimeout(ACT.delT);ACT.delT=setTimeout(()=>{if(A_.del===id){A_.del=null;render()}},4000)},
+ async aDel(id){const a=S.acts.find(x=>x.id===id);A_.del=null;await saveActs(S.acts.filter(x=>x.id!==id),`Deleted ${a?a.title:'the activity'}.`);return false},
+ async aReset(){await saveActs(DEFAULT_ACTIVITIES.map(a=>({...a})),'Default schedule restored.');return false},
+ aTest(){adminTest();return false},
+ aOut(){A_.authed=false;A_.key='';try{sessionStorage.removeItem('ia11-admin')}catch(e){}toast('Signed out.')}};
+document.addEventListener('click',e=>{const el=e.target.closest('[data-act]');if(!el||el.disabled)return;const f=ACT[el.dataset.act];if(!f)return;const r=f(el.dataset.arg,el,e);if(r===false||r instanceof Promise)return;render()});
+document.addEventListener('submit',async e=>{const f=e.target.closest('[data-form]');if(!f)return;e.preventDefault();
+ if(f.dataset.form==='login'){const k=$('#l-key').value;const ok=await adminLogin(k);if(!ok){$('#l-err').textContent='That password did not work. Try again.';return}toast('Signed in.');render()}
+ if(f.dataset.form==='act'){const m=A_.modal,loc=$('#f-loc').value;
+  const a={id:m.id||'a'+Date.now().toString(36),title:$('#f-title').value.trim(),date:$('#f-date').value,start:$('#f-start').value,end:$('#f-end').value,category:$('#f-cat').value,location:loc==='Other'?($('#f-loc2').value.trim()||'Other'):loc,description:$('#f-desc').value.trim()};
+  $$('.modal .err').forEach(x=>x.textContent='');const bad=validAct(a);if(bad){const el=$(`.err[data-for="${bad[0]}"]`);if(el)el.textContent=bad[1];$('#'+bad[0]).focus();return}
+  const list=m.id?S.acts.map(x=>x.id===m.id?a:x):[...S.acts,a];A_.modal=null;A_.flash=a.id;
+  await saveActs(list,m.id?`Saved ${a.title}.`:`Added ${a.title} at ${a.start}.`);setTimeout(()=>{A_.flash=null},1700)}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&A_.modal){A_.modal=null;render()}});
+addEventListener('hashchange',()=>{const jump=parseHash();render();if(jump){requestAnimationFrame(()=>document.getElementById(jump)?.scrollIntoView({behavior:'smooth'}))}else scrollTo({top:0})});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){ticks();scheduleLocal()}});
 
-document.addEventListener('click',e=>{const el=e.target.closest('[data-act]');if(!el||el.disabled)return;const r=el.getBoundingClientRect();LAST={x:r.left+r.width/2,y:r.top+r.height/2};
- const f=A[el.dataset.act];if(!f)return;if(f(el.dataset.arg,el,e)===false)return;render()});
-document.addEventListener('submit',e=>{const f=e.target.closest('[data-form]');if(!f)return;e.preventDefault();const id=f.dataset.form;const btn=f.querySelector('[type=submit]');if(btn){const r=btn.getBoundingClientRect();LAST={x:r.left+r.width/2,y:r.top+r.height/2}}
- if(id==='sub'){const v=$('#sub-t').value.trim();if(v.length<3){$('#sub-e').textContent='Write at least three characters.';return}const g=GAMES.find(x=>x.id===S.ov.id);S.d.submissions.unshift({id:Date.now(),game:g.n,by:ME().name,text:v,status:'Pending'});S.gameDone[S.ov.id]='sent';award(50,g.n+' entry')}
- if(id==='award'){const n=$('#p-n').value.trim(),x=Number(n);if(!/^\d+$/.test(n)||x<1||x>500){$('#p-ne').textContent='Enter a whole number from 1 to 500.';return}const emp=S.emp[+$('#p-e').value];award(x,$('#p-r').value,emp,S.role);S.modal=null;toast(`${x} points awarded to ${emp.name}`)}
- if(id==='role'){const emp=S.emp[S.modal.i];emp.role=$('#r-r').value;S.modal=null;toast(`${emp.name} is now ${emp.role}`)}
- if(id==='ann'){const t=$('#n-t').value.trim();if(t.length<4){$('#n-te').textContent='Give the announcement a title of at least four characters.';return}S.ann.unshift({id:'a'+Date.now(),title:t,cat:$('#n-c').value,body:$('#n-b').value.trim()||'More details soon.',date:'Today',status:'Published'});S.modal=null;toast('Published. It now shows in the employee app.')}
- render()});
-document.addEventListener('input',e=>{if(e.target.id==='asearch'){S.q=e.target.value;S.refocus=true;render()}});
-document.addEventListener('change',e=>{if(e.target.id==='arole'){S.role=e.target.value;if(!can(S.ap))S.ap='dashboard';toast('Viewing as '+S.role);render()}});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&S.modal){S.modal=null;render();return}
- if(S.mode==='live'&&!/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)&&(e.key==='ArrowRight'||e.key==='ArrowLeft')){A.lstep(e.key==='ArrowRight'?1:-1);render()}});
-addEventListener('hashchange',()=>{const m=hashMode[location.hash.slice(1)];if(m&&m!==S.mode){S.mode=m;render()}});
-
-/* ---------- render ---------- */
-function render(){
- const sc=$('.scr'),key=sc&&sc.dataset.key,top=sc?sc.scrollTop:0;
- let rects=null;if(S.flip){rects={};$$('[data-flip]').forEach(el=>rects[el.dataset.flip]=el.getBoundingClientRect().top)}
- $('#app').innerHTML=S.mode==='emp'?vEmp():S.mode==='adm'?vAdmin():vLive();
- $$('.bar .seg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.arg===S.mode));
- const n=$('.scr');if(n&&n.dataset.key===key)n.scrollTop=top;
- if(S.refocus){S.refocus=false;const s=$('#asearch');if(s){s.focus();s.setSelectionRange(s.value.length,s.value.length)}}
- if(rects&&!RM.matches){$$('[data-flip]').forEach(el=>{const o=rects[el.dataset.flip],now=el.getBoundingClientRect().top;el.animate(o===undefined?[{opacity:0,transform:'translateY(14px)'},{opacity:1,transform:'none'}]:[{transform:`translateY(${o-now}px)`,background:'var(--orange-tint)'},{transform:'none'}],{duration:700,easing:'cubic-bezier(.2,.8,.2,1)'})})}
- S.flip=false;
- if(S.dropAnim){S.dropAnim=false;const d=S.drop;$$('.dcell').forEach(el=>{el.classList.remove('flip','ghost')});requestAnimationFrame(()=>requestAnimationFrame(()=>{const mine=$(`.dcell[data-i="${d.pick}"]`);mine&&mine.classList.add('flip');setTimeout(()=>$$('.dcell').forEach(el=>{if(+el.dataset.i!==d.pick)el.classList.add('flip','ghost')}),900)}))}
- const got=earned(),nb=got.filter(b=>!S.seen.includes(b));if(nb.length){S.seen=[...S.seen,...nb];setTimeout(()=>toast("Badge unlocked: "+nb.join(', '),'star'),S.lvlup?600:900)}
- if(S.lvlup&&!S.lvlShown){S.lvlShown=S.lvlup;setTimeout(()=>{const p=$('.phone');if(p){const r=p.getBoundingClientRect();LAST={x:r.left+r.width/2,y:r.top+r.height*.35}}confetti(180)},150)}
- if(!S.lvlup)S.lvlShown=null;
- tickCd();paintGrids();save()}
-render();
+/* ---------- boot ---------- */
+(async()=>{const jump=parseHash();S.acts=sortActs(store.get('ia11-acts',DEFAULT_ACTIVITIES));render();
+ await Promise.all([loadData(),registerSW()]);
+ if(S.server&&S.cfg.admin&&A_.key)await adminLogin(A_.key);
+ render();scheduleLocal();
+ if(jump)setTimeout(()=>document.getElementById(jump)?.scrollIntoView({behavior:'smooth'}),60)})();

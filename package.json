@@ -1,0 +1,9 @@
+{
+  "name": "impact-11-years",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "web-push": "3.6.7"
+  }
+}

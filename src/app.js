@@ -1,125 +1,118 @@
 /* ---------- helpers ---------- */
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
-const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const fmt=n=>Number(n).toLocaleString('en-IN');
-const RM=matchMedia('(prefers-reduced-motion: reduce)');
-const P={home:'M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10',calendar:'M4 6h16v14H4zM4 10h16M8 3v4M16 3v4',
-play:'M7 8h10a5 5 0 015 5v1a3 3 0 01-5.3 2L15.5 14h-7L7.3 16A3 3 0 012 14v-1a5 5 0 015-5zM8 10.5v3M6.5 12h3M16 11.5h.01M18 13.5h.01',
-trophy:'M8 4h8v5a4 4 0 01-8 0zM8 6H4v1a3 3 0 003 3M16 6h4v1a3 3 0 01-3 3M12 13v4M8 20h8M10 17h4',
-user:'M12 12a4 4 0 100-8 4 4 0 000 8zM4 21a8 8 0 0116 0',bell:'M6 16V11a6 6 0 1112 0v5l2 2H4zM10 21h4',
-clock:'M12 21a9 9 0 100-18 9 9 0 000 18zM12 7v5l3 2',pin:'M12 21s7-6 7-11a7 7 0 10-14 0c0 5 7 11 7 11zM12 12a2 2 0 100-4 2 2 0 000 4z',
-help:'M12 21a9 9 0 100-18 9 9 0 000 18zM9.5 9.5a2.5 2.5 0 114 1.9c-.9.6-1.5 1-1.5 2M12 17h.01',
-image:'M4 5h16v14H4zM4 16l5-5 4 4 3-3 4 4M9 9h.01',qr:'M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h2v2h-2zM18 14h2v2h-2zM14 18h2v2h-2zM18 18h2v2h-2z',
-mega:'M3 11v3l12 5V6zM15 8c3 .5 5 2 5 4s-2 3.5-5 4M7 14.5V19h3v-3.5',check:'M5 12.5l4.5 4.5L19 7.5',
-lock:'M6 11h12v9H6zM8 11V8a4 4 0 118 0v3',plus:'M12 5v14M5 12h14',search:'M11 18a7 7 0 100-14 7 7 0 000 14zM16 16l4 4',
-edit:'M4 20h4L19 9l-4-4L4 16zM13.5 6.5l4 4',back:'M15 5l-7 7 7 7',chev:'M9 5l7 7-7 7',
-star:'M12 3l2.8 5.8 6.2.9-4.5 4.4 1.1 6.2L12 17.3 6.4 20.3l1.1-6.2L3 9.7l6.2-.9z',upload:'M12 16V4M7 9l5-5 5 5M4 20h16',
-users:'M9 12a3.5 3.5 0 100-7 3.5 3.5 0 000 7zM2 20a7 7 0 0114 0M16 5.5a3.5 3.5 0 010 7M18 20h4a6 6 0 00-4-5.6',
-chart:'M4 20V4M4 20h16M8 16v-5M12 16V8M16 16v-8',shield:'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z',
-tv:'M3 5h18v12H3zM8 21h8M12 17v4',bolt:'M13 3L5 14h6l-1 7 8-11h-6z',camera:'M4 8h4l1.5-2h5L16 8h4v11H4zM12 17a3.5 3.5 0 100-7 3.5 3.5 0 000 7z',
-x:'M6 6l12 12M18 6L6 18',video:'M3 6h13v12H3zM16 10l5-3v10l-5-3z',list:'M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01',
-grid:'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z',flag:'M5 21V4M5 4h12l-2 4 2 4H5',down:'M5 9l7 7 7-7',
-flame:'M12 3c1 3 5 5 5 10a5 5 0 01-10 0c0-2 1-3.5 2-4.5 0 2 1 3 2 3 0-3-1-5 1-8.5z',
-gift:'M4 10h16v10H4zM3 7h18v3H3zM12 7v13M12 7c-1-3-5-4-5-1.5S10 7 12 7zm0 0c1-3 5-4 5-1.5S14 7 12 7z',
-sun:'M12 16a4 4 0 100-8 4 4 0 000 8zM12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4',
-map:'M9 4L3 6v14l6-2 6 2 6-2V4l-6 2zM9 4v14M15 6v14',prev:'M15 5l-7 7 7 7',next:'M9 5l7 7-7 7',
-eye:'M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12zM12 15a3 3 0 100-6 3 3 0 000 6z',dl:'M12 4v12M7 11l5 5 5-5M4 20h16'};
-const ic=(n,s=20,sw=1.6)=>`<svg class="ic" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${P[n]}"/></svg>`;
-const initials=n=>n.split(' ').map(x=>x[0]).join('').slice(0,2);
-const avatar=(n,s=36)=>`<span class="av a${n.length%3}" style="width:${s}px;height:${s}px;font-size:${Math.round(s*.36)}px">${initials(n)}</span>`;
-function seeded(seed){let s=seed>>>0;return()=>{s=(s*1664525+1013904223)>>>0;return s/4294967296}}
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const P={home:'M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10',calendar:'M4 6h16v14H4zM4 10h16M8 3v4M16 3v4',clock:'M12 21a9 9 0 100-18 9 9 0 000 18zM12 7v5l3 2',
+pin:'M12 21s7-6 7-11a7 7 0 10-14 0c0 5 7 11 7 11zM12 12a2 2 0 100-4 2 2 0 000 4z',bell:'M6 16V11a6 6 0 1112 0v5l2 2H4zM10 21h4',check:'M5 12.5l4.5 4.5L19 7.5',
+plus:'M12 5v14M5 12h14',edit:'M4 20h4L19 9l-4-4L4 16zM13.5 6.5l4 4',trash:'M5 7h14M9 7V4h6v3M7 7l1 13h8l1-13',chev:'M9 5l7 7-7 7',down:'M5 9l7 7 7-7',
+star:'M12 3l2.8 5.8 6.2.9-4.5 4.4 1.1 6.2L12 17.3 6.4 20.3l1.1-6.2L3 9.7l6.2-.9z',users:'M9 12a3.5 3.5 0 100-7 3.5 3.5 0 000 7zM2 20a7 7 0 0114 0M16 5.5a3.5 3.5 0 010 7M18 20h4a6 6 0 00-4-5.6',
+mic:'M12 3a3 3 0 00-3 3v6a3 3 0 006 0V6a3 3 0 00-3-3zM5 11a7 7 0 0014 0M12 18v3',cup:'M4 8h13v5a6 6 0 01-6 6h-1a6 6 0 01-6-6zM17 10h1.5a2.5 2.5 0 010 5H17M8 3v2M12 3v2',
+spark:'M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M6 18l2.5-2.5M15.5 8.5L18 6',music:'M9 18V5l11-2v13M9 18a3 3 0 11-6 0 3 3 0 016 0zM20 16a3 3 0 11-6 0 3 3 0 016 0z',
+share:'M12 3v12M7 8l5-5 5 5M5 13v7h14v-7',addbox:'M4 4h16v16H4zM12 8v8M8 12h8',phone:'M7 2h10v20H7zM11 18h2',map:'M9 4L3 6v14l6-2 6 2 6-2V4l-6 2zM9 4v14M15 6v14',
+ripple:'M12 12h.01M8 12a4 4 0 018 0M5 12a7 7 0 0114 0',type:'M4 6V4h16v2M12 4v16M9 20h6',brush:'M4 20c2 0 4-1 4-3a2 2 0 00-4 0M9 15l10-10a1.4 1.4 0 00-2-2L7 13',
+lock:'M6 11h12v9H6zM8 11V8a4 4 0 118 0v3',out:'M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10',arrow:'M5 12h14M13 6l6 6-6 6',ics:'M4 6h16v14H4zM4 10h16M8 3v4M16 3v4M9 15h6M12 12v6',x:'M6 6l12 12M18 6L6 18'};
+const ic=(n,s=20,sw=1.6)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${P[n]||P.star}"/></svg>`;
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('on'),3200)}
+const store={get(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+
+/* time */
+const startMs=a=>Date.parse(`${a.date}T${a.start}:00${OFFSET}`), endMs=a=>Date.parse(`${a.date}T${a.end}:00${OFFSET}`);
+const fmtDay=a=>new Date(startMs(a)).toLocaleDateString('en-IN',{timeZone:TZ,weekday:'long',day:'numeric',month:'long'});
+const fmtDayShort=a=>new Date(startMs(a)).toLocaleDateString('en-IN',{timeZone:TZ,weekday:'short',day:'numeric',month:'short'});
+const mins=a=>Math.round((endMs(a)-startMs(a))/6e4);
+const dur=a=>{const m=mins(a);return m>=60?`${Math.floor(m/60)} h${m%60?' '+m%60+' min':''}`:`${m} min`};
+function rel(ms){const d=ms-Date.now();if(d<=0)return 'now';const m=Math.round(d/6e4);if(m<60)return `in ${m} min`;const h=Math.floor(m/60);if(h<24)return `in ${h} h ${m%60} min`;const days=Math.round(d/864e5);return `in ${days} ${days===1?'day':'days'}`}
+const statusOf=a=>{const n=Date.now();return n>=endMs(a)?'past':n>=startMs(a)?'now':'next'};
+const catIcon=c=>(CATEGORIES.find(x=>x[0]===c)||CATEGORIES[5])[1];
 
 /* ---------- state ---------- */
-const STORE='ia-impact11-v1';
-let S;
-function fresh(mode){
- const emp=NAMES.map((n,i)=>({id:'IA-'+(1001+i),name:n,dept:DEPTS[i%8],email:n.toLowerCase().replace(' ','.')+'@impactanalytics.co',role:i<5?ROLES[i]:'Employee',status:i%9===8?'Invited':'Active',pts:2840-i*92}));
- return {mode:mode||'emp',tab:'home',ov:null,seg:{event:'about',play:'quiz',rank:'board',gal:'photos',ann:'Announcements'},annCat:'All',
- emp,read:{a3:1,a5:1},readTaps:0,quizDone:{},gameDone:{},claimed:{},drop:null,streak:3,cells:742,myCells:0,checked:false,vote:-1,votes:[124,203,158,97],bingo:[12],
- hist:[{t:'Retail Basics warm-up',d:'12 Nov',p:240},{t:'App onboarding bonus',d:'10 Nov',p:50}],
- ledger:[{who:'Ananya Rao',label:'Retail Basics warm-up',pts:240,when:'12 Nov',by:'System'},{who:'Ananya Rao',label:'App onboarding bonus',pts:50,when:'10 Nov',by:'HR Admin'},{who:'Karthik Iyer',label:'Daily Challenge',pts:310,when:'17 Nov',by:'System'},{who:'Meera Joshi',label:'Guess the Colleague',pts:150,when:'17 Nov',by:'System'}],
- ann:[{id:'a1',title:'Check-in opens at 9:00 AM',cat:'Logistics',body:'Keep your QR code ready. Doors open an hour before the opening session.',date:'17 Nov',status:'Published'},
-  {id:'a2',title:'Daily Challenge is live',cat:'Games',body:'Five questions, twenty seconds each. Fast answers and long combos earn bonus points.',date:'16 Nov',status:'Published'},
-  {id:'a3',title:'Meet the hosts of the evening show',cat:'Event',body:'Two colleagues step up as hosts. Send them your best questions.',date:'14 Nov',status:'Published'},
-  {id:'a4',title:'Feedback survey opens after the event',cat:'People',body:'Tell us what worked and what did not. It takes three minutes.',date:'12 Nov',status:'Draft'},
-  {id:'a5',title:'Shuttle schedule from Marathahalli',cat:'Logistics',body:'Shuttles run every 20 minutes from 8:30 AM. Pickup points appear here soon.',date:'11 Nov',status:'Published'}],
- d:{quizzes:[{title:'Daily Challenge: Retail Trivia',type:'Daily',n:5,status:'Published'},{title:'Know the Celebration',type:'Standard',n:5,status:'Published'},{title:'Live quiz: Know Your Impact',type:'Live',n:10,status:'Draft'},{title:'Know Your Teams',type:'Standard',n:8,status:'Draft'}],
-  submissions:[{id:1,game:'Meme Challenge',by:'Rohan Gupta',text:'When the sprint ends on a Friday',status:'Pending'},{id:2,game:'Hidden Talent',by:'Kavya Shetty',text:'Classical dance, 90 seconds',status:'Approved'},{id:3,game:'Meme Challenge',by:'Harsh Patel',text:'Me waiting for the lunch queue',status:'Pending'},{id:4,game:'Hidden Talent',by:'Tanvi Desai',text:'Beatboxing and a poem',status:'Pending'},{id:5,game:'Meme Challenge',by:'Faisal Ahmed',text:'Dashboard refresh at 5:59 PM',status:'Rejected'}],
-  gallery:[{title:'Team offsite 2024',type:'Photo',by:'Marketing',status:'Published'},{title:'Founders story, 2015',type:'Memory',by:'Marketing',status:'Published'},{title:'Product launch reel',type:'Video',by:'Marketing',status:'Published'},{title:'My desk then and now',type:'Photo',by:'Meera Joshi',status:'Pending'},{title:'Hackathon night',type:'Photo',by:'Vikram Singh',status:'Pending'}]},
- cin:[{n:'Divya Menon',t:'08:52'},{n:'Arjun Reddy',t:'08:49'},{n:'Neha Kapoor',t:'08:44'}],
- feed:['Meera Joshi lit 15 cells','Karthik Iyer lit 31 cells','Engineering passed 6,000 points'],
- ap:'dashboard',role:'Super Admin',q:'',modal:null,freeze:false,live:'welcome',lq:0,reveal:false,auto:false,push:true,seen:['Early Bird','Top 10'],run:null,g:null,lvlup:null};
-}
-function load(){try{const raw=localStorage.getItem(STORE);if(!raw)return null;const o=JSON.parse(raw);if(!o||!o.emp)return null;return Object.assign(fresh(),o,{run:null,g:null,ov:null,modal:null,lvlup:null})}catch(e){return null}}
-function save(){try{const {run,g,ov,modal,lvlup,...rest}=S;localStorage.setItem(STORE,JSON.stringify(rest))}catch(e){}}
-S=load()||fresh();
-const hashMode={employee:'emp',admin:'adm',stage:'live'};
-if(hashMode[location.hash.slice(1)])S.mode=hashMode[location.hash.slice(1)];
+const S={route:'home',sub:'about',acts:[],server:false,cfg:{},zone:'Main hall',gridMode:'countdown',
+ admin:{key:'',authed:false,stats:null,modal:null,del:null,flash:null},
+ pwa:{prompt:null,standalone:matchMedia('(display-mode: standalone)').matches||navigator.standalone===true,ios:/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1),on:store.get('ia11-reminders',false),mode:null}};
+const sortActs=l=>[...l].sort((a,b)=>(a.date+a.start).localeCompare(b.date+b.start));
+const upcoming=()=>S.acts.filter(a=>endMs(a)>Date.now());
 
-const ME=()=>S.emp[6];
-const sorted=()=>[...S.emp].sort((a,b)=>b.pts-a.pts);
-const rankOf=(e=ME())=>sorted().indexOf(e)+1;
-const levelOf=p=>Math.min(11,Math.floor(p/LEVEL_STEP)+1);
-const levelProg=p=>{const l=levelOf(p);if(l>=11)return 1;return (p-(l-1)*LEVEL_STEP)/LEVEL_STEP};
-const toNext=p=>levelOf(p)>=11?0:levelOf(p)*LEVEL_STEP-p;
-const yearOf=l=>JOURNEY[l-1];
-const questDone=id=>({daily:!!S.quizDone.daily,vote:S.vote>=0,game:Object.keys(S.gameDone).length>0,read:S.readTaps>=2,drop:S.drop!==null,checkin:S.checked})[id];
-const earned=()=>BADGES.filter(b=>b[3]()).map(b=>b[0]);
-const deptTotals=()=>{const t={};DEPTS.forEach(d=>t[d]=0);S.emp.forEach(e=>t[e.dept]+=e.pts);return Object.entries(t).sort((a,b)=>b[1]-a[1])};
+async function loadData(){
+ try{const c=await fetch('/api/config',{cache:'no-store'});if(!c.ok)throw 0;S.cfg=await c.json();S.server=true}catch(e){S.server=false;S.cfg={}}
+ if(S.server){try{const r=await fetch('/api/activities',{cache:'no-store'});const j=await r.json();S.acts=sortActs(j.activities||[])}catch(e){S.acts=sortActs(DEFAULT_ACTIVITIES)}}
+ else S.acts=sortActs(store.get('ia11-acts',DEFAULT_ACTIVITIES))}
 
-/* ---------- feedback: toast, point pop, confetti, haptics ---------- */
-let LAST={x:innerWidth/2,y:innerHeight/2};
-function toast(m,icon){const t=$('#toast');t.innerHTML=(icon?ic(icon,18):'')+`<span>${esc(m)}</span>`;t.classList.add('on');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('on'),2800)}
-function pop(text){const el=document.createElement('div');el.className='pop';el.textContent=text;el.style.left=LAST.x+'px';el.style.top=(LAST.y-24)+'px';document.body.appendChild(el);setTimeout(()=>el.remove(),1300);try{navigator.vibrate&&navigator.vibrate(18)}catch(e){}}
-function confetti(n=150){if(RM.matches)return;const cv=document.createElement('canvas');cv.className='confetti';document.body.appendChild(cv);const dpr=Math.min(2,devicePixelRatio||1);cv.width=innerWidth*dpr;cv.height=innerHeight*dpr;const c=cv.getContext('2d');c.scale(dpr,dpr);
- const cs=getComputedStyle(document.documentElement),cols=['#264CD7','#264CD7','#B3C9F7',cs.getPropertyValue('--fg').trim()||'#1C1B1B','#FF6F1C'];
- const ox=LAST.x,oy=LAST.y;const ps=Array.from({length:n},()=>({x:ox,y:oy,vx:(Math.random()-.5)*14,vy:-Math.random()*15-4,s:5+Math.random()*7,r:Math.random()*6,vr:(Math.random()-.5)*.4,c:cols[Math.floor(Math.random()*cols.length)]}));
- const t0=performance.now();(function f(t){const k=(t-t0)/1000;c.clearRect(0,0,innerWidth,innerHeight);ps.forEach(p=>{p.vy+=.45;p.vx*=.985;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;c.save();c.translate(p.x,p.y);c.rotate(p.r);c.globalAlpha=Math.max(0,1-k/2.4);c.fillStyle=p.c;c.fillRect(-p.s/2,-p.s/2,p.s,p.s);c.restore()});if(k<2.4)requestAnimationFrame(f);else cv.remove()})(t0)}
+/* ---------- shared pieces ---------- */
+function actRow(a){const st=statusOf(a);return `<div class="act ${st}"><div class="t tn">${a.start}<small>${dur(a)}</small></div>
+ <div style="min-width:0"><h4>${esc(a.title)}</h4>${a.description?`<p class="d">${esc(a.description)}</p>`:''}<div class="tags"><span class="pill p-gray">${ic('pin',12)}${esc(a.location)}</span><span class="pill p-blue">${ic(catIcon(a.category),12)}${esc(a.category)}</span>${st==='now'?'<span class="pill p-orange p-live">Happening now</span>':''}</div></div>
+ <div class="acts">${st==='past'?'<span class="xs muted">Ended</span>':`<button class="icon-btn" data-act="ics" data-arg="${esc(a.id)}" aria-label="Add ${esc(a.title)} to your calendar" title="Add to calendar">${ic('ics',18)}</button>`}</div></div>`}
+function groupByDay(list){const g=[];for(const a of list){const k=a.date;let last=g[g.length-1];if(!last||last.k!==k)g.push(last={k,items:[]});last.items.push(a)}return g}
+function actList(list){if(!list.length)return `<div class="empty card">${ic('calendar',28)}<p style="margin-top:8px">No upcoming sessions. Thank you for celebrating with us.</p></div>`;
+ return groupByDay(list).map(g=>`<div class="daygroup"><div class="dayhead"><b>${fmtDay(g.items[0])}</b><span class="xs muted">${g.items.length} ${g.items.length===1?'session':'sessions'}, all times IST</span></div>${g.items.map(actRow).join('')}</div>`).join('')}
 
-/* ---------- the Impact Grid ---------- */
-const MASK=(()=>{const m=new Uint8Array(GRID.total),ch=[...GRID.msg];const w=ch.reduce((s,c)=>s+GLYPH[c][0].length,0)+ch.length-1;let x=Math.floor((GRID.cols-w)/2);
- for(const c of ch){const g=GLYPH[c];for(let r=0;r<7;r++)for(let k=0;k<g[r].length;k++)if(g[r][k]==='#')m[(r+2)*GRID.cols+x+k]=1;x+=g[0].length+1}return m})();
-const RANK=(()=>{const r=seeded(11),a=[...Array(GRID.total).keys()];for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}const pos=new Uint16Array(GRID.total);a.forEach((c,i)=>pos[c]=i);return pos})();
-let FLASH=[];/* {from,to,t} */
-function addCells(k){const from=S.cells;S.cells=Math.min(GRID.total,S.cells+k);if(S.cells>from){FLASH.push({from,to:S.cells,t:performance.now()});animateGrids()}}
-function drawGrid(cv){
- const W=cv.clientWidth;if(!W)return;const tone=cv.dataset.tone,dpr=Math.min(2,devicePixelRatio||1);
- const gap=W>700?2:1,cell=(W-gap*(GRID.cols-1))/GRID.cols,H=cell*GRID.rows+gap*(GRID.rows-1);
- if(cv.width!==Math.round(W*dpr)||cv.height!==Math.round(H*dpr)){cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr)}cv.style.height=H+'px';
- const c=cv.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);c.clearRect(0,0,W,H);
- const cs=getComputedStyle(document.documentElement);
- const off=tone==='blue'?'rgba(255,255,255,.13)':cs.getPropertyValue('--cell-off').trim(),fill=tone==='blue'?'rgba(255,255,255,.42)':cs.getPropertyValue('--cell-fill').trim(),msg=tone==='blue'?'#FFFFFF':cs.getPropertyValue('--cell-msg').trim();
- const now=performance.now();
- for(let i=0;i<GRID.total;i++){const x=(i%GRID.cols)*(cell+gap),y=Math.floor(i/GRID.cols)*(cell+gap),p=RANK[i],lit=p<S.cells;
-  c.fillStyle=lit?(MASK[i]?msg:fill):off;c.fillRect(x,y,cell,cell);
-  if(lit)for(const f of FLASH)if(p>=f.from&&p<f.to){const a=1-(now-f.t)/1600;if(a>0){c.globalAlpha=a;c.fillStyle='#FF6F1C';c.fillRect(x-cell*.15*a,y-cell*.15*a,cell*(1+.3*a),cell*(1+.3*a));c.globalAlpha=1}}}
-}
-function paintGrids(){$$('canvas[data-grid]').forEach(drawGrid);const pct=Math.round(S.cells/GRID.total*100);
- $$('[data-g="count"]').forEach(e=>e.textContent=fmt(S.cells));$$('[data-g="pct"]').forEach(e=>e.textContent=pct+'%');$$('[data-g="bar"]').forEach(e=>e.style.width=pct+'%');
- $$('[data-g="mine"]').forEach(e=>e.textContent=fmt(S.myCells));$$('[data-g="left"]').forEach(e=>e.textContent=fmt(GRID.total-S.cells));$$('[data-g="ticker"]').forEach(e=>e.textContent=S.feed[0])}
-let gridRAF=0;
-function animateGrids(){if(gridRAF)return;const step=()=>{const now=performance.now();FLASH=FLASH.filter(f=>now-f.t<1600);paintGrids();gridRAF=FLASH.length?requestAnimationFrame(step):0};gridRAF=requestAnimationFrame(step)}
-addEventListener('resize',()=>paintGrids());
+/* 3D venue plan */
+function venueScene(){const z=S.zone;
+ return `<div class="scene" data-scene><div class="plane"><div class="floor"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path class="route" d="M13 81 C 20 70, 24 62, 34 58 S 46 46, 50 31"/></svg></div>
+ ${ZONES.map(zz=>`<button class="zone ${zz.id===z?'on':z?'dim':''}" data-act="zone" data-arg="${esc(zz.id)}" aria-pressed="${zz.id===z}" aria-label="${esc(zz.id)}: ${esc(zz.note)}" style="left:${zz.x}%;top:${zz.y}%;width:${zz.w}%;height:${zz.h}%;--h0:${zz.h0}px;--h:${zz.h0}px;--top:${zz.top}"><span class="s"></span><span class="e"></span><span class="f"><span>${esc(zz.id)}<small>${esc(zz.note)}</small></span></span></button>`).join('')}
+ <div class="pin" style="left:13%;top:81%;--pz:22px"><div class="p"><svg width="28" height="40" viewBox="0 0 28 40"><path d="M14 0C6.3 0 0 6.1 0 13.7 0 24 14 40 14 40s14-16 14-26.3C28 6.1 21.7 0 14 0z" fill="#FF6F1C"/><circle cx="14" cy="13.5" r="5.5" fill="#fff"/></svg></div></div></div></div>`}
+function zoneCard(){const z=ZONES.find(x=>x.id===S.zone)||ZONES[1],list=S.acts.filter(a=>a.location===z.id&&endMs(a)>Date.now());
+ return `<div class="glass zonecard" aria-live="polite"><p class="eyebrow" style="opacity:.7">${esc(z.note)}</p><h3>${esc(z.id)}</h3>${list.length?`<ul>${list.slice(0,4).map(a=>`<li><b>${a.start}</b><span>${esc(a.title)}</span></li>`).join('')}${list.length>4?`<li><b></b><span style="opacity:.7">and ${list.length-4} more</span></li>`:''}</ul>`:'<p class="sm" style="opacity:.75;margin-top:8px">No upcoming sessions here.</p>'}</div>`}
+function mountScenes(){$$('[data-scene]').forEach(sc=>{if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const pl=sc.querySelector('.plane');
+ sc.addEventListener('pointermove',e=>{const r=sc.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;pl.style.setProperty('--rz',(-38+x*14)+'deg');pl.style.setProperty('--rx',(56-y*10)+'deg')});
+ sc.addEventListener('pointerleave',()=>{pl.style.removeProperty('--rz');pl.style.removeProperty('--rx')})})}
 
-/* ---------- points ---------- */
-function award(pts,label,who=ME(),by='System'){
- if(pts<=0)return;const isMe=who===ME(),lv0=levelOf(who.pts);who.pts+=pts;
- S.ledger.unshift({who:who.name,label,pts,when:'Just now',by});
- const k=Math.max(1,Math.floor(pts/10));addCells(k);
- if(isMe){S.myCells+=k;S.hist.unshift({t:label,d:'Just now',p:pts});pop('+'+pts);if(levelOf(who.pts)>lv0)S.lvlup=levelOf(who.pts)}
- S.feed.unshift(`${who.name} lit ${k} ${k>1?'cells':'cell'}`);S.feed.length=Math.min(S.feed.length,12)}
+/* ---------- home ---------- */
+function vHome(){const nx=upcoming()[0],st=nx&&statusOf(nx),modeBtn=(m,label,i)=>`<button class="chip" data-act="gmode" data-arg="${m}" aria-pressed="${S.gridMode===m}">${ic(i,14)} ${label}</button>`;
+ return `<section class="hero bluefield"><div class="wrap">
+ <div class="meta"><span class="eyebrow">${EVENT.dateLong}</span><span class="pill p-glass">${ic('pin',13)}${EVENT.area}</span></div>
+ <div class="hero-split"><h1 class="reveal">11 Years<br>of <em>Impact</em></h1><p class="tag reveal" style="animation-delay:.1s">${EVENT.tagline}</p></div>
+ <div class="stage glass ${S.gridMode==='draw'?'draw':''}"><canvas id="igrid" aria-hidden="true"></canvas><p class="vh" id="cd-sr" aria-live="off"></p></div>
+ <div class="stagebar"><div class="chips on-blue" role="group" aria-label="Grid mode">${modeBtn('countdown','Countdown','clock')}${modeBtn('message','Message','type')}${modeBtn('draw','Draw','brush')}${S.gridMode==='draw'?`<button class="chip" data-act="gclear">${ic('x',14)} Clear</button>`:''}</div>
+ <p class="hint">${ic('ripple',16)}<span>${S.gridMode==='draw'?'Drag across the grid to light your own cells.':'Move across the grid. Tap it to send a ripple.'}</span></p></div>
+ <div class="ctas"><a class="btn white" href="#event-schedule">${ic('calendar',18)} See the schedule</a><a class="btn glassy" href="#reminders">${ic('bell',18)} Get reminders</a></div>
+ </div></section>
+ ${nx?`<div class="wrap nextup"><div class="card"><div class="when tn">${nx.start}</div><div style="min-width:0"><p class="eyebrow muted">${st==='now'?'Happening now':'Next up'}, ${fmtDayShort(nx)}</p><h3>${esc(nx.title)}</h3><p class="sm muted" style="margin-top:4px">${ic('pin',13)} ${esc(nx.location)}, ${EVENT.venue}</p></div><div class="in"><span class="xs muted">${st==='now'?'Ends':'Starts'}</span><b data-rel="${st==='now'?endMs(nx):startMs(nx)}">${rel(st==='now'?endMs(nx):startMs(nx))}</b></div></div></div>`:''}
+ <section class="band"><div class="wrap"><div class="shead"><div><p class="eyebrow muted">The programme</p><h2>Coming <em>up</em></h2></div><p class="muted">Eleven hours of stage moments, food, games and music. Tap the calendar icon to save any session.</p></div>
+ ${actList(upcoming().slice(0,6))}<div style="margin-top:22px"><a class="btn sec" href="#event-schedule">Full schedule ${ic('arrow',16)}</a></div></div></section>
+ ${venueBand()}
+ ${remindBand()}`}
 
-/* ambient activity from colleagues */
-setInterval(()=>{if(S.freeze||document.hidden)return;const r=Math.random;const e=S.emp[Math.floor(r()*S.emp.length)];if(e===ME())return;const n=10+Math.floor(r()*5)*10;e.pts+=n;const k=n/10;addCells(k);S.feed.unshift(`${e.name} lit ${k} ${k>1?'cells':'cell'}`);S.feed.length=12;paintGrids()},4200);
+function venueBand(){return `<section class="band inkfield venue" id="venue"><div class="wrap venue-grid">
+ <div class="col" style="gap:20px"><p class="eyebrow" style="opacity:.7">The venue</p><h2>Hilton Embassy <em>Tech Village</em></h2><p style="opacity:.8;font-size:18px">${EVENT.area}. One venue, four spaces, eleven hours together.</p>
+ <div class="facts"><div class="glass"><span>Date</span><b>17 Dec</b></div><div class="glass"><span>Doors open</span><b class="tn">9:00 AM</b></div><div class="glass"><span>First session</span><b class="tn">10:00 AM</b></div><div class="glass"><span>Shuttles</span><b>Every 20 min</b></div></div>
+ <div class="zones" role="group" aria-label="Venue spaces">${ZONES.map(z=>`<button data-act="zone" data-arg="${esc(z.id)}" aria-pressed="${S.zone===z.id}"><i style="background:${z.top}"></i>${esc(z.id)}</button>`).join('')}</div>
+ <div class="ctas"><a class="btn white" href="${EVENT.maps}" target="_blank" rel="noopener">${ic('pin',18)} Get directions</a><a class="btn glassy" href="#event-venue">Venue guide</a></div></div>
+ <div class="col" style="gap:14px">${venueScene()}${zoneCard()}<p class="xs" style="opacity:.55">Illustrative layout. Follow the signs on the day.</p></div></div></section>`}
 
-/* ---------- countdown ---------- */
-const TARGET=new Date(EVENT.starts).getTime();
-function tickCd(){const d=Math.max(0,TARGET-Date.now()),v={d:Math.floor(d/864e5),h:Math.floor(d%864e5/36e5),m:Math.floor(d%36e5/6e4),s:Math.floor(d%6e4/1e3)};for(const k in v)$$('[data-cd="'+k+'"]').forEach(el=>el.textContent=String(v[k]).padStart(2,'0'))}
-setInterval(tickCd,1000);
-const cdHTML=cls=>`<div class="${cls}" role="timer" aria-label="Countdown to the event">${[['d','Days'],['h','Hours'],['m','Min'],['s','Sec']].map(a=>`<div class="glass"><b class="tn" data-cd="${a[0]}">--</b><span>${a[1]}</span></div>`).join('')}</div>`;
+function remindBand(){const p=S.pwa,canNotify='Notification' in window&&'serviceWorker' in navigator,perm=canNotify?Notification.permission:'unsupported',on=p.on&&perm==='granted';
+ const s1done=p.standalone;
+ let s1=s1done?`<span class="pill p-blue">${ic('check',13)} Added to your home screen</span>`:p.prompt?`<button class="btn" data-act="install">${ic('addbox',18)} Add to home screen</button>`:p.ios?`<div class="ios"><span>1. Open this page in Safari.</span><span>2. Tap ${ic('share',16)} Share at the bottom of the screen.</span><span>3. Choose ${ic('addbox',16)} Add to Home Screen, then Add.</span></div>`:`<p class="sm muted">On Android, open the browser menu and choose Install app or Add to home screen. On a computer, use the install icon in the address bar.</p>`;
+ let s2;if(on)s2=`<div class="row wrapx"><span class="pill p-blue">${ic('check',13)} Reminders are on</span><button class="btn ghost sm" data-act="testnotif">Send a test</button><button class="btn ghost sm" data-act="remoff">Turn off</button></div>`;
+ else if(!canNotify)s2=`<p class="sm muted">This browser does not support notifications.</p>`;
+ else if(p.ios&&!p.standalone)s2=`<p class="sm muted">On iPhone and iPad, add the app to your home screen first, then open it from there to turn on reminders.</p>`;
+ else if(perm==='denied')s2=`<p class="sm muted">Notifications are blocked for this site. Allow them in your browser or phone settings, then come back.</p>`;
+ else s2=`<button class="btn" data-act="remon">${ic('bell',18)} Turn on reminders</button>`;
+ const nx=upcoming().find(a=>statusOf(a)==='next');
+ return `<section class="band" id="reminders"><div class="wrap remind">
+ <div class="lock"><div class="scr bluefield"><div class="clock tn">${nx?shift(nx.start,-LEAD_MIN):'10:20'}</div><div class="date">${nx?fmtDay(nx):EVENT.dateLong}</div><div style="flex:1"></div>
+ <div class="notif glass"><img src="${ICON}" alt=""><div><div class="app"><span>IMPACT EVENTS</span><span>now</span></div><b>Starting in 10 minutes</b><p>${esc(nx?nx.title:'Keynote: Eleven Years of Impact')}, ${esc(nx?nx.location:'Main hall')} at ${nx?nx.start:'10:30'}</p></div></div></div></div>
+ <div class="col" style="gap:22px"><div><p class="eyebrow muted">Never miss a session</p><h2 style="font-size:clamp(38px,5vw,60px);line-height:1">Your phone <em>taps</em> you on the shoulder</h2><p class="muted" style="margin-top:12px;max-width:48ch">Pin the app to your home screen and turn on reminders. You get a notification 10 minutes before every session starts.</p></div>
+ <div class="steps"><div class="step ${s1done?'done':''}"><span class="n">${s1done?ic('check',20,2):'1'}</span><div><h3>Pin the app</h3><p>It opens full screen, like any other app.</p>${s1}</div></div>
+ <div class="step ${on?'done':''}"><span class="n">${on?ic('check',20,2):'2'}</span><div><h3>Turn on reminders</h3><p>One alert, 10 minutes before each session. Nothing else.</p>${s2}</div></div></div></div></div></section>`}
+const shift=(hhmm,m)=>{const [h,mm]=hhmm.split(':').map(Number),t=h*60+mm+m;return `${String(Math.floor(t/60)).padStart(2,'0')}:${String(t%60).padStart(2,'0')}`};
 
-function qr(seed){const r=seeded(seed);let o='';
- for(let y=0;y<25;y++)for(let x=0;x<25;x++){if((x<8&&y<8)||(x>16&&y<8)||(x<8&&y>16))continue;if(r()>.52)o+=`<rect x="${x}" y="${y}" width="1" height="1"/>`}
- const f=(x,y)=>`<rect x="${x}" y="${y}" width="7" height="7"/><rect x="${x+1}" y="${y+1}" width="5" height="5" fill="#fff"/><rect x="${x+2}" y="${y+2}" width="3" height="3"/>`;
- return `<svg viewBox="0 0 25 25" fill="#1C1B1B" shape-rendering="crispEdges" role="img" aria-label="Sample QR code">${o}${f(0,0)}${f(18,0)}${f(0,18)}</svg>`}
-const ring=(p,size=76,sw=6)=>{const r=(size-sw)/2,c=2*Math.PI*r;return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-hidden="true"><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--line)" stroke-width="${sw}"/><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--blue)" stroke-width="${sw}" stroke-linecap="butt" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-p)}"/></svg>`};
+/* ---------- event pages ---------- */
+const SUBS=[['about','About'],['journey','Journey'],['schedule','Schedule'],['venue','Venue'],['activities','Activities'],['faqs','FAQs']];
+function vEvent(){const s=S.sub,body={about:eAbout,journey:eJourney,schedule:eSchedule,venue:eVenue,activities:eActivities,faqs:eFaq}[s]();
+ const title={about:'Eleven years, <em>one</em> team',journey:'The <em>journey</em>',schedule:'The <em>schedule</em>',venue:'The <em>venue</em>',activities:'The <em>activities</em>',faqs:'Frequently Asked Questions'}[s];
+ return `<section class="ehead bluefield ${s==='faqs'?'small':''}"><div class="wrap"><p class="eyebrow" style="opacity:.85">${EVENT.name}, ${EVENT.dateLong}</p><h1 style="margin-top:10px">${title}</h1>
+ <nav class="chips on-blue" aria-label="Event sections">${SUBS.map(x=>`<a class="chip" href="#event-${x[0]}" ${x[0]===s?'aria-current="page"':''}>${x[1]}</a>`).join('')}</nav></div></section>${body}`}
+function eAbout(){return `<section class="band"><div class="wrap about"><div class="col" style="gap:18px"><p class="lead">Eleven years ago, Impact Analytics started with an idea and a lot of hustle. Today a team of 800+ serves retailers around the world.</p><p class="muted" style="max-width:60ch">On 17 December we come together in Bangalore to celebrate the journey, the people and the impact we make together. Expect stage moments, recognition, food, games, music and plenty of time with colleagues you usually only see on a call.</p><div class="ctas"><a class="btn" href="#event-schedule">${ic('calendar',18)} See the schedule</a><a class="btn sec" href="#reminders">${ic('bell',18)} Get reminders</a></div></div>
+ <div class="kfacts"><div class="card"><b>17</b><span>December 2026</span></div><div class="card"><b>11</b><span>Hours together</span></div><div class="card"><b class="tn">${S.acts.length}</b><span>Sessions</span></div><div class="card"><b>4</b><span>Spaces to explore</span></div></div></div></section>`}
+function eJourney(){return `<section class="band"><div class="wrap"><p class="muted" style="margin-bottom:22px;max-width:56ch">Scroll through the years. Sample milestones for this version. The team replaces them with the official story.</p><div class="rail" tabindex="0" aria-label="Company timeline">${JOURNEY.map((j,i)=>`<div class="jstop reveal" style="animation-delay:${i*.07}s"><span class="yr tn">${j[0]}</span><span class="dot"></span><div class="card"><h3 style="font-size:22px;line-height:1.15">${j[1]}</h3><p class="sm muted" style="margin-top:6px">${j[2]}</p></div></div>`).join('')}</div></div></section>`}
+function eSchedule(){const g=groupByDay(S.acts);return `<section class="band"><div class="wrap"><div class="shead"><p class="muted">All times in IST. Tap the calendar icon to add a session to your calendar.</p><a class="btn sec sm" href="#reminders">${ic('bell',16)} Remind me 10 minutes before</a></div>
+ ${g.map(d=>`<div class="daygroup"><div class="dayhead"><b>${fmtDay(d.items[0])}</b></div><div class="timeline" style="margin-top:18px">${d.items.map(a=>{const st=statusOf(a);return `<div class="tl-item ${st}"><div class="card"><div class="tm tn">${a.start}<small>to ${a.end}</small></div><div style="min-width:0"><h3>${esc(a.title)}</h3>${a.description?`<p class="sm muted" style="margin-top:4px">${esc(a.description)}</p>`:''}<div class="row wrapx" style="gap:6px;margin-top:10px"><span class="pill p-gray">${ic('pin',12)}${esc(a.location)}</span><span class="pill p-blue">${esc(a.category)}</span>${st==='now'?'<span class="pill p-orange p-live">Now</span>':''}</div></div><div>${st==='past'?'<span class="xs muted">Ended</span>':`<button class="btn sec sm" data-act="ics" data-arg="${esc(a.id)}">${ic('ics',16)} Add</button>`}</div></div></div>`}).join('')}</div></div>`).join('')||`<div class="empty card">The schedule is coming soon.</div>`}</div></section>`}
+function eVenue(){return venueBand()+`<section class="band tight"><div class="wrap cats">${ZONES.map(z=>{const n=S.acts.filter(a=>a.location===z.id).length;return `<button class="acard" style="text-align:left" data-act="zone" data-arg="${esc(z.id)}"><span class="ic" style="background:${z.top==='#FFFFFF'?'var(--blue)':z.top};color:${z.top==='#FFFFFF'?'#fff':'#1C1B1B'}">${ic('map',20)}</span><h3>${esc(z.id)}</h3><p class="sm muted">${esc(z.note)}</p><span class="xs muted">${n} ${n===1?'session':'sessions'}</span></button>`}).join('')}</div>
+ <div class="wrap" style="margin-top:28px"><div class="card"><h3 style="font-size:28px">Getting there</h3><p class="muted" style="margin-top:8px;max-width:62ch">${EVENT.venue}, ${EVENT.area}. Shuttles run every 20 minutes from 8:30 AM. Check-in opens at 9:00 AM at the Entrance. Keep your QR code ready.</p><a class="btn" style="margin-top:14px" href="${EVENT.maps}" target="_blank" rel="noopener">${ic('pin',18)} Open in Maps</a></div></div></section>`}
+function eActivities(){const by=CATEGORIES.map(c=>[c,S.acts.filter(a=>a.category===c[0])]).filter(x=>x[1].length);
+ return `<section class="band"><div class="wrap">${by.map(([c,l])=>`<div style="margin-bottom:36px"><div class="row" style="margin-bottom:14px"><span class="pill p-blue">${ic(c[1],14)} ${c[0]}</span><span class="xs muted">${l.length} ${l.length===1?'activity':'activities'}</span></div><div class="cats">${l.map(a=>`<article class="acard"><div class="row"><span class="ic">${ic(c[1],20)}</span><span class="grow"></span>${statusOf(a)==='now'?'<span class="pill p-orange p-live">Now</span>':statusOf(a)==='past'?'<span class="pill p-gray">Ended</span>':''}</div><span class="when tn">${a.start} to ${a.end}</span><h3>${esc(a.title)}</h3><p class="sm muted">${esc(a.description)}</p><span class="xs muted">${ic('pin',12)} ${esc(a.location)}, ${fmtDayShort(a)}</span></article>`).join('')}</div></div>`).join('')||'<div class="empty card">Activities are coming soon.</div>'}</div></section>`}
+function eFaq(){return `<section class="band"><div class="wrap"><div class="faq">${FAQ.map((f,i)=>`<details ${i===0?'open':''}><summary>${f[0]}${ic('plus',20)}</summary><p>${f[1]}</p></details>`).join('')}</div></div></section>`}
+
+/* ---------- calendar file ---------- */
+function ics(id){const a=S.acts.find(x=>x.id===id);if(!a)return;const z=t=>new Date(t).toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'');
+ const txt=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Impact Events//EN','BEGIN:VEVENT',`UID:${a.id}-${a.date}@impact-events`,`DTSTAMP:${z(Date.now())}`,`DTSTART:${z(startMs(a))}`,`DTEND:${z(endMs(a))}`,`SUMMARY:${a.title.replace(/[,;]/g,' ')}`,`LOCATION:${a.location}, ${EVENT.venue}, ${EVENT.area}`.replace(/;/g,' '),`DESCRIPTION:${(a.description||'').replace(/[,;\n]/g,' ')}`,'BEGIN:VALARM','TRIGGER:-PT10M','ACTION:DISPLAY','DESCRIPTION:Starting in 10 minutes','END:VALARM','END:VEVENT','END:VCALENDAR'].join('\r\n');
+ const url=URL.createObjectURL(new Blob([txt],{type:'text/calendar'})),el=document.createElement('a');el.href=url;el.download=a.title.replace(/[^\w]+/g,'-').toLowerCase()+'.ics';document.body.appendChild(el);el.click();el.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);toast('Calendar file ready. Open it to add the session.')}

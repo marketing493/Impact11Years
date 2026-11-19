@@ -1,3 +1,5 @@
 dist/
 public/
 .vercel/
+node_modules/
+.env*

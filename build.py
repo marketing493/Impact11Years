@@ -1,36 +1,64 @@
-"""Bundle src/ into a single self-contained page.
-Writes index.html (standalone, open it in any browser), public/index.html (Vercel output) and dist/artifact.html (fragment for claude.ai Artifacts)."""
-import base64, pathlib
+"""Bundle src/ into one page and assemble the deployable site.
+Outputs:
+  public/            what Vercel serves (index.html, sw.js, manifest, icons)
+  index.html         the same page at the repo root, handy to open locally
+  dist/artifact.html fragment for a claude.ai Artifact preview
+"""
+import base64, json, pathlib, re, shutil
 R = pathlib.Path(__file__).parent
 b64 = lambda p: 'data:image/png;base64,' + base64.b64encode((R / p).read_bytes()).decode()
+
+defaults = (R / 'api/_defaults.js').read_text()
+defaults = json.loads(re.sub(r'^\s*export default\s*', '', defaults).rstrip().rstrip(';'))
 css = (R / 'src/styles.css').read_text()
-js = '\n'.join((R / f'src/{n}.js').read_text() for n in ['data', 'app', 'employee', 'admin', 'live', 'main'])
-js = js.replace('__LOGO_H__', b64('assets/Logo.png')).replace('__LOGO_M__', b64('assets/Logo-Square.png'))
+js = '\n'.join((R / f'src/{n}.js').read_text() for n in ['data', 'grid', 'app', 'pwa', 'admin', 'main'])
+js = (js.replace('__LOGO_H__', b64('assets/Logo.png'))
+        .replace('__ICON__', b64('assets/icons/icon-192.png'))
+        .replace('__DEFAULTS__', json.dumps(defaults, ensure_ascii=False)))
+
+nav = [('home', 'Home', 'home'), ('event-about', 'The event', 'calendar'), ('event-schedule', 'Schedule', 'clock'), ('event-venue', 'Venue', 'pin')]
+ICONS = {'home': 'M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10', 'calendar': 'M4 6h16v14H4zM4 10h16M8 3v4M16 3v4',
+         'clock': 'M12 21a9 9 0 100-18 9 9 0 000 18zM12 7v5l3 2', 'pin': 'M12 21s7-6 7-11a7 7 0 10-14 0c0 5 7 11 7 11zM12 12a2 2 0 100-4 2 2 0 000 4z',
+         'bell': 'M6 16V11a6 6 0 1112 0v5l2 2H4zM10 21h4'}
+svg = lambda n, s=22: f'<svg width="{s}" height="{s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{ICONS[n]}"/></svg>'
+
 head = f'''<title>Impact Events</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="icon" href="{b64('assets/Logo-Square.png')}">
+<meta name="description" content="Countdown, schedule, venue and reminders for 11 Years of Impact, 17 December 2026 in Bangalore.">
+<meta name="theme-color" content="#264CD7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Impact Events">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" type="image/png" href="/icons/favicon-64.png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=Spectral:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
 <style>
 {css}</style>'''
-body = f'''<header class="bar">
- <div class="brandmark"><img src="{b64('assets/Logo-Square.png')}" alt="" width="30" height="30"><b>Impact <em>Events</em></b><span class="proto">Prototype, sample data</span></div>
- <div class="seg" role="group" aria-label="Switch interface">
-  <button data-act="mode" data-arg="emp">Employee app</button>
-  <button data-act="mode" data-arg="adm">Admin console</button>
-  <button data-act="mode" data-arg="live">Live stage</button>
- </div>
- <button class="btn sec sm" data-act="reset">Reset demo</button>
-</header>
-<div id="app"></div>
+body = f'''<header class="top"><div class="wrap">
+ <a href="#home" aria-label="Impact Events home"><img class="logo adapt" src="{b64('assets/Logo.png')}" alt="Impact Analytics" width="200" height="66"></a>
+ <nav aria-label="Main">{''.join(f'<a href="#{k}" data-nav="{k}">{l}</a>' for k, l, _ in nav)}</nav>
+ <a class="btn sec sm bell" href="#reminders">{svg('bell', 18)}<span class="reminder-label">Reminders</span><span class="dot"></span></a>
+</div></header>
+<main id="app"></main>
+<footer><div class="wrap"><img class="logo adapt" src="{b64('assets/Logo.png')}" alt="Impact Analytics" width="200" height="66"><p class="sm muted">11 Years of Impact. 17 December 2026, Hilton Embassy Tech Village, Bangalore.</p><a class="btn ghost sm" href="#admin">Organizer login</a></div></footer>
+<nav class="tabbar" aria-label="Main">{''.join(f'<a href="#{k}" data-nav="{k}">{svg(i)}{l}</a>' for k, l, i in nav)}</nav>
 <div id="toast" role="status" aria-live="polite"></div>
 <script>
 {js}
 </script>'''
+
+page = '<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n' + head + '\n</head>\n<body>\n' + body + '\n</body>\n</html>\n'
+pub = R / 'public'
+if pub.exists(): shutil.rmtree(pub)
+(pub / 'icons').mkdir(parents=True)
+(pub / 'index.html').write_text(page)
+(R / 'index.html').write_text(page)
+for f in (R / 'static').iterdir(): shutil.copy(f, pub / f.name)
+for f in (R / 'assets/icons').iterdir(): shutil.copy(f, pub / 'icons' / f.name)
 (R / 'dist').mkdir(exist_ok=True)
 (R / 'dist/artifact.html').write_text(head + '\n' + body + '\n')
-(R / 'index.html').write_text('<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n' + head + '\n</head>\n<body>\n' + body + '\n</body>\n</html>\n')
-(R / 'public').mkdir(exist_ok=True)
-(R / 'public/index.html').write_text((R / 'index.html').read_text())
-print('built', len((R / 'index.html').read_text()) // 1024, 'KB')
+print('built', len(page) // 1024, 'KB ->', ', '.join(sorted(p.name for p in pub.rglob('*') if p.is_file())))
