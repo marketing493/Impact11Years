@@ -12,10 +12,16 @@ An installable web app for the Impact Analytics 11th anniversary (17 December 20
 ## Deploy on Vercel
 
 ### 1. Import the repo
-In Vercel, choose **Add New > Project**, import this repo and click **Deploy**. `vercel.json` already sets the build. The site works right away in demo mode, but admin changes then stay in one browser and reminders only fire while the app is open.
+In Vercel, choose **Add New > Project**, import this repo and click **Deploy**. `vercel.json` already sets the build. Until the database and keys below are set, the site runs in demo mode: admin changes stay in one browser and reminders only fire while the app is open.
 
-### 2. Connect storage
-In the project, open **Storage**, add **Upstash for Redis** (free tier is enough) and connect it to the project. Vercel adds `KV_REST_API_URL` and `KV_REST_API_TOKEN` for you.
+### 2. Connect the database
+Connect a **Neon** Postgres database under the project's **Storage** tab. Vercel adds `DATABASE_URL` for you. The app creates its three tables on first use, so there is nothing to run:
+
+- `ia_settings` holds the activity schedule.
+- `ia_push_subs` holds one row per phone with reminders turned on.
+- `ia_sent_reminders` records each reminder sent, so none goes out twice.
+
+Upstash Redis still works as an alternative if `DATABASE_URL` is not set.
 
 ### 3. Add environment variables
 Under **Settings > Environment Variables** add:
@@ -45,7 +51,7 @@ Redeploy after adding the variables.
   ```
 - **Vercel Hobby (free):** Hobby cron jobs run at most once a day. Use a free scheduler such as cron-job.org instead. Point it at `https://YOUR-SITE.vercel.app/api/notify` every minute, with the header `Authorization: Bearer YOUR_CRON_SECRET`.
 
-The organizer dashboard shows a checklist for storage, push keys and the job secret.
+The organizer dashboard shows a checklist for the database, push keys and the job secret.
 
 ## How people install it
 
@@ -55,7 +61,7 @@ The organizer dashboard shows a checklist for storage, push keys and the job sec
 ## Files
 
 - `src/` front end: `styles.css`, `data.js` (content), `grid.js` (Impact Grid engine), `app.js` (pages and venue), `pwa.js` (install and reminders), `admin.js`, `main.js` (routing).
-- `api/` Vercel serverless functions: `activities`, `subscribe`, `notify`, `admin`, `config`. `_defaults.js` holds the starting schedule.
+- `api/` Vercel serverless functions: `activities`, `subscribe`, `notify`, `admin`, `config`. `_lib.js` holds the Neon storage layer. `_defaults.js` holds the starting schedule, used until an organizer saves changes.
 - `static/` service worker and web app manifest. `assets/` logos and app icons.
 - `python3 build.py` builds `public/` (what Vercel serves) and `index.html`.
 

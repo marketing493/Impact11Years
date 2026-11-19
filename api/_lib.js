@@ -1,16 +1,23 @@
 import crypto from 'node:crypto';
 import webpush from 'web-push';
+import { neon } from '@neondatabase/serverless';
 import DEFAULTS from './_defaults.js';
 
+/* ---------- storage ----------
+ Neon Postgres (DATABASE_URL, set by the Vercel Neon integration) is the primary store.
+ Upstash Redis (KV_REST_API_URL + KV_REST_API_TOKEN) still works as an alternative. */
+const PG_URL = process.env.DATABASE_URL || process.env.POSTGRES_URL;
 const KV_URL = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
 const KV_TOKEN = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+let sql = PG_URL ? neon(PG_URL) : null;
+export const __useSql = fn => { sql = fn; ready = null; }; // local tests only
 export const CATEGORIES = ['Stage', 'Food', 'Games', 'Music', 'Social', 'Other'];
 export const TZ_OFFSET = '+05:30'; // all activity times are IST
 
-export const hasStore = () => Boolean(KV_URL && KV_TOKEN);
+export const storeName = () => (sql ? 'Neon Postgres' : KV_URL && KV_TOKEN ? 'Upstash Redis' : null);
+export const hasStore = () => Boolean(storeName());
 
-/** Run one Redis command through the Upstash REST API. */
-export async function redis(...command) {
+async function redis(...command) {
   const r = await fetch(KV_URL, {
     method: 'POST',
     headers: { Authorization: `Bearer ${KV_TOKEN}`, 'Content-Type': 'application/json' },
@@ -20,6 +27,73 @@ export async function redis(...command) {
   if (j.error) throw new Error(j.error);
   return j.result;
 }
+
+/* Tables are created on first use, so there is no migration step. */
+let ready = null;
+function schema() {
+  ready ??= (async () => {
+    await sql`CREATE TABLE IF NOT EXISTS ia_settings (key text PRIMARY KEY, value jsonb NOT NULL, updated_at timestamptz NOT NULL DEFAULT now())`;
+    await sql`CREATE TABLE IF NOT EXISTS ia_push_subs (id text PRIMARY KEY, subscription jsonb NOT NULL, created_at timestamptz NOT NULL DEFAULT now())`;
+    await sql`CREATE TABLE IF NOT EXISTS ia_sent_reminders (key text PRIMARY KEY, sent_at timestamptz NOT NULL DEFAULT now())`;
+  })().catch(e => { ready = null; throw e; });
+  return ready;
+}
+
+export const db = {
+  async getActivities() {
+    if (sql) {
+      await schema();
+      const rows = await sql`SELECT value FROM ia_settings WHERE key = 'activities'`;
+      return rows.length ? rows[0].value : DEFAULTS;
+    }
+    if (hasStore()) { const raw = await redis('GET', 'activities'); return raw ? JSON.parse(raw) : DEFAULTS; }
+    return DEFAULTS;
+  },
+  async setActivities(list) {
+    if (sql) {
+      await schema();
+      const v = JSON.stringify(list);
+      await sql`INSERT INTO ia_settings (key, value) VALUES ('activities', ${v}::jsonb)
+                ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = now()`;
+      return;
+    }
+    await redis('SET', 'activities', JSON.stringify(list));
+  },
+  async addSub(id, sub) {
+    if (sql) {
+      await schema();
+      const v = JSON.stringify(sub);
+      await sql`INSERT INTO ia_push_subs (id, subscription) VALUES (${id}, ${v}::jsonb)
+                ON CONFLICT (id) DO UPDATE SET subscription = EXCLUDED.subscription`;
+      return;
+    }
+    await redis('HSET', 'subs', id, JSON.stringify(sub));
+  },
+  async removeSub(id) {
+    if (sql) { await schema(); await sql`DELETE FROM ia_push_subs WHERE id = ${id}`; return; }
+    await redis('HDEL', 'subs', id);
+  },
+  async listSubs() {
+    if (sql) { await schema(); return (await sql`SELECT id, subscription FROM ia_push_subs`).map(r => ({ id: r.id, sub: r.subscription })); }
+    const flat = (await redis('HGETALL', 'subs')) || [];
+    const out = [];
+    for (let i = 0; i < flat.length; i += 2) out.push({ id: flat[i], sub: JSON.parse(flat[i + 1]) });
+    return out;
+  },
+  async countSubs() {
+    if (sql) { await schema(); return Number((await sql`SELECT count(*)::int AS n FROM ia_push_subs`)[0].n); }
+    return hasStore() ? redis('HLEN', 'subs') : 0;
+  },
+  /** True only for the first caller, so each reminder goes out once. */
+  async claimReminder(key) {
+    if (sql) {
+      await schema();
+      const rows = await sql`INSERT INTO ia_sent_reminders (key) VALUES (${key}) ON CONFLICT (key) DO NOTHING RETURNING key`;
+      return rows.length > 0;
+    }
+    return Boolean(await redis('SET', 'sent:' + key, '1', 'NX', 'EX', 60 * 60 * 24 * 30));
+  },
+};
 
 export function pushReady() {
   const { VAPID_PUBLIC_KEY: pub, VAPID_PRIVATE_KEY: priv, VAPID_SUBJECT: subject } = process.env;
@@ -35,12 +109,6 @@ export function isAdmin(req) {
   if (!want || typeof got !== 'string') return false;
   const a = crypto.createHash('sha256').update(want).digest(), b = crypto.createHash('sha256').update(got).digest();
   return crypto.timingSafeEqual(a, b);
-}
-
-export async function getActivities() {
-  if (!hasStore()) return DEFAULTS;
-  const raw = await redis('GET', 'activities');
-  return raw ? JSON.parse(raw) : DEFAULTS;
 }
 
 export const startMs = a => Date.parse(`${a.date}T${a.start}:00${TZ_OFFSET}`);

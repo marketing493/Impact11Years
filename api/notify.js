@@ -1,4 +1,4 @@
-import { getActivities, hasStore, pushReady, redis, send, startMs, webpush } from './_lib.js';
+import { db, hasStore, pushReady, send, startMs, webpush } from './_lib.js';
 
 const LEAD_MS = 10 * 60 * 1000;
 
@@ -6,7 +6,7 @@ const LEAD_MS = 10 * 60 * 1000;
  * Sends a reminder to every subscriber for each activity that starts within the next 10 minutes.
  * Call it every minute: Vercel Cron (Pro) or any external scheduler with
  *   Authorization: Bearer <CRON_SECRET>   (or ?key=<CRON_SECRET>)
- * Each activity is announced once, guarded by a Redis key.
+ * Each activity is announced once, guarded by a row in ia_sent_reminders.
  */
 export default async function handler(req, res) {
   const secret = process.env.CRON_SECRET;
@@ -17,12 +17,11 @@ export default async function handler(req, res) {
 
   try {
     const now = Date.now();
-    const due = (await getActivities()).filter(a => { const d = startMs(a) - now; return d > 0 && d <= LEAD_MS; });
+    const due = (await db.getActivities()).filter(a => { const d = startMs(a) - now; return d > 0 && d <= LEAD_MS; });
     let sent = 0, removed = 0;
     for (const a of due) {
-      const first = await redis('SET', `sent:${a.id}:${a.date}T${a.start}`, '1', 'NX', 'EX', 60 * 60 * 24 * 30);
-      if (!first) continue;
-      const flat = (await redis('HGETALL', 'subs')) || [];
+      if (!(await db.claimReminder(`${a.id}:${a.date}T${a.start}`))) continue;
+      const subs = await db.listSubs();
       const mins = Math.max(1, Math.round((startMs(a) - now) / 60000));
       const payload = JSON.stringify({
         title: `Starting in ${mins} ${mins === 1 ? 'minute' : 'minutes'}`,
@@ -30,11 +29,10 @@ export default async function handler(req, res) {
         tag: `act-${a.id}`, url: '/#event-schedule',
       });
       const jobs = [];
-      for (let i = 0; i < flat.length; i += 2) {
-        const field = flat[i], sub = JSON.parse(flat[i + 1]);
+      for (const { id, sub } of subs) {
         jobs.push(webpush.sendNotification(sub, payload, { TTL: 600, urgency: 'high' })
           .then(() => { sent++; })
-          .catch(async e => { if (e.statusCode === 404 || e.statusCode === 410) { removed++; await redis('HDEL', 'subs', field); } }));
+          .catch(async e => { if (e.statusCode === 404 || e.statusCode === 410) { removed++; await db.removeSub(id); } }));
       }
       await Promise.allSettled(jobs);
     }
