@@ -12,7 +12,7 @@ function render(){
  $$('[data-nav]').forEach(a=>{const k=a.dataset.nav;a.toggleAttribute('aria-current',false);if(k===nav||(k==='event-about'&&S.route==='event'&&!['schedule','venue'].includes(S.sub)))a.setAttribute('aria-current','page')});
  $$('.bell .dot').forEach(d=>d.hidden=S.pwa.on&&('Notification' in window)&&Notification.permission==='granted');
  const cv=$('#igrid');if(cv)GRID_I=new ImpactGrid(cv,{mode:S.gridMode,target:Date.parse(EVENT.starts),onTick:srCountdown});
- mountScenes();ticks()}
+ mountScenes();mountStory();mountFx();ticks()}
 function srCountdown(diff){const el=$('#cd-sr');if(!el)return;const d=Math.floor(diff/864e5),h=Math.floor(diff%864e5/36e5),m=Math.floor(diff%36e5/6e4);el.textContent=diff>0?`${d} days, ${h} hours and ${m} minutes until ${EVENT.name}`:`${EVENT.name} is here`}
 function ticks(){$$('[data-rel]').forEach(el=>el.textContent=rel(+el.dataset.rel))}
 setInterval(ticks,30000);
@@ -27,6 +27,7 @@ setInterval(async()=>{if(document.hidden||A_.modal)return;const before=JSON.stri
 const ACT={
  gmode(m){S.gridMode=m},
  gclear(){GRID_I&&GRID_I.clear();return false},
+ tscroll(d){const el=$('#tickets');if(el)el.scrollBy({left:+d*el.clientWidth*.8,behavior:'smooth'});return false},
  zone(z){S.zone=z;
   /* update every scene in place so the 3D tilt is not reset */
   $$('.zone').forEach(b=>{const on=b.dataset.arg===z;b.classList.toggle('on',on);b.classList.toggle('dim',!on);b.setAttribute('aria-pressed',on)});
@@ -56,7 +57,7 @@ addEventListener('hashchange',()=>{const jump=parseHash();render();if(jump){requ
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){ticks();scheduleLocal()}});
 
 /* ---------- boot ---------- */
-(async()=>{const jump=parseHash();S.acts=sortActs(store.get('ia11-acts',DEFAULT_ACTIVITIES));render();
+(async()=>{startAmbient();const jump=parseHash();S.acts=sortActs(store.get('ia11-acts',DEFAULT_ACTIVITIES));render();
  await Promise.all([loadData(),registerSW()]);
  if(S.server&&S.cfg.admin&&A_.key)await adminLogin(A_.key);
  render();scheduleLocal();

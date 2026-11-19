@@ -11,7 +11,7 @@ b64 = lambda p: 'data:image/png;base64,' + base64.b64encode((R / p).read_bytes()
 defaults = (R / 'api/_defaults.js').read_text()
 defaults = json.loads(re.sub(r'^\s*export default\s*', '', defaults).rstrip().rstrip(';'))
 css = (R / 'src/styles.css').read_text()
-js = '\n'.join((R / f'src/{n}.js').read_text() for n in ['data', 'grid', 'app', 'pwa', 'admin', 'main'])
+js = '\n'.join((R / f'src/{n}.js').read_text() for n in ['data', 'grid', 'fx', 'story', 'app', 'pwa', 'admin', 'main'])
 js = (js.replace('__LOGO_H__', b64('assets/Logo.png'))
         .replace('__ICON__', b64('assets/icons/icon-192.png'))
         .replace('__DEFAULTS__', json.dumps(defaults, ensure_ascii=False)))
@@ -43,6 +43,7 @@ body = f'''<header class="top"><div class="wrap">
  <nav aria-label="Main">{''.join(f'<a href="#{k}" data-nav="{k}">{l}</a>' for k, l, _ in nav)}</nav>
  <a class="btn sec sm bell" href="#reminders">{svg('bell', 18)}<span class="reminder-label">Reminders</span><span class="dot"></span></a>
 </div></header>
+<canvas id="ambient" aria-hidden="true"></canvas>
 <main id="app"></main>
 <footer><div class="wrap"><img class="logo adapt" src="{b64('assets/Logo.png')}" alt="Impact Analytics" width="200" height="66"><p class="sm muted">11 Years of Impact. 17 December 2026, Hilton Embassy Tech Village, Bangalore.</p><a class="btn ghost sm" href="#admin">Organizer login</a></div></footer>
 <nav class="tabbar" aria-label="Main">{''.join(f'<a href="#{k}" data-nav="{k}">{svg(i)}{l}</a>' for k, l, i in nav)}</nav>
