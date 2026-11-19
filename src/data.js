@@ -4,7 +4,7 @@ const DEFAULT_ACTIVITIES=__DEFAULTS__;
 const EVENT={name:'11 Years of Impact',dateLong:'Thursday, 17 December 2026',time:'10:00 AM to 9:00 PM IST',
  starts:'2026-12-17T10:00:00+05:30',ends:'2026-12-17T21:00:00+05:30',
  venue:'Hilton Embassy Tech Village',area:'Marathahalli, Bangalore',tagline:'Every Moment. Every Connection. Every Impact.',
- maps:'https://www.google.com/maps/search/?api=1&query=Hilton+Embassy+Tech+Village+Marathahalli+Bangalore'};
+ maps:'https://share.google/ND6jDIXkdYzUZ1L9r'};
 const TZ='Asia/Kolkata', OFFSET='+05:30', LEAD_MIN=10;
 const CATEGORIES=[['Stage','mic'],['Food','cup'],['Games','spark'],['Music','music'],['Social','users'],['Other','star']];
 /* Illustrative venue layout, in % of the floor plate. h0 is the block height in px. */

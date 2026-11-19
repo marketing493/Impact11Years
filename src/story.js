@@ -21,15 +21,40 @@ const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
 let STORY_I=null,JOURNEY_I=null;
 function storySection(){return `<section class="story" id="story" style="height:${CHAPTERS.length*85+100}vh"><div class="story-pin" style="background:${CHAPTERS[0].bg}"><canvas aria-hidden="true"></canvas>
  <div class="chaps">${CHAPTERS.map((c,i)=>`<div class="chap" style="opacity:${i?0:1}"><p class="num">${c.tag}</p><h2>${c.title}</h2><p>${c.body}</p>${c.cta?`<div class="ctas"><a class="btn white" href="#event-schedule" data-magnet>${ic('calendar',18)} See the schedule</a><a class="btn glassy" href="#event-journey" data-magnet>Walk the journey ${ic('arrow',16)}</a></div>`:''}</div>`).join('')}</div>
- <nav class="rail-p" aria-label="Story chapters">${CHAPTERS.map((c,i)=>`<button data-chap="${i}" class="${i?'':'on'}"><span>${['2015','Hustle','Retail','800+','Eleven','Now'][i]}</span><i></i></button>`).join('')}</nav><div class="story-bar"></div></div></section>`}
+ <nav class="rail-p" aria-label="Story chapters">${CHAPTERS.map((c,i)=>`<button data-chap="${i}" class="${i?'':'on'}"><span>${['2015','Hustle','Retail','800+','Eleven','Now'][i]}</span><i></i></button>`).join('')}</nav><div class="story-dots" aria-hidden="true">${CHAPTERS.map((c,i)=>`<i data-sdot="${i}" class="${i?'':'on'}"></i>`).join('')}<span class="story-hint">Swipe up</span></div><div class="story-bar"></div></div></section>`}
 
 class Story{
- constructor(sec){this.sec=sec;this.pin=sec.querySelector('.story-pin');this.cv=sec.querySelector('canvas');this.ctx=this.cv.getContext('2d');this.chaps=[...sec.querySelectorAll('.chap')];this.btns=[...sec.querySelectorAll('[data-chap]')];
+ constructor(sec){this.sec=sec;this.pin=sec.querySelector('.story-pin');this.cv=sec.querySelector('canvas');this.ctx=this.cv.getContext('2d');this.chaps=[...sec.querySelectorAll('.chap')];this.btns=[...sec.querySelectorAll('[data-chap]')];this.dots=[...sec.querySelectorAll('[data-sdot]')];
   this.n=CHAPTERS.length;this.cs=0;this.target=0;this.ptr=null;this.alive=true;this.resize();
-  this.btns.forEach(b=>b.addEventListener('click',()=>{const i=+b.dataset.chap;scrollTo({top:this.sec.offsetTop+(i/(this.n-1))*(this.sec.offsetHeight-innerHeight)+2,behavior:'smooth'})}));
+  this.btns.forEach(b=>b.addEventListener('click',()=>{const i=+b.dataset.chap;scrollTo({top:this.absTop()+(i/(this.n-1))*(this.sec.offsetHeight-innerHeight)+2,behavior:'smooth'})}));
   this.pin.addEventListener('pointermove',e=>{const r=this.cv.getBoundingClientRect();this.ptr={x:e.clientX-r.left,y:e.clientY-r.top}});this.pin.addEventListener('pointerleave',()=>this.ptr=null);
-  this.loop=this.loop.bind(this);requestAnimationFrame(this.loop);this.update()}
- destroy(){this.alive=false}
+  this.loop=this.loop.bind(this);requestAnimationFrame(this.loop);this.update();this.setupSteps()}
+ absTop(){return this.sec.getBoundingClientRect().top+scrollY}
+ destroy(){this.alive=false;this.ac&&this.ac.abort()}
+ /* Phones: the story locks in place and each swipe moves exactly one chapter.
+    Swiping past the first or last chapter releases the page. */
+ setupSteps(){
+  const phone=matchMedia('(pointer: coarse)').matches||innerWidth<=820;if(!phone)return;
+  this.ac=new AbortController();const sig={signal:this.ac.signal},n=this.n;
+  this.idx=0;this.locked=false;this.busy=false;const r0=this.sec.getBoundingClientRect();this.lastTop=r0.top;this.lastBottom=r0.bottom;
+  const span=()=>this.sec.offsetHeight-innerHeight,yOf=i=>this.absTop()+i/(n-1)*span();
+  const glide=(y,ms=750)=>{this.busy=true;scrollTo({top:y,behavior:RMQ.matches?'auto':'smooth'});clearTimeout(this.bt);this.bt=setTimeout(()=>{this.busy=false},ms)};
+  const go=i=>{this.idx=i;this.locked=true;this.pin.dataset.locked='1';glide(yOf(i))};
+  const release=y=>{this.locked=false;delete this.pin.dataset.locked;glide(y,900)};
+  addEventListener('scroll',()=>{const r=this.sec.getBoundingClientRect();
+   if(!this.locked&&!this.busy&&r.top<=0&&r.bottom>=innerHeight){
+    const from=this.lastTop>0?0:this.lastBottom<innerHeight?n-1:Math.round(clamp(-r.top/span())*(n-1));go(from)}
+   this.lastTop=r.top;this.lastBottom=r.bottom},{passive:true,...sig});
+  let y0=null;
+  addEventListener('touchstart',e=>{y0=e.touches[0].clientY},{passive:true,...sig});
+  addEventListener('touchmove',e=>{if(this.locked)e.preventDefault()},{passive:false,...sig});
+  addEventListener('touchend',e=>{if(!this.locked||y0===null)return;const dy=y0-e.changedTouches[0].clientY;y0=null;if(this.busy||Math.abs(dy)<28)return;
+   const next=this.idx+(dy>0?1:-1);
+   if(next<0)release(this.absTop()-innerHeight*.7);
+   else if(next>n-1)release(this.absTop()+this.sec.offsetHeight-Math.min(140,innerHeight*.2));
+   else go(next)},{passive:true,...sig});
+  addEventListener('keydown',e=>{if(!this.locked||this.busy)return;if(['ArrowDown','PageDown',' '].includes(e.key)){e.preventDefault();this.idx<n-1?go(this.idx+1):release(this.absTop()+this.sec.offsetHeight-140)}if(['ArrowUp','PageUp'].includes(e.key)){e.preventDefault();this.idx>0?go(this.idx-1):release(this.absTop()-innerHeight*.7)}},sig);
+  this.sec.querySelectorAll('[data-sdot]').forEach(d=>d.addEventListener('click',()=>go(+d.dataset.sdot),sig))}
  resize(){const d=Math.min(2,devicePixelRatio||1),W=this.pin.clientWidth,H=this.pin.clientHeight;this.W=W;this.H=H;this.cv.width=W*d;this.cv.height=H*d;this.ctx.setTransform(d,0,0,d,0,0);
   const wide=W>820,railX=W-Math.max(24,(W-1200)/2)-150,ax=wide?W*.49:W*.06,aw=wide?Math.max(260,railX-W*.49-24):W*.88,ay=wide?H*.18:H*.1,ah=wide?H*.64:H*.36,maxCell=wide?30:20;
   const shapes=CHAPTERS.map(c=>shapePoints(c.shape)),N=Math.max(...shapes.map(s=>s.pts.length))+90,r=seededRand(5);this.N=N;
@@ -46,7 +71,7 @@ class Story{
   /* background + copy */
   const kb=Math.min(this.n-1,Math.floor(cs)),fb=clamp(cs-kb);this.pin.style.background=lerpHex(CHAPTERS[kb].bg,CHAPTERS[Math.min(this.n-1,kb+1)].bg,ease(fb));
   const wide=this.W>820;this.chaps.forEach((el,i)=>{const d=cs-i,o=clamp(1-Math.abs(d)*1.9);el.style.opacity=o.toFixed(3);el.style.transform=`translateY(${wide?'calc(-50% + ':'calc('}${(-d*70).toFixed(1)}px))`;el.style.pointerEvents=o>.6?'auto':'none'});
-  const act=Math.round(cs);this.btns.forEach((b,i)=>b.classList.toggle('on',i===act));
+  const act=Math.round(cs);this.btns.forEach((b,i)=>b.classList.toggle('on',i===act));if(act!==this.lastAct){this.lastAct=act;this.dots.forEach((d,i)=>d.classList.toggle('on',i===act));this.pin.dataset.ch=act}
   /* particles */
   const c=this.ctx,A=this.T[k],B=this.T[k+1],N=this.N,ptr=this.ptr,still=RMQ.matches;c.clearRect(0,0,this.W,this.H);
   for(let i=0;i<N;i++){const e=ease(clamp((f-this.stag[i])/.68));

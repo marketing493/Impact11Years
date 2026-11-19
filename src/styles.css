@@ -115,7 +115,8 @@ p{margin:0}
 .hero .tag{font-size:clamp(17px,1.8vw,21px);opacity:.92;max-width:40ch}
 .hero-split{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:end}
 .stage{position:relative;padding:clamp(10px,2vw,22px);border-radius:var(--r-lg)}
-.stage canvas{display:block;width:100%;touch-action:none;cursor:crosshair;border-radius:var(--r-sm)}
+.stage canvas{display:block;width:100%;touch-action:pan-y;cursor:crosshair;border-radius:var(--r-sm)}
+.stage.draw canvas{touch-action:none}
 .stage.draw canvas{cursor:cell}
 .stagebar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between}
 .stagebar .hint{font-size:13px;opacity:.85;display:flex;gap:8px;align-items:center}
@@ -431,3 +432,14 @@ html.rv-on [data-rv]:not(.in){opacity:0;transform:translateY(34px)}
 .ehead .wrap{position:relative;z-index:2}
 
 @media (prefers-reduced-motion:reduce){.fl,.big11{transform:none!important}html.rv-on [data-rv]:not(.in){opacity:1;transform:none}}
+
+/* story on phones: chapter dots and swipe hint */
+.story-dots{display:none}
+@media (max-width:820px),(pointer:coarse){
+ .story-dots{display:flex;position:absolute;z-index:3;left:16px;right:16px;top:calc(96px + env(safe-area-inset-top,0px));align-items:center;gap:6px}
+ .story-dots i{width:22px;height:4px;border-radius:2px;background:rgba(255,255,255,.3);transition:background .3s,width .3s}
+ .story-dots i.on{background:#FF6F1C;width:34px}
+ .story-hint{margin-left:auto;font-size:11px;letter-spacing:.16em;text-transform:uppercase;opacity:.75;display:flex;align-items:center;gap:6px;transition:opacity .4s}
+ .story-hint::before{content:"";width:8px;height:8px;border-left:1.5px solid #fff;border-top:1.5px solid #fff;transform:rotate(45deg);animation:cue 1.6s var(--ease) infinite}
+ .story-pin:not([data-ch="0"]) .story-hint{opacity:0}
+ .story-pin[data-locked]{touch-action:none}}
