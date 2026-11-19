@@ -4,9 +4,17 @@ Outputs:
   index.html         the same page at the repo root, handy to open locally
   dist/artifact.html fragment for a claude.ai Artifact preview
 """
-import base64, json, pathlib, re, shutil
+import base64, datetime, json, os, pathlib, re, shutil, subprocess
 R = pathlib.Path(__file__).parent
 b64 = lambda p: 'data:image/png;base64,' + base64.b64encode((R / p).read_bytes()).decode()
+
+def git_sha():
+    sha = os.environ.get('VERCEL_GIT_COMMIT_SHA', '')
+    if not sha:
+        try: sha = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=R, text=True).strip()
+        except Exception: sha = 'local'
+    return sha[:7]
+BUILD = {'commit': git_sha(), 'branch': os.environ.get('VERCEL_GIT_COMMIT_REF', ''), 'built': datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}
 
 defaults = (R / 'api/_defaults.js').read_text()
 defaults = json.loads(re.sub(r'^\s*export default\s*', '', defaults).rstrip().rstrip(';'))
@@ -45,7 +53,7 @@ body = f'''<header class="top"><div class="wrap">
 </div></header>
 <canvas id="ambient" aria-hidden="true"></canvas>
 <main id="app"></main>
-<footer><div class="wrap"><img class="logo adapt" src="{b64('assets/Logo.png')}" alt="Impact Analytics" width="200" height="66"><p class="sm muted">11 Years of Impact. 17 December 2026, Hilton Embassy Tech Village, Bangalore.</p><a class="btn ghost sm" href="#admin">Organizer login</a></div></footer>
+<footer><div class="wrap"><img class="logo adapt" src="{b64('assets/Logo.png')}" alt="Impact Analytics" width="200" height="66"><p class="sm muted">11 Years of Impact. 17 December 2026, Hilton Embassy Tech Village, Bangalore.</p><span class="xs muted" title="Build {BUILD['built']}">Version {BUILD['commit']}</span><a class="btn ghost sm" href="#admin">Organizer login</a></div></footer>
 <nav class="tabbar" aria-label="Main">{''.join(f'<a href="#{k}" data-nav="{k}">{svg(i)}{l}</a>' for k, l, i in nav)}</nav>
 <div id="toast" role="status" aria-live="polite"></div>
 <script>
@@ -60,6 +68,7 @@ if pub.exists(): shutil.rmtree(pub)
 (R / 'index.html').write_text(page)
 for f in (R / 'static').iterdir(): shutil.copy(f, pub / f.name)
 for f in (R / 'assets/icons').iterdir(): shutil.copy(f, pub / 'icons' / f.name)
+(pub / 'version.json').write_text(json.dumps(BUILD))
 (R / 'dist').mkdir(exist_ok=True)
 (R / 'dist/artifact.html').write_text(head + '\n' + body + '\n')
 print('built', len(page) // 1024, 'KB ->', ', '.join(sorted(p.name for p in pub.rglob('*') if p.is_file())))

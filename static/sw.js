@@ -1,5 +1,5 @@
 /* Impact Events service worker: offline shell, push reminders, notification taps. */
-const CACHE = 'impact-events-v1';
+const CACHE = 'impact-events-v2';
 const SHELL = ['/', '/manifest.webmanifest', '/icons/icon-192.png', '/icons/badge-96.png'];
 
 self.addEventListener('install', e => {
