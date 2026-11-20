@@ -23,7 +23,8 @@ js = '\n'.join((R / f'src/{n}.js').read_text() for n in ['data', 'grid', 'fx', '
 js = (js.replace('__LOGO_H__', b64('assets/Logo.png'))
         .replace('__ICON__', b64('assets/icons/icon-192.png'))
         .replace('__DEFAULTS__', json.dumps(defaults, ensure_ascii=False))
-        .replace('__WORLD__', (R / 'assets/world-dots.json').read_text().strip()))
+        .replace('__WORLD__', (R / 'assets/world-dots.json').read_text().strip())
+        .replace('__WORLD_HD__', ((R / 'assets/world-dots-hd.json') if (R / 'assets/world-dots-hd.json').exists() else (R / 'assets/world-dots.json')).read_text().strip()))
 
 nav = [('home', 'Home', 'home'), ('event-about', 'The event', 'calendar'), ('event-schedule', 'Schedule', 'clock'), ('event-venue', 'Venue', 'pin')]
 ICONS = {'home': 'M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10', 'calendar': 'M4 6h16v14H4zM4 10h16M8 3v4M16 3v4',

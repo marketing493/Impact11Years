@@ -2,6 +2,7 @@
  Artwork drawn as SVG symbols, plus the voyage stops. The world map is a dot mask generated
  from Natural Earth land data (world-atlas, 50m) and injected at build time. */
 const WORLD=__WORLD__;
+const WORLD_HD=__WORLD_HD__;
 const GOLD='#D4AF61',GOLD_HI='#F3DFA2',GOLD_LO='#9C7A36',NAVY='#0A1744',IVORY='#F7F1E3';
 
 /* line-art landmarks, 64x64, drawn with a gold stroke */

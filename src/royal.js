@@ -45,7 +45,7 @@ function vRoyalHome(){const up=upcoming();
 
  ${marquee()}
 
- <section class="r-voyage" id="voyage"><div class="vy-pin"><canvas aria-hidden="true"></canvas><div class="vy-marks" aria-hidden="true"></div><div class="vy-plane" aria-hidden="true"><svg viewBox="0 0 40 40"><use href="#plane"/></svg></div>
+ <section class="r-voyage" id="voyage"><div class="vy-pin"><canvas aria-hidden="true"></canvas><div class="vy-vig" aria-hidden="true"></div><svg class="vy-rose" viewBox="0 0 100 100" aria-hidden="true"><use href="#compass"/></svg><div class="vy-marks" aria-hidden="true"></div><div class="vy-plane" aria-hidden="true"><svg viewBox="0 0 40 40"><use href="#plane"/></svg></div>
   <div class="vy-head"><p class="eyebrow gold-eb">The voyage</p><h2 class="r-h2">Around the World in <em>11 Years</em></h2></div>
   <div class="postcard" aria-live="polite"></div>
   <nav class="vy-stops" aria-label="Voyage stops">${STOPS.map((s,i)=>`<button data-act="voyageGo" data-arg="${i}"><i></i><span>${JOURNEY[i]?JOURNEY[i][0]:''}</span></button>`).join('')}</nav>
@@ -80,17 +80,28 @@ setInterval(()=>{if(S.skin==='royal'&&!document.hidden)tickRoyal()},1000);
 class Voyage{
  constructor(sec){this.sec=sec;this.pin=sec.querySelector('.vy-pin');this.cv=sec.querySelector('canvas');this.ctx=this.cv.getContext('2d');this.marks=sec.querySelector('.vy-marks');this.planeEl=sec.querySelector('.vy-plane');this.card=sec.querySelector('.postcard');this.btns=[...sec.querySelectorAll('.vy-stops button')];
   this.n=STOPS.length;this.s=0;this.target=0;this.cam=null;this.alive=true;this.stop_=-1;
-  this.land=[];WORLD.rows.forEach((row,y)=>{for(let i=0;i<row.length;i++){const v=parseInt(row[i],16);for(let b=0;b<4;b++)if(v&(8>>b))this.land.push([i*4+b,y])}});
+  const G=this.G=(typeof WORLD_HD!=='undefined'?WORLD_HD:WORLD),bits=G.rows.map(row=>{const a=new Uint8Array(G.W);for(let i=0;i<row.length;i++){const v=parseInt(row[i],16);for(let b=0;b<4;b++)if(v&(8>>b))a[i*4+b]=1}return a});
+  this.land=[];for(let y=0;y<G.H;y++)for(let x=0;x<G.W;x++)if(bits[y][x]){let n=0;for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const yy=y+dy,xx=(x+dx+G.W)%G.W;if(yy>=0&&yy<G.H&&bits[yy][xx])n++}this.land.push([x,y,n<9])}
   this.marks.innerHTML=STOPS.map((s,i)=>`<span class="vm" data-i="${i}"><span class="vm-lm">${lmSvg(s.lm,i===this.n-1?54:44,1.5)}</span><i></i><b class="tn">${JOURNEY[i]?JOURNEY[i][0]:''}</b></span>`).join('');this.mk=[...this.marks.children];
   sec.style.height=(this.n*80+100)+'vh';this.resize();this.onResize=()=>this.resize();addEventListener('resize',this.onResize);this.onScroll=()=>this.update();addEventListener('scroll',this.onScroll,{passive:true});
   this.sbtn=sec.querySelector('[data-sound]');if(this.sbtn){if(!SCORE.supported)this.sbtn.hidden=true;const paint=(on,blocked)=>{this.sbtn.setAttribute('aria-pressed',on);this.sbtn.querySelector('.lbl').textContent=on?(blocked?'Tap for sound':'Sound on'):'Play the score';this.sbtn.classList.toggle('wait',!!(on&&blocked))};paint(SCORE.on,SCORE.blocked);this.unsub=SCORE.onChange(paint);this.sbtn.addEventListener('click',e=>{e.stopPropagation();SCORE.toggle()})}
   this.update();this.loop=this.loop.bind(this);requestAnimationFrame(this.loop)}
  stop(){this.alive=false;removeEventListener('resize',this.onResize);removeEventListener('scroll',this.onScroll);this.unsub&&this.unsub();SCORE.setVisible(false)}
  resize(){const d=Math.min(2,devicePixelRatio||1),W=this.pin.clientWidth,H=this.pin.clientHeight;this.W=W;this.H=H;this.cv.width=W*d;this.cv.height=H*d;this.ctx.setTransform(d,0,0,d,0,0);
-  this.phone=W<820;this.mapW=this.phone?W*2.5:Math.max(W*1.9,H*2.4);this.mapH=this.mapW*WORLD.H/WORLD.W;this.cell=this.mapW/WORLD.W;
+  this.phone=W<820;this.mapW=this.phone?W*2.5:Math.max(W*1.9,H*2.4);this.mapH=this.mapW*this.G.H/this.G.W;this.cell=this.mapW/this.G.W;this.layer=null;
   this.pts=STOPS.map(s=>this.proj(s.lon,s.lat));
   this.legs=[];for(let i=0;i<this.n-1;i++){const a=this.pts[i],b=this.pts[i+1],dx=b[0]-a[0],dy=b[1]-a[1],L=Math.hypot(dx,dy),lift=Math.min(L*.28,this.mapH*.22);this.legs.push({a,b,c:[(a[0]+b[0])/2,(a[1]+b[1])/2-lift]})}}
- proj(lon,lat){return [(lon+180)/360*this.mapW,(WORLD.lat0-lat)/(WORLD.lat0-WORLD.lat1)*this.mapH]}
+ proj(lon,lat){const G=this.G;return [(lon+180)/360*this.mapW,(G.lat0-lat)/(G.lat0-G.lat1)*this.mapH]}
+ /* the land is drawn once into an offscreen layer: a soft gold glow, gold dots, brighter coastlines */
+ buildLayer(){const blue=document.documentElement.dataset.tone==='blue',k=Math.min(Math.min(2,devicePixelRatio||1),4096/this.mapW),cv=document.createElement('canvas');
+  cv.width=Math.round(this.mapW*k);cv.height=Math.round(this.mapH*k);const c=cv.getContext('2d');c.scale(k,k);const cs=this.cell;
+  const sheen=c.createLinearGradient(0,0,this.mapW,this.mapH);(blue?[[0,'#C9A24A'],[.25,'#E9CD86'],[.5,'#D4AF61'],[.7,'#F3DFA2'],[1,'#C9A24A']]:[[0,'#B8944A'],[.22,'#F3DFA2'],[.45,'#D4AF61'],[.66,'#FFF1C1'],[.85,'#C9A24A'],[1,'#E9CD86']]).forEach(s=>sheen.addColorStop(s[0],s[1]));
+  /* glow: paint the land once at grid resolution, then blur that single image (one filter pass, not one per dot) */
+  const gl=document.createElement('canvas');gl.width=this.G.W;gl.height=this.G.H;const gc=gl.getContext('2d');gc.fillStyle='#D4AF61';for(const [x,y] of this.land)gc.fillRect(x,y,1,1);
+  c.save();c.filter='blur('+(cs*1.4).toFixed(1)+'px)';c.globalAlpha=blue?.32:.42;c.imageSmoothingEnabled=true;c.drawImage(gl,0,0,this.mapW,this.mapH);c.restore();
+  c.fillStyle=sheen;c.globalAlpha=blue?.9:.78;c.beginPath();for(const [x,y,coast] of this.land){if(coast)continue;const r=cs*.3;c.moveTo((x+.5)*cs+r,(y+.5)*cs);c.arc((x+.5)*cs,(y+.5)*cs,r,0,6.283)}c.fill();
+  c.globalAlpha=1;c.fillStyle=blue?'#F3DFA2':'#FFF1C1';c.beginPath();for(const [x,y,coast] of this.land){if(!coast)continue;const r=cs*.26;c.moveTo((x+.5)*cs+r,(y+.5)*cs);c.arc((x+.5)*cs,(y+.5)*cs,r,0,6.283)}c.fill();
+  this.layer=cv;this.layerTone=blue}
  bez(L,t){const u=1-t;return [u*u*L.a[0]+2*u*t*L.c[0]+t*t*L.b[0],u*u*L.a[1]+2*u*t*L.c[1]+t*t*L.b[1]]}
  update(){const r=this.sec.getBoundingClientRect(),span=this.sec.offsetHeight-innerHeight,p=clamp(-r.top/Math.max(1,span));this.target=p*(this.n-1);this.vis=r.bottom>0&&r.top<innerHeight;SCORE.setVisible(r.bottom>innerHeight*.35&&r.top<innerHeight*.65)}
  goTo(i){const span=this.sec.offsetHeight-innerHeight,top=this.sec.getBoundingClientRect().top+scrollY;scrollTo({top:top+i/(this.n-1)*span+2,behavior:RMQ.matches?'auto':'smooth'})}
@@ -101,15 +112,27 @@ class Voyage{
   const want=[Math.max(Math.min(P[0]-W*(this.phone?.5:.6),this.mapW-W),0),this.mapH<H?(this.mapH-H)/2-H*.06:Math.max(Math.min(P[1]-H*.56,this.mapH-H),0)];
   if(!this.cam)this.cam=want;this.cam=[this.cam[0]+(want[0]-this.cam[0])*.08,this.cam[1]+(want[1]-this.cam[1])*.08];const cx=this.cam[0],cy=this.cam[1];
   c.clearRect(0,0,W,H);
-  /* graticule */
-  c.strokeStyle='rgba(212,175,97,.07)';c.lineWidth=1;c.beginPath();for(let lon=-180;lon<=180;lon+=30){const x=(lon+180)/360*this.mapW-cx;c.moveTo(x,-cy*0-this.mapH);c.lineTo(x,this.mapH*2)}for(let lat=-60;lat<=80;lat+=20){const y=(WORLD.lat0-lat)/(WORLD.lat0-WORLD.lat1)*this.mapH-cy;c.moveTo(0,y);c.lineTo(W,y)}c.stroke();
-  /* land as gold dots, brighter around the plane */
-  const cs=this.cell,rr=cs*.26;for(const [gx,gy] of this.land){const x=(gx+.5)*cs-cx,y=(gy+.5)*cs-cy;if(x<-cs||x>W+cs||y<-cs||y>H+cs)continue;const d=Math.hypot(x-(P[0]-cx),y-(P[1]-cy)),glow=Math.max(0,1-d/(cs*14));
-   const blueT=document.documentElement.dataset.tone==='blue';c.globalAlpha=(blueT?.55:.32)+glow*.45;c.fillStyle=glow>.15?'#FFF1C1':blueT?'#E9CD86':'#B8944A';c.beginPath();c.arc(x,y,rr*(1+glow*.5),0,6.283);c.fill()}c.globalAlpha=1;
-  /* route: whole path faint and dashed, travelled path bright with a glow */
-  c.setLineDash([4,6]);c.strokeStyle='rgba(212,175,97,.45)';c.lineWidth=1.5;c.beginPath();for(const L of this.legs){c.moveTo(L.a[0]-cx,L.a[1]-cy);c.quadraticCurveTo(L.c[0]-cx,L.c[1]-cy,L.b[0]-cx,L.b[1]-cy)}c.stroke();c.setLineDash([]);
-  c.strokeStyle='#F3DFA2';c.lineWidth=2.6;c.shadowColor='rgba(243,223,162,.9)';c.shadowBlur=12;c.beginPath();
-  for(let k=0;k<=w.k;k++){const L=this.legs[k],tt=k<w.k?1:w.t,steps=40;c.moveTo(L.a[0]-cx,L.a[1]-cy);for(let i=1;i<=steps*tt;i++){const q=this.bez(L,i/steps);c.lineTo(q[0]-cx,q[1]-cy)}if(k===w.k){c.lineTo(P[0]-cx,P[1]-cy)}}c.stroke();c.shadowBlur=0;
+  const blue=document.documentElement.dataset.tone==='blue';if(!this.layer||this.layerTone!==blue)this.buildLayer();const G=this.G,cs=this.cell,still=RMQ.matches,px=P[0]-cx,py=P[1]-cy;
+  /* ocean: fine graticule with gold tick marks */
+  c.lineWidth=1;c.strokeStyle=blue?'rgba(244,244,246,.10)':'rgba(212,175,97,.09)';c.setLineDash([2,6]);c.beginPath();
+  for(let lon=-180;lon<=180;lon+=15){const x=(lon+180)/360*this.mapW-cx;if(x<-2||x>W+2)continue;c.moveTo(x,0);c.lineTo(x,H)}
+  for(let lat=-60;lat<=75;lat+=15){const y=(G.lat0-lat)/(G.lat0-G.lat1)*this.mapH-cy;if(y<-2||y>H+2)continue;c.moveTo(0,y);c.lineTo(W,y)}c.stroke();c.setLineDash([]);
+  const eq=(G.lat0)/(G.lat0-G.lat1)*this.mapH-cy;c.strokeStyle=blue?'rgba(243,223,162,.28)':'rgba(212,175,97,.22)';c.beginPath();c.moveTo(0,eq);c.lineTo(W,eq);c.stroke();
+  /* land, then a warm spotlight that follows the plane and a slow shimmer across the continents */
+  c.drawImage(this.layer,-cx,-cy,this.mapW,this.mapH);
+  c.save();c.globalCompositeOperation='lighter';
+  const sp=c.createRadialGradient(px,py,0,px,py,cs*26);sp.addColorStop(0,'rgba(255,241,193,.20)');sp.addColorStop(1,'rgba(255,241,193,0)');c.fillStyle=sp;c.fillRect(px-cs*26,py-cs*26,cs*52,cs*52);
+  c.beginPath();c.arc(px,py,cs*18,0,6.283);c.clip();c.globalAlpha=.55;c.drawImage(this.layer,-cx,-cy,this.mapW,this.mapH);c.restore();
+  if(!still){const band=((time/9000)%1)*(W+H*.8)-H*.4;c.save();c.globalCompositeOperation='lighter';c.beginPath();c.moveTo(band,0);c.lineTo(band+90,0);c.lineTo(band+90-H*.4,H);c.lineTo(band-H*.4,H);c.closePath();c.clip();c.globalAlpha=.35;c.drawImage(this.layer,-cx,-cy,this.mapW,this.mapH);c.restore()}
+  /* route: the whole voyage as marching gold dashes */
+  c.setLineDash([2,7]);c.lineDashOffset=still?0:-(time/60)%9;c.lineCap='round';c.strokeStyle=blue?'rgba(255,241,193,.55)':'rgba(212,175,97,.5)';c.lineWidth=1.6;c.beginPath();for(const L of this.legs){c.moveTo(L.a[0]-cx,L.a[1]-cy);c.quadraticCurveTo(L.c[0]-cx,L.c[1]-cy,L.b[0]-cx,L.b[1]-cy)}c.stroke();c.setLineDash([]);
+  /* travelled path: a wide soft glow under a crisp gold line */
+  const trace=()=>{c.beginPath();for(let k=0;k<=w.k;k++){const L=this.legs[k],tt=k<w.k?1:w.t,steps=48;c.moveTo(L.a[0]-cx,L.a[1]-cy);for(let i=1;i<=steps*tt;i++){const q=this.bez(L,i/steps);c.lineTo(q[0]-cx,q[1]-cy)}if(k===w.k)c.lineTo(px,py)}};
+  c.strokeStyle='rgba(243,223,162,.18)';c.lineWidth=10;trace();c.stroke();
+  const grad=c.createLinearGradient(0,0,W,H);grad.addColorStop(0,'#D4AF61');grad.addColorStop(.5,'#FFF1C1');grad.addColorStop(1,'#E9CD86');
+  c.strokeStyle=grad;c.lineWidth=2.4;c.shadowColor='rgba(255,241,193,.9)';c.shadowBlur=10;trace();c.stroke();c.shadowBlur=0;
+  /* sparkling trail behind the plane */
+  if(w.t>0&&w.t<1&&!still){const L=this.legs[w.k];for(let i=1;i<=14;i++){const tt=Math.max(0,w.t-i*.012),q=this.bez(L,tt),a=1-i/14,j=Math.sin(time/120+i*1.7)*1.6;c.globalAlpha=a*.9;c.fillStyle='#FFF1C1';c.beginPath();c.arc(q[0]-cx+j,q[1]-cy-j,.6+a*2.2,0,6.283);c.fill()}c.globalAlpha=1}
   /* markers, plane, postcard */
   const reached=Math.round(this.s);this.mk.forEach((m,i)=>{const q=this.pts[i];m.style.transform=`translate(${(q[0]-cx).toFixed(1)}px,${(q[1]-cy).toFixed(1)}px)`;m.classList.toggle('on',i<=Math.floor(this.s+.2));m.classList.toggle('cur',i===reached)});
   const ang=Math.atan2(w.tan[1]-w.prev[1],w.tan[0]-w.prev[0])*180/Math.PI+90;this.planeEl.style.transform=`translate(${(P[0]-cx).toFixed(1)}px,${(P[1]-cy).toFixed(1)}px) rotate(${(w.t>0&&w.t<1?ang:this.lastAng||90).toFixed(1)}deg)`;if(w.t>0&&w.t<1)this.lastAng=ang;
