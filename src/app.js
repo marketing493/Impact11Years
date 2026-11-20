@@ -79,7 +79,7 @@ function vHome(){const nx=upcoming()[0],st=nx&&statusOf(nx),modeBtn=(m,label,i)=
  ${venueBand()}
  ${remindBand()}`}
 
-function venueBand(){return `<section class="band inkfield venue" id="venue" data-acc style="--acc:${ACC.yellow}">${sprinkle(37,14)}${floaters([['line',6,10,40,.6],['sky',46,6,10,1],['glass',92,12,52,.8],['cells',40,92,22,1.1],['hot',96,70,8,1.2]])}<div class="wrap venue-grid" style="position:relative;z-index:2">
+function venueBand(){return `<section class="band inkfield venue" id="venue" data-acc style="--acc:${ACC.yellow}">${S.skin==='royal'?royalDrapes():''}${sprinkle(37,14)}${floaters([['line',6,10,40,.6],['sky',46,6,10,1],['glass',92,12,52,.8],['cells',40,92,22,1.1],['hot',96,70,8,1.2]])}<div class="wrap venue-grid" style="position:relative;z-index:2">
  <div class="col" style="gap:20px" data-rv><p class="eyebrow" style="opacity:.7">The venue</p><h2>Hilton Embassy <em>Tech Village</em></h2><p style="opacity:.8;font-size:18px">${EVENT.area}. One venue, four spaces, eleven hours together.</p>
  <div class="facts"><div class="glass"><span>Date</span><b>17 Dec</b></div><div class="glass"><span>Doors open</span><b class="tn">9:00 AM</b></div><div class="glass"><span>First session</span><b class="tn">10:00 AM</b></div><div class="glass"><span>Shuttles</span><b>Every 20 min</b></div></div>
  <div class="zones" role="group" aria-label="Venue spaces">${ZONES.map(z=>`<button data-act="zone" data-arg="${esc(z.id)}" aria-pressed="${S.zone===z.id}"><i style="background:${z.top}"></i>${esc(z.id)}</button>`).join('')}</div>
@@ -109,7 +109,7 @@ const SUBS=[['about','About'],['journey','Journey'],['schedule','Schedule'],['ve
 function vEvent(){const s=S.sub,body={about:eAbout,journey:eJourney,schedule:eSchedule,venue:eVenue,activities:eActivities,faqs:eFaq}[s]();
  const title={about:'Eleven years, <em>one</em> team',journey:'The <em>journey</em>',schedule:'The <em>schedule</em>',venue:'The <em>venue</em>',activities:'The <em>activities</em>',faqs:'Frequently Asked Questions'}[s];
  const acc=ACC[{about:'yellow',journey:'purple',schedule:'green',venue:'yellow',activities:'purple',faqs:'green'}[s]];
- return `<section class="ehead bluefield ${s==='faqs'?'small':''}" data-acc style="--acc:${acc}">${sprinkle(50+s.length,12)}${floaters([['glass',78,18,70,.8],['line',90,64,34,1.1],['sky',66,70,12,1.3],['cells',58,22,24,.9],['hot',96,30,9,1.4]])}<div class="wrap"><p class="eyebrow" style="opacity:.85">${EVENT.name}, ${EVENT.dateLong}</p><h1 style="margin-top:10px">${title}</h1>
+ return `<section class="ehead bluefield ${s==='faqs'?'small':''}" data-acc style="--acc:${acc}">${S.skin==='royal'?royalDrapes(false):''}${sprinkle(50+s.length,12)}${floaters([['glass',78,18,70,.8],['line',90,64,34,1.1],['sky',66,70,12,1.3],['cells',58,22,24,.9],['hot',96,30,9,1.4]])}<div class="wrap"><p class="eyebrow" style="opacity:.85">${EVENT.name}, ${EVENT.dateLong}</p><h1 style="margin-top:10px">${title}</h1>
  ${subnav(s)}</div></section>${body}`}
 function eJourney(){return journeySection()+`<section class="band tight"><div class="wrap row wrapx"><p class="muted grow" style="max-width:60ch">Sample milestones for this version. The team replaces them with the official story.</p><a class="btn sec" href="#event-schedule">${ic('calendar',18)} See the schedule</a></div></section>`}
 function eActivities(){const by=CATEGORIES.map(c=>[c,S.acts.filter(a=>a.category===c[0])]).filter(x=>x[1].length);

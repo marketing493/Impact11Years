@@ -18,11 +18,12 @@ BUILD = {'commit': git_sha(), 'branch': os.environ.get('VERCEL_GIT_COMMIT_REF', 
 
 defaults = (R / 'api/_defaults.js').read_text()
 defaults = json.loads(re.sub(r'^\s*export default\s*', '', defaults).rstrip().rstrip(';'))
-css = (R / 'src/styles.css').read_text()
-js = '\n'.join((R / f'src/{n}.js').read_text() for n in ['data', 'grid', 'fx', 'audio', 'story', 'app', 'pages', 'pwa', 'admin', 'main'])
+css = (R / 'src/styles.css').read_text() + (R / 'src/royal.css').read_text()
+js = '\n'.join((R / f'src/{n}.js').read_text() for n in ['data', 'grid', 'fx', 'audio', 'story', 'app', 'pages', 'royal-data', 'royal', 'pwa', 'admin', 'main'])
 js = (js.replace('__LOGO_H__', b64('assets/Logo.png'))
         .replace('__ICON__', b64('assets/icons/icon-192.png'))
-        .replace('__DEFAULTS__', json.dumps(defaults, ensure_ascii=False)))
+        .replace('__DEFAULTS__', json.dumps(defaults, ensure_ascii=False))
+        .replace('__WORLD__', (R / 'assets/world-dots.json').read_text().strip()))
 
 nav = [('home', 'Home', 'home'), ('event-about', 'The event', 'calendar'), ('event-schedule', 'Schedule', 'clock'), ('event-venue', 'Venue', 'pin')]
 ICONS = {'home': 'M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10', 'calendar': 'M4 6h16v14H4zM4 10h16M8 3v4M16 3v4',
@@ -43,12 +44,14 @@ head = f'''<title>Impact Events</title>
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=Spectral:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter+Tight:wght@400;500;600&family=Spectral:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
 <style>
 {css}</style>'''
+CROWN = '<svg width="14" height="14" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round" aria-hidden="true"><path d="M10 46l-4-24 14 12 12-20 12 20 14-12-4 24z"/></svg>'
 body = f'''<header class="top"><div class="wrap">
  <a href="#home" aria-label="Impact Events home"><img class="logo adapt" src="{b64('assets/Logo.png')}" alt="Impact Analytics" width="200" height="66"></a>
  <nav aria-label="Main">{''.join(f'<a href="#{k}" data-nav="{k}">{l}</a>' for k, l, _ in nav)}</nav>
+ <button class="skin-toggle" data-act="skin" aria-pressed="false" aria-label="Switch to the Royal theme"><span class="sk-l">Modern</span><span class="sk-track"><span class="sk-knob">{CROWN}</span></span><span class="sk-r">Royal</span></button>
  <a class="btn sec sm bell" href="#reminders">{svg('bell', 18)}<span class="reminder-label">Reminders</span><span class="dot"></span></a>
 </div></header>
 <canvas id="ambient" aria-hidden="true"></canvas>
@@ -56,6 +59,7 @@ body = f'''<header class="top"><div class="wrap">
 <footer><div class="wrap"><img class="logo adapt" src="{b64('assets/Logo.png')}" alt="Impact Analytics" width="200" height="66"><p class="sm muted">11 Years of Impact. 17 December 2026, Hilton Embassy Tech Village, Bangalore.</p><span class="xs muted" title="Build {BUILD['built']}">Version {BUILD['commit']}</span><a class="btn ghost sm" href="#admin">Organizer login</a></div></footer>
 <nav class="tabbar" aria-label="Main">{''.join(f'<a href="#{k}" data-nav="{k}">{svg(i)}{l}</a>' for k, l, i in nav)}</nav>
 <div id="toast" role="status" aria-live="polite"></div>
+<div class="curtain" aria-hidden="true"><i class="cl"></i><i class="cr"></i><span class="c-val"></span><span class="c-seal">11</span></div>
 <script>
 {js}
 </script>'''

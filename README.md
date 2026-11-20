@@ -9,6 +9,21 @@ An installable web app for the Impact Analytics 11th anniversary (17 December 20
 - **Organizer dashboard** at `/#admin`. Add, edit and delete activities and their timings. Changes reach every employee within a minute.
 - **Install and reminders.** People pin the app to their home screen on Android or iOS and turn on reminders. Each phone gets a notification 10 minutes before every session.
 
+## Two designs
+
+A switch in the header flips between **Modern** (the IA brand system) and **Royal**, built on the event theme "11th Anniversary · Around the World in 11 Years". Velvet curtains close and open on the switch, and the choice is remembered on each device.
+
+Royal uses royal navy, gilded gold and ivory with Cinzel capitals. Its home page has:
+
+- **The Grand Arch:** walk through it as you scroll, with turning compass roses, drifting balloons, spotlights, a chandelier, a gold carpet with stanchions and a gold flip countdown.
+- **A wax-sealed invitation** that opens on tap.
+- **The voyage:** a gold plane flies a dotted world map (Natural Earth land data) and stops at a postcard for each milestone.
+- **A split-flap departures board** for the programme.
+- **World's Fair pavilion tents** whose curtains open on each category.
+- **The venue as a grand ballroom.**
+
+Every other page is restyled in the Royal theme too.
+
 ## Deploy on Vercel
 
 ### 1. Import the repo

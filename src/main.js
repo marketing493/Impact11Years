@@ -7,12 +7,13 @@ function parseHash(){const h=location.hash.slice(1);
  S.route='home';return null}
 function render(){
  if(GRID_I){GRID_I.destroy();GRID_I=null}
- $('#app').innerHTML=S.route==='event'?vEvent():S.route==='admin'?vAdmin():vHome();
+ $('#app').innerHTML=S.route==='event'?vEvent():S.route==='admin'?vAdmin():S.skin==='royal'?vRoyalHome():vHome();
  const nav=S.route==='home'?'home':S.route==='admin'?'admin':'event-'+S.sub;
  $$('[data-nav]').forEach(a=>{const k=a.dataset.nav;a.toggleAttribute('aria-current',false);if(k===nav||(k==='event-about'&&S.route==='event'&&!['schedule','venue'].includes(S.sub)))a.setAttribute('aria-current','page')});
  $$('.bell .dot').forEach(d=>d.hidden=S.pwa.on&&('Notification' in window)&&Notification.permission==='granted');
  const cv=$('#igrid');if(cv)GRID_I=new ImpactGrid(cv,{mode:S.gridMode,target:Date.parse(EVENT.starts),onTick:srCountdown});
- mountScenes();mountStory();mountFx();mountSubnav();mountCounters();mountExplore();ticks();
+ mountScenes();mountStory();mountFx();mountSubnav();mountCounters();mountExplore();mountRoyal();ticks();
+ $$('[data-act="skin"]').forEach(b=>{b.setAttribute('aria-pressed',S.skin==='royal');b.setAttribute('aria-label',S.skin==='royal'?'Switch to the Modern theme':'Switch to the Royal theme')});
  if(S.pendingScroll){const id=S.pendingScroll;S.pendingScroll=null;setTimeout(()=>{const el=document.getElementById('act-'+id);el&&el.scrollIntoView({behavior:'smooth',block:'center'})},120)}}
 function srCountdown(diff){const el=$('#cd-sr');if(!el)return;const d=Math.floor(diff/864e5),h=Math.floor(diff%864e5/36e5),m=Math.floor(diff%36e5/6e4);el.textContent=diff>0?`${d} days, ${h} hours and ${m} minutes until ${EVENT.name}`:`${EVENT.name} is here`}
 function ticks(){$$('[data-rel]').forEach(el=>el.textContent=rel(+el.dataset.rel));tickRibbons()}
@@ -63,6 +64,7 @@ const ACT={
  async aReset(){await saveActs(DEFAULT_ACTIVITIES.map(a=>({...a})),'Default schedule restored.');return false},
  aTest(){adminTest();return false},
  aOut(){A_.authed=false;A_.key='';try{sessionStorage.removeItem('ia11-admin')}catch(e){}toast('Signed out.')}};
+Object.assign(ACT,ROYAL_ACT);
 document.addEventListener('click',e=>{const el=e.target.closest('[data-act]');if(!el||el.disabled)return;const f=ACT[el.dataset.act];if(!f)return;const r=f(el.dataset.arg,el,e);if(r===false||r instanceof Promise)return;render()});
 document.addEventListener('submit',async e=>{const f=e.target.closest('[data-form]');if(!f)return;e.preventDefault();
  if(f.dataset.form==='login'){const k=$('#l-key').value;const ok=await adminLogin(k);if(!ok){$('#l-err').textContent='That password did not work. Try again.';return}toast('Signed in.');render()}
