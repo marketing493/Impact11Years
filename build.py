@@ -51,13 +51,11 @@ LOGO11 = (R / 'assets/logo-11-years.svg').read_text().replace('<svg ', '<svg cla
 CROWN = '<svg width="14" height="14" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round" aria-hidden="true"><path d="M10 46l-4-24 14 12 12-20 12 20 14-12-4 24z"/></svg>'
 body = f'''<header class="top"><div class="wrap">
  <a href="#home" aria-label="Impact Events home">{LOGO11}</a>
- <nav aria-label="Main">{''.join(f'<a href="#{k}" data-nav="{k}">{l}</a>' for k, l, _ in nav)}</nav>
  <a class="btn sec sm bell" href="#reminders">{svg('bell', 18)}<span class="reminder-label">Reminders</span><span class="dot"></span></a>
 </div></header>
 <canvas id="ambient" aria-hidden="true"></canvas>
 <main id="app"></main>
 <footer><div class="wrap">{LOGO11}<p class="sm muted">11 Years of Impact. 17 December 2026, Hilton Embassy Tech Village, Bangalore.</p><span class="xs muted" title="Build {BUILD['built']}">Version {BUILD['commit']}</span><a class="btn ghost sm" href="#admin">Organizer login</a></div></footer>
-<nav class="tabbar" aria-label="Main">{''.join(f'<a href="#{k}" data-nav="{k}">{svg(i)}{l}</a>' for k, l, i in nav)}</nav>
 <button class="totop" id="totop" aria-label="Back to the top" hidden><svg class="tt-ring" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21" class="tt-track"/><circle cx="24" cy="24" r="21" class="tt-prog" pathLength="1" transform="rotate(-90 24 24)"/></svg><svg class="tt-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
 <div id="toast" role="status" aria-live="polite"></div>
 <div class="curtain" aria-hidden="true"><i class="cl"></i><i class="cr"></i><span class="c-val"></span><span class="c-seal">11</span></div>

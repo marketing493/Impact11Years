@@ -524,3 +524,7 @@ a.brow:hover{background:rgba(212,175,97,.07)}
 .logo11{display:block;width:200px;height:auto;filter:drop-shadow(0 1px 0 rgba(0,0,0,.35))}
 .top .logo11{width:clamp(170px,15vw,210px)}
 footer .logo11{width:200px}
+
+/* no tab bar: the logo links home, and the header keeps only the reminders button */
+.top .bell{margin-left:auto}
+@media (max-width:820px){main{padding-bottom:0}.totop{bottom:calc(20px + env(safe-area-inset-bottom,0px))}#toast{bottom:calc(24px + env(safe-area-inset-bottom,0px))}.ra-cue{bottom:calc(22px + env(safe-area-inset-bottom,0px))}.rh-grid{padding-bottom:calc(48px + env(safe-area-inset-bottom,0px))}}
