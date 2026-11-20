@@ -22,7 +22,7 @@ function rHero(){return `<section class="r-hero" id="arch"><div class="rh-pin"><
    <div class="rh-count" role="timer" aria-label="Countdown to the celebration"><svg class="constel" viewBox="0 0 100 20" preserveAspectRatio="none" aria-hidden="true"><path d="M12.5 10 Q25 2 37.5 10 T62.5 10 T87.5 10"/></svg>${rhUnit('d','Days')}${rhUnit('h','Hours')}${rhUnit('m','Minutes')}${rhUnit('s','Seconds')}</div>
    <div class="ctas"><a class="btn" href="#invite">${ic('star',18)} Open your invitation</a><a class="btn sec" href="#voyage">Begin the voyage</a></div>
   </div>
-  <div class="rh-orb"><canvas class="globe" aria-label="A turning gold globe tracing the voyage routes" role="img"></canvas>
+  <div class="rh-orb"><canvas class="globe" aria-label="A turning gold globe tracing the voyage routes. Drag it in any direction to spin it." role="img"></canvas><span class="globe-hit" aria-hidden="true"></span>
    <div class="medal" aria-hidden="true"><svg viewBox="0 0 200 200"><defs><path id="medalPath" d="M100 100m-74 0a74 74 0 1 1 148 0a74 74 0 1 1-148 0"/></defs>
     <circle cx="100" cy="100" r="96" fill="url(#gGold)"/><circle cx="100" cy="100" r="88" fill="#0A1744"/><circle cx="100" cy="100" r="86" fill="none" stroke="#D4AF61" stroke-width="1"/><circle cx="100" cy="100" r="60" fill="none" stroke="#D4AF61" stroke-width="1.2"/>
     <g class="medal-ring"><text font-family="Cinzel,Georgia,serif" font-size="12" font-weight="700" fill="#F3DFA2"><textPath href="#medalPath" textLength="458" lengthAdjust="spacing">IMPACT ANALYTICS ◆ MMXV TO MMXXVI ◆</textPath></text></g>
@@ -35,11 +35,13 @@ class Hero{constructor(sec){this.sec=sec;this.pin=sec.querySelector('.rh-pin');t
   /* land points as lon/lat, sampled from the dot mask */
   this.land=[];WORLD.rows.forEach((row,y)=>{for(let i=0;i<row.length;i++){const v=parseInt(row[i],16);for(let b=0;b<4;b++)if(v&(8>>b)){const gx=i*4+b;this.land.push([(-180+(gx+.5)*360/WORLD.W)*Math.PI/180,(WORLD.lat0-(y+.5)*(WORLD.lat0-WORLD.lat1)/WORLD.H)*Math.PI/180])}}});
   this.stops=STOPS.map(s=>[s.lon*Math.PI/180,s.lat*Math.PI/180]);
-  this.rot=-1.25;this.vel=0;this.drag=null;this.tilt=-.38;
+  this.rot=-1.25;this.vel=0;this.tvel=0;this.drag=null;this.tilt=-.38;this.idle=0;this.hit=sec.querySelector('.globe-hit');
   this.resize();this.onResize=()=>this.resize();addEventListener('resize',this.onResize);this.onScroll=()=>this.update();addEventListener('scroll',this.onScroll,{passive:true});
-  this.gcv.addEventListener('pointerdown',e=>{this.drag={x:e.clientX,r:this.rot};this.gcv.setPointerCapture(e.pointerId);this.gcv.classList.add('dragging')});
-  this.gcv.addEventListener('pointermove',e=>{if(!this.drag)return;const nr=this.drag.r+(e.clientX-this.drag.x)*.008;this.vel=nr-this.rot;this.rot=nr});
-  const end=()=>{this.drag=null;this.gcv.classList.remove('dragging')};this.gcv.addEventListener('pointerup',end);this.gcv.addEventListener('pointercancel',end);
+  /* drag in any direction: sideways spins the globe, up and down tips it over the poles */
+  const H_=this.hit;
+  H_.addEventListener('pointerdown',e=>{this.drag={x:e.clientX,y:e.clientY,r:this.rot,t:this.tilt};try{H_.setPointerCapture(e.pointerId)}catch(_){}H_.classList.add('dragging');e.preventDefault()});
+  H_.addEventListener('pointermove',e=>{if(!this.drag)return;const nr=this.drag.r+(e.clientX-this.drag.x)*.008,nt=this.drag.t-(e.clientY-this.drag.y)*.008;this.vel=nr-this.rot;this.tvel=nt-this.tilt;this.rot=nr;this.tilt=nt});
+  const end=()=>{if(!this.drag)return;this.drag=null;this.idle=performance.now();H_.classList.remove('dragging')};H_.addEventListener('pointerup',end);H_.addEventListener('pointercancel',end);
   this.update();this.loop=this.loop.bind(this);requestAnimationFrame(this.loop)}
  stop(){this.alive=false;removeEventListener('resize',this.onResize);removeEventListener('scroll',this.onScroll)}
  resize(){const d=Math.min(2,devicePixelRatio||1);
@@ -51,7 +53,9 @@ class Hero{constructor(sec){this.sec=sec;this.pin=sec.querySelector('.rh-pin');t
  proj(lon,lat,R,cx,cy,lift=1){const l=lon+this.rot,x=Math.cos(lat)*Math.sin(l),y=Math.sin(lat),z=Math.cos(lat)*Math.cos(l),ct=Math.cos(this.tilt),st=Math.sin(this.tilt);
   return [cx+x*R*lift,cy-(y*ct-z*st)*R*lift,y*st+z*ct]}
  loop(t){if(!this.alive)return;requestAnimationFrame(this.loop);if(!this.vis||document.hidden)return;const still=RMQ.matches;
-  if(!this.drag){this.vel*=.94;this.rot+=still?0:.0016+this.vel}
+  if(!this.drag){this.vel*=.94;this.tvel*=.92;this.rot+=still?0:.0016+this.vel;this.tilt+=this.tvel;
+   /* after a few seconds of rest the globe settles back to its usual angle */
+   if(!still&&performance.now()-this.idle>2500)this.tilt+=((-.38)-this.tilt)*.015}
   /* gold dust and bokeh */
   const c=this.dc,W=this.W,H=this.H;c.clearRect(0,0,W,H);
   for(const m of this.motes){const y=still?m.y:((m.y-t*.012*m.v*m.z)%H+H)%H,x=m.x+(still?0:Math.sin(t/2600*m.v+m.ph)*14*m.z),tw=.35+.65*Math.abs(Math.sin(t/1400*m.v+m.ph));
@@ -60,7 +64,7 @@ class Hero{constructor(sec){this.sec=sec;this.pin=sec.querySelector('.rh-pin');t
    if(m.g){c.globalAlpha=tw*.7;c.fillRect(x-s*4,y-.35,s*8,.7);c.fillRect(x-.35,y-s*4,.7,s*8)}}
   c.globalAlpha=1;
   /* the globe */
-  const g=this.gc,GW=this.GW,GH=this.GH,cx=GW/2,cy=GH/2,R=Math.min(GW,GH)*.36;g.clearRect(0,0,GW,GH);
+  const g=this.gc,GW=this.GW,GH=this.GH,cx=GW/2,cy=GH/2,R=Math.min(GW*.44,GH*.43);if(this.hit&&this.hitR!==R){this.hitR=R;/* on touch screens the outer ring of the globe still scrolls the page */const k=matchMedia('(pointer: coarse)').matches?1.5:2.1;this.hit.style.width=this.hit.style.height=(R*k)+'px'}g.clearRect(0,0,GW,GH);
   const halo=g.createRadialGradient(cx,cy,R*.6,cx,cy,R*1.55);halo.addColorStop(0,'rgba(243,223,162,.16)');halo.addColorStop(.45,'rgba(212,175,97,.07)');halo.addColorStop(1,'rgba(212,175,97,0)');g.fillStyle=halo;g.beginPath();g.arc(cx,cy,R*1.55,0,6.283);g.fill();
   const body=g.createRadialGradient(cx-R*.35,cy-R*.4,R*.1,cx,cy,R);body.addColorStop(0,'#1E3FAE');body.addColorStop(.7,'#0B1A52');body.addColorStop(1,'#060D2C');g.fillStyle=body;g.beginPath();g.arc(cx,cy,R,0,6.283);g.fill();
   /* graticule */
