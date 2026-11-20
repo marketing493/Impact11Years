@@ -83,7 +83,9 @@ class Voyage{
   const G=this.G=(typeof WORLD_HD!=='undefined'?WORLD_HD:WORLD),bits=G.rows.map(row=>{const a=new Uint8Array(G.W);for(let i=0;i<row.length;i++){const v=parseInt(row[i],16);for(let b=0;b<4;b++)if(v&(8>>b))a[i*4+b]=1}return a});
   this.land=[];for(let y=0;y<G.H;y++)for(let x=0;x<G.W;x++)if(bits[y][x]){let n=0;for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const yy=y+dy,xx=(x+dx+G.W)%G.W;if(yy>=0&&yy<G.H&&bits[yy][xx])n++}this.land.push([x,y,n<9])}
   this.marks.innerHTML=STOPS.map((s,i)=>`<span class="vm" data-i="${i}"><span class="vm-lm">${lmSvg(s.lm,i===this.n-1?54:44,1.5)}</span><i></i><b class="tn">${JOURNEY[i]?JOURNEY[i][0]:''}</b></span>`).join('');this.mk=[...this.marks.children];
-  sec.style.height=(this.n*80+100)+'vh';this.resize();this.onResize=()=>this.resize();addEventListener('resize',this.onResize);this.onScroll=()=>this.update();addEventListener('scroll',this.onScroll,{passive:true});
+  sec.style.height=(this.n*80+100)+'vh';this.resize();this.onResize=()=>{if(this.pin.clientWidth===this.W&&Math.abs(this.pin.clientHeight-this.H)<180)return;this.resize()};addEventListener('resize',this.onResize);this.onScroll=()=>this.update();addEventListener('scroll',this.onScroll,{passive:true});
+  /* draw the map layer while the browser is idle, so the first scroll into the voyage does not stutter */
+  (window.requestIdleCallback||(f=>setTimeout(f,400)))(()=>{if(this.alive&&!this.layer)this.buildLayer()});
   this.sbtn=sec.querySelector('[data-sound]');if(this.sbtn){if(!SCORE.supported)this.sbtn.hidden=true;const paint=(on,blocked)=>{this.sbtn.setAttribute('aria-pressed',on);this.sbtn.querySelector('.lbl').textContent=on?(blocked?'Tap for sound':'Sound on'):'Play the score';this.sbtn.classList.toggle('wait',!!(on&&blocked))};paint(SCORE.on,SCORE.blocked);this.unsub=SCORE.onChange(paint);this.sbtn.addEventListener('click',e=>{e.stopPropagation();SCORE.toggle()})}
   this.update();this.loop=this.loop.bind(this);requestAnimationFrame(this.loop)}
  stop(){this.alive=false;removeEventListener('resize',this.onResize);removeEventListener('scroll',this.onScroll);this.unsub&&this.unsub();SCORE.setVisible(false)}

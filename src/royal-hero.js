@@ -36,7 +36,7 @@ class Hero{constructor(sec){this.sec=sec;this.pin=sec.querySelector('.rh-pin');t
   this.land=[];WORLD.rows.forEach((row,y)=>{for(let i=0;i<row.length;i++){const v=parseInt(row[i],16);for(let b=0;b<4;b++)if(v&(8>>b)){const gx=i*4+b;this.land.push([(-180+(gx+.5)*360/WORLD.W)*Math.PI/180,(WORLD.lat0-(y+.5)*(WORLD.lat0-WORLD.lat1)/WORLD.H)*Math.PI/180])}}});
   this.stops=STOPS.map(s=>[s.lon*Math.PI/180,s.lat*Math.PI/180]);
   this.rot=-1.25;this.vel=0;this.tvel=0;this.drag=null;this.tilt=-.38;this.idle=0;this.hit=sec.querySelector('.globe-hit');
-  this.resize();this.onResize=()=>this.resize();addEventListener('resize',this.onResize);this.onScroll=()=>this.update();addEventListener('scroll',this.onScroll,{passive:true});
+  this.resize();this.onResize=()=>{if(this.pin.clientWidth===this.W&&Math.abs(this.pin.clientHeight-this.H)<180)return;this.resize()};addEventListener('resize',this.onResize);this.onScroll=()=>this.update();addEventListener('scroll',this.onScroll,{passive:true});
   /* drag in any direction: sideways spins the globe, up and down tips it over the poles */
   const H_=this.hit;
   H_.addEventListener('pointerdown',e=>{this.drag={x:e.clientX,y:e.clientY,r:this.rot,t:this.tilt};try{H_.setPointerCapture(e.pointerId)}catch(_){}H_.classList.add('dragging');e.preventDefault()});

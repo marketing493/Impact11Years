@@ -657,3 +657,18 @@ footer .logo11{width:200px}
 [data-tone="blue"] .vy-vig{background:radial-gradient(ellipse 75% 70% at 50% 52%,transparent 55%,rgba(28,27,27,.28) 100%)}
 .vy-rose{position:absolute;z-index:1;right:max(24px,calc((100vw - var(--max))/2));bottom:16vh;width:clamp(120px,13vw,190px);height:auto;opacity:.32;transform:rotate(calc(var(--vp,0) * 300deg));transition:transform .4s linear;pointer-events:none}
 @media (max-width:820px){.vy-rose{display:none}}
+
+/* ---------- mobile polish ---------- */
+html,body{overscroll-behavior-y:none}
+[id]{scroll-margin-top:calc(80px + env(safe-area-inset-top,0px))}
+@media (pointer:coarse){
+ .tone-toggle,.top .bell,.sound,.zones button,.viewbar button,footer .btn,.btn.sm{min-height:44px}
+ .top .bell{min-width:44px}
+ a,button{-webkit-tap-highlight-color:rgba(212,175,97,.18)}}
+/* small phones (320px to 380px): the header fits without pushing the page wider than the screen */
+@media (max-width:380px){
+ .top .wrap{gap:10px}
+ .top .logo11{width:clamp(132px,40vw,160px)}
+ .tone-toggle{padding:4px}
+ .top .tone-toggle+.bell{margin-left:6px}}
+html,body{max-width:100%;overflow-x:clip}

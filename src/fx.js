@@ -13,8 +13,8 @@ const root=document.documentElement;
 
 class Ambient{
  constructor(cv){this.cv=cv;this.ctx=cv.getContext('2d');this.acc=[179,201,247];this.accT=[179,201,247];this.mx=0;this.my=0;this.tx=0;this.ty=0;this.resize();
-  addEventListener('resize',()=>this.resize());this.loop=this.loop.bind(this);requestAnimationFrame(this.loop)}
- resize(){const d=Math.min(2,devicePixelRatio||1);this.w=innerWidth;this.h=innerHeight;this.cv.width=this.w*d;this.cv.height=this.h*d;this.ctx.setTransform(d,0,0,d,0,0);
+  addEventListener('resize',()=>{if(innerWidth===this.w&&Math.abs(innerHeight-this.vh)<180)return;this.resize()});this.loop=this.loop.bind(this);requestAnimationFrame(this.loop)}
+ resize(){const d=Math.min(2,devicePixelRatio||1);this.w=innerWidth;this.vh=innerHeight;this.h=Math.max(innerHeight,screen.height||0);this.cv.width=this.w*d;this.cv.height=this.h*d;this.ctx.setTransform(d,0,0,d,0,0);
   const n=Math.round(Math.min(46,Math.max(18,this.w*this.h/42000))),r=seededRand(17);
   const kinds=['glass','glass','glass','blue','sky','sky','outline','outline','cells','blue','plus','plus','acc','acc'];
   this.items=Array.from({length:n},(_,i)=>{const z=.25+r()*.85;return {x:r()*this.w,y:r()*this.h*1.4,z,s:(6+r()*46)*z,k:i%23===0?'hot':kinds[Math.floor(r()*kinds.length)],ph:r()*6.28,sp:.15+r()*.35,rot:r()*.6-.3,vr:(r()-.5)*.0016}})}
@@ -53,8 +53,9 @@ function floaters(items,extra=''){return `<div class="floaters ${extra}" aria-hi
 let fxTick=false,ptr={x:innerWidth/2,y:innerHeight/2};
 const TOTOP=document.getElementById('totop');
 if(TOTOP)TOTOP.addEventListener('click',()=>{scrollTo({top:0,behavior:RMQ.matches?'auto':'smooth'});TOTOP.blur()});
-function fxFrame(){fxTick=false;
+function fxFrame(){fxTick=false;const royal=root.dataset.skin==='royal';
  if(TOTOP){const max=document.documentElement.scrollHeight-innerHeight,inScene=innerWidth<=820&&['voyage','story'].some(id=>{const e=document.getElementById(id);if(!e)return false;const r=e.getBoundingClientRect();return r.top<=1&&r.bottom>=innerHeight-1}),show=scrollY>innerHeight*1.2&&!inScene;TOTOP.hidden=!show;TOTOP.style.setProperty('--tp',max>0?(scrollY/max).toFixed(3):0)}root.style.setProperty('--scroll',scrollY.toFixed(0));root.style.setProperty('--mx',((ptr.x/innerWidth)*2-1).toFixed(3));root.style.setProperty('--my',((ptr.y/innerHeight)*2-1).toFixed(3));
+ if(royal){if(window.AMB){AMB.tx=(ptr.x/innerWidth)*2-1;AMB.ty=(ptr.y/innerHeight)*2-1}return}
  if(window.AMB){AMB.tx=(ptr.x/innerWidth)*2-1;AMB.ty=(ptr.y/innerHeight)*2-1;
   const el=document.elementFromPoint(innerWidth/2,innerHeight/2),sec=el&&el.closest('[data-acc]');if(sec&&root.dataset.skin!=='royal'){const h=getComputedStyle(sec).getPropertyValue('--acc').trim();if(/^#[0-9a-f]{6}$/i.test(h))AMB.accT=hexRgb(h)}}
  STORY_I&&STORY_I.update();JOURNEY_I&&JOURNEY_I.update();
