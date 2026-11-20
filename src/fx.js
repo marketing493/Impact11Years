@@ -51,7 +51,10 @@ function floaters(items,extra=''){return `<div class="floaters ${extra}" aria-hi
 
 /* pointer and scroll variables, one rAF */
 let fxTick=false,ptr={x:innerWidth/2,y:innerHeight/2};
-function fxFrame(){fxTick=false;root.style.setProperty('--scroll',scrollY.toFixed(0));root.style.setProperty('--mx',((ptr.x/innerWidth)*2-1).toFixed(3));root.style.setProperty('--my',((ptr.y/innerHeight)*2-1).toFixed(3));
+const TOTOP=document.getElementById('totop');
+if(TOTOP)TOTOP.addEventListener('click',()=>{scrollTo({top:0,behavior:RMQ.matches?'auto':'smooth'});TOTOP.blur()});
+function fxFrame(){fxTick=false;
+ if(TOTOP){const max=document.documentElement.scrollHeight-innerHeight,inScene=innerWidth<=820&&['voyage','story'].some(id=>{const e=document.getElementById(id);if(!e)return false;const r=e.getBoundingClientRect();return r.top<=1&&r.bottom>=innerHeight-1}),show=scrollY>innerHeight*1.2&&!inScene;TOTOP.hidden=!show;TOTOP.style.setProperty('--tp',max>0?(scrollY/max).toFixed(3):0)}root.style.setProperty('--scroll',scrollY.toFixed(0));root.style.setProperty('--mx',((ptr.x/innerWidth)*2-1).toFixed(3));root.style.setProperty('--my',((ptr.y/innerHeight)*2-1).toFixed(3));
  if(window.AMB){AMB.tx=(ptr.x/innerWidth)*2-1;AMB.ty=(ptr.y/innerHeight)*2-1;
   const el=document.elementFromPoint(innerWidth/2,innerHeight/2),sec=el&&el.closest('[data-acc]');if(sec&&root.dataset.skin!=='royal'){const h=getComputedStyle(sec).getPropertyValue('--acc').trim();if(/^#[0-9a-f]{6}$/i.test(h))AMB.accT=hexRgb(h)}}
  STORY_I&&STORY_I.update();JOURNEY_I&&JOURNEY_I.update();
