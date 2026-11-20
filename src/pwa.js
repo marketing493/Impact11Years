@@ -39,7 +39,7 @@ async function remindersOn(){
 async function remindersOff(){S.pwa.on=false;store.set('ia11-reminders',false);clearLocal();
  try{const reg=SW||await navigator.serviceWorker?.getRegistration();const sub=reg&&await reg.pushManager.getSubscription();if(sub){await fetch('/api/subscribe',{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({subscription:sub})}).catch(()=>{});await sub.unsubscribe()}}catch(e){}
  toast('Reminders are off.');render()}
-async function showLocal(title,body,tag){try{const reg=SW||await navigator.serviceWorker?.getRegistration();if(reg){await reg.showNotification(title,{body,tag,icon:'/icons/icon-192.png',badge:'/icons/badge-96.png',data:{url:'/#event-schedule'}});return true}}catch(e){}
+async function showLocal(title,body,tag){try{const reg=SW||await navigator.serviceWorker?.getRegistration();if(reg){await reg.showNotification(title,{body,tag,icon:'/icons/icon-192.png',badge:'/icons/badge-96.png',data:{url:'/#departures'}});return true}}catch(e){}
  try{new Notification(title,{body,tag,icon:'/icons/icon-192.png'});return true}catch(e){return false}}
 async function testNotif(){if(notifyStatus()!=='ok'){toast(NOTIFY_HELP[notifyStatus()]);return}if(Notification.permission!=='granted'){toast('Turn on reminders first.');return}const ok=await showLocal('Starting in 10 minutes','This is how your reminders look.','test');if(!ok)toast('This browser blocked the test notification.')}
 

@@ -26,7 +26,7 @@ export default async function handler(req, res) {
       const payload = JSON.stringify({
         title: `Starting in ${mins} ${mins === 1 ? 'minute' : 'minutes'}`,
         body: `${a.title}, ${a.location} at ${a.start}`,
-        tag: `act-${a.id}`, url: '/#event-schedule',
+        tag: `act-${a.id}`, url: '/#departures',
       });
       const jobs = [];
       for (const { id, sub } of subs) {

@@ -1,7 +1,8 @@
 /* ---------- routing + render ---------- */
 let GRID_I=null;
 function parseHash(){const h=location.hash.slice(1);
- if(h.startsWith('event-')&&SUBS.some(s=>s[0]===h.slice(6))){S.route='event';S.sub=h.slice(6);return null}
+ /* the event pages are retired: old links land on the home page */
+ if(h.startsWith('event-')){S.route='home';try{history.replaceState(null,'','#')}catch(e){}return null}
  if(h==='admin'){S.route='admin';return null}
  if(h==='reminders'||h==='venue'){S.route='home';return h}
  S.route='home';return null}

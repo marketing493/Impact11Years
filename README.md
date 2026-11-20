@@ -4,10 +4,7 @@ An installable web app for the Impact Analytics 11th anniversary (17 December 20
 
 ## What it does
 
-- **Home.** An interactive Impact Grid hero with a pixel countdown to the event. Move across it for a glowing trail, tap it to send a ripple, switch to Message mode or Draw your own cells. Below it: the next session, a list of upcoming sessions, a 3D venue showcase and the reminders setup.
-- **The event.** About, Journey, Schedule, Venue, Activities and Frequently Asked Questions.
-- **Organizer dashboard** at `/#admin`. Add, edit and delete activities and their timings. Changes reach every employee within a minute.
-- **Install and reminders.** People pin the app to their home screen on Android or iOS and turn on reminders. Each phone gets a notification 10 minutes before every session.
+A single home page for the celebration: the gold globe entrance with a countdown, the monuments skyline, a wax-sealed invitation, the voyage around the world, a departures board with every session, the World's Fair pavilions, the venue and reminders. The organizer dashboard at `/#admin` edits the activities and timings. The earlier separate event pages (About, Journey, Schedule, Venue, Activities, FAQs) are retired; old links to them open the home page.
 
 ## Design
 

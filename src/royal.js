@@ -45,7 +45,7 @@ function vRoyalHome(){const up=upcoming();
 
  <section class="band r-dep" id="departures"><div class="wrap"><div class="shead"><div data-rv><p class="eyebrow gold-eb">Departures, 17 December</p><h2 class="r-h2">Now <em>boarding</em></h2></div><div class="dep-clock" data-rv style="--i:1"><span>Bangalore time</span><b class="tn" data-ist>--:--</b></div></div>
   <div class="board" data-rv data-board><div class="brow bh"><span>Time</span><span>Destination</span><span class="bg">Gate</span><span>Remarks</span></div><div class="brows"></div></div>
-  <div class="ctas" style="margin-top:22px"><a class="btn" href="#event-schedule">${ic('calendar',18)} Full programme</a><a class="btn sec" href="#reminders">${ic('bell',18)} Boarding call reminders</a></div></div></section>
+  <div class="ctas" style="margin-top:22px"><a class="btn sec" href="#reminders">${ic('bell',18)} Boarding call reminders</a></div></div></section>
 
  <section class="band r-fair" id="fair">${bunting()}<div class="wrap"><div class="shead"><div data-rv><p class="eyebrow gold-eb">The World's Fair</p><h2 class="r-h2">Pavilions of <em>play</em></h2></div><p class="muted" data-rv style="--i:1;max-width:38ch">Every pavilion hides its line-up. Tap a tent to draw back the curtains.</p></div>
   <div class="tents">${CATEGORIES.map(c=>[c,S.acts.filter(a=>a.category===c[0])]).filter(x=>x[1].length).map(([c,l],i)=>`<button class="tent" data-act="tent" data-arg="${i}" aria-expanded="false" data-rv style="--i:${i}"><span class="t-flag"></span><span class="t-roof"></span><span class="t-val"></span><span class="t-sign">${c[0]}</span><span class="t-body"><span class="t-list">${l.map(a=>`<span><b class="tn">${a.start}</b>${esc(a.title)}</span>`).join('')}</span><i class="t-cl"></i><i class="t-cr"></i><span class="t-count">${ic(c[1],18)}<b>${l.length}</b></span></span></button>`).join('')}</div></div></section>
@@ -109,7 +109,7 @@ class Voyage{
   this.pin.style.setProperty('--vp',(this.s/(this.n-1)).toFixed(4))}
  showCard(i){const s=STOPS[i],j=JOURNEY[i]||['','',''],last=i===this.n-1;this.card.classList.remove('in');this.card.offsetWidth;
   this.card.innerHTML=`<div class="pc-stamp">${lmSvg(s.lm,40,1.4)}<span>${j[0]}</span></div><div class="pc-mark"><span>IMPACT</span><b>${j[0]}</b><span>${String(i+1).padStart(2,'0')} / ${String(this.n).padStart(2,'0')}</span></div>
-  <p class="pc-eb">Stop ${i+1} of ${this.n}, ${esc(s.place)}</p><div class="pc-year tn">${j[0]}</div><h3>${esc(j[1])}</h3><p>${esc(j[2])}</p>${last?`<a class="btn" href="#event-schedule">${ic('calendar',16)} See the programme</a>`:''}<p class="pc-note">Sample milestones. The team adds the official story.</p>`;
+  <p class="pc-eb">Stop ${i+1} of ${this.n}, ${esc(s.place)}</p><div class="pc-year tn">${j[0]}</div><h3>${esc(j[1])}</h3><p>${esc(j[2])}</p>${last?``:''}<p class="pc-note">Sample milestones. The team adds the official story.</p>`;
   this.card.classList.add('in')}
 }
 
@@ -121,9 +121,9 @@ class Board{constructor(el){this.el=el;this.rows=el.querySelector('.brows');this
  stop(){this.alive=false;this.io.disconnect();clearInterval(this.iv);this.timers.forEach(clearTimeout)}
  cols(){const narrow=innerWidth<700;return {dest:narrow?14:26,gate:narrow?0:10,rem:narrow?8:9}}
  status(a){const n=Date.now(),s=startMs(a),e=endMs(a);if(n>=e)return ['DEPARTED','gone'];if(n>=s)return ['NOW','now'];if(s-n<=10*6e4)return ['BOARDING','board'];return ['ON TIME','ok']}
- build(first){const C=this.cols(),list=S.acts.filter(a=>endMs(a)>Date.now()-30*6e4).slice(0,8);
+ build(first){const C=this.cols(),list=S.acts.filter(a=>endMs(a)>Date.now()-30*6e4);
   const cell=(txt,w)=>{const t=txt.toUpperCase().replace(/[^A-Z0-9:\-.& ]/g,' ').padEnd(w).slice(0,w);return [...t].map(ch=>`<span class="fc" data-c="${ch}">${first&&!this.played?' ':ch}</span>`).join('')};
-  const html=list.map(a=>{const [st,cls]=this.status(a);return `<a class="brow ${cls}" href="#event-schedule" data-act="openAct" data-arg="${esc(a.id)}"><span>${cell(a.start,5)}</span><span>${cell(a.title,C.dest)}</span>${C.gate?`<span class="bg">${cell(a.location,C.gate)}</span>`:''}<span class="rem">${cell(st,C.rem)}</span></a>`}).join('')||`<div class="empty">All flights have departed. Thank you for travelling with us.</div>`;
+  const html=list.map(a=>{const [st,cls]=this.status(a);return `<div class="brow ${cls}"><span>${cell(a.start,5)}</span><span>${cell(a.title,C.dest)}</span>${C.gate?`<span class="bg">${cell(a.location,C.gate)}</span>`:''}<span class="rem">${cell(st,C.rem)}</span></div>`}).join('')||`<div class="empty">All flights have departed. Thank you for travelling with us.</div>`;
   if(first||!this.played){this.rows.innerHTML=html;return}
   /* later refreshes: only flip cells that changed */
   const tmp=document.createElement('div');tmp.innerHTML=html;const old=[...this.rows.querySelectorAll('.fc')],nu=[...tmp.querySelectorAll('.fc')];
