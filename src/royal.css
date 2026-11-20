@@ -519,3 +519,8 @@ a.brow:hover{background:rgba(212,175,97,.07)}
 @media (max-width:1100px){.rh-orb{height:min(56vh,460px);margin-top:0}}
 
 @media (min-width:1101px){.rh-grid{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr)}.rh-orb{width:calc(100% + min(12vw,220px));margin-right:calc(min(12vw,220px) * -1)}}
+
+/* "11 Years of Impact" logo in the header and footer */
+.logo11{display:block;width:200px;height:auto;filter:drop-shadow(0 1px 0 rgba(0,0,0,.35))}
+.top .logo11{width:clamp(170px,15vw,210px)}
+footer .logo11{width:200px}
