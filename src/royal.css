@@ -454,3 +454,6 @@ a.brow:hover{background:rgba(212,175,97,.07)}
 .rh-u b.tk{animation:tickR .6s var(--ease)}
 @media (prefers-reduced-motion:reduce){.d-arc,.d-orb{transition:none}.rh-u .dial,.d-star{animation:none!important}}
 .rh-u b{position:relative;z-index:2}.rh-u span{position:relative;z-index:2}
+[data-skin="royal"] .scrub span:not(:has(em)){color:color-mix(in srgb,#F7F1E3 calc(var(--w)*100%),#7480AD)}
+[data-skin="royal"] .scrub em{background:var(--goldgrad);background-size:220% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shimmer 6s linear infinite}
+[data-skin="royal"] .scrub::before{content:"XI";position:absolute;right:-.04em;top:50%;transform:translateY(-50%) translateX(calc((1 - var(--sp,1))*12%));font-family:var(--f-royal);font-weight:700;font-size:3.6em;line-height:1;color:transparent;-webkit-text-stroke:1px rgba(212,175,97,.16);pointer-events:none;z-index:-1}
