@@ -646,3 +646,8 @@ footer .logo11{width:200px}
 :root[data-tone="blue"] :is(.zones button,.zrow,.viewbar button)[aria-pressed="true"]{background:var(--goldgrad);color:#1C1B1B;border-color:#D4AF61}
 :root[data-tone="blue"] .pc-eb{letter-spacing:.08em;font-size:11px;max-width:calc(100% - 190px)}
 :root[data-tone="blue"] :is(.t-cl,.t-cr){background:repeating-linear-gradient(90deg,#264CD7 0 9px,#1C1B1B 9px 11px),#264CD7}
+/* Impact Blue sits first: knob on the left for Impact Blue, on the right for Midnight */
+.tone-toggle[aria-pressed="true"] .sk-knob{transform:none;background:#264CD7;color:#F3DFA2;box-shadow:0 0 0 1px #D4AF61}
+.tone-toggle[aria-pressed="false"] .sk-knob{transform:translateX(18px);background:var(--goldgrad);color:#0A1744}
+.tone-toggle[aria-pressed="true"] .sk-l,.tone-toggle[aria-pressed="false"] .sk-r{color:var(--gold-hi);font-family:var(--f-body);font-weight:500;letter-spacing:0}
+.tone-toggle[aria-pressed="false"] .sk-l,.tone-toggle[aria-pressed="true"] .sk-r{color:#C9CFEA;font-family:var(--f-body);font-weight:400;letter-spacing:0}

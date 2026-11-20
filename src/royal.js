@@ -11,7 +11,7 @@ function setSkin(next){if(next===S.skin)return;const cur=$('.curtain'),root=docu
  if(RMQ.matches||!cur){swap();return}
  cur.classList.add('closing');setTimeout(()=>{swap();setTimeout(()=>cur.classList.remove('closing'),280)},820)}
 /* two versions of the Royal design: Midnight (navy) and Impact Blue (#264CD7) */
-S.tone=store.get('ia11-tone','midnight');document.documentElement.dataset.tone=S.tone;
+S.tone=store.get('ia11-tone','blue');document.documentElement.dataset.tone=S.tone;
 function setTone(next){if(next===S.tone)return;const cur=$('.curtain'),root=document.documentElement;
  const swap=()=>{S.tone=next;root.dataset.tone=next;store.set('ia11-tone',next);syncTone()};
  if(RMQ.matches||!cur){swap();return}cur.classList.add('closing');setTimeout(()=>{swap();setTimeout(()=>cur.classList.remove('closing'),280)},820)}
