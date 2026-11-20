@@ -1,5 +1,7 @@
 /* ---------- Royal theme: views and controllers ---------- */
-S.skin=store.get('ia11-skin','modern');
+/* The Modern design is switched off for now: Royal is the only design. Set ROYAL_ONLY=false to bring the switch back. */
+const ROYAL_ONLY=true;
+S.skin=ROYAL_ONLY?'royal':store.get('ia11-skin','modern');
 document.body.insertAdjacentHTML('afterbegin',ROYAL_SPRITE);
 document.documentElement.dataset.skin=S.skin;
 
@@ -9,7 +11,7 @@ function setSkin(next){if(next===S.skin)return;const cur=$('.curtain'),root=docu
  if(RMQ.matches||!cur){swap();return}
  cur.classList.add('closing');setTimeout(()=>{swap();setTimeout(()=>cur.classList.remove('closing'),280)},820)}
 const ROYAL_ACT={
- skin(){setSkin(S.skin==='royal'?'modern':'royal');return false},
+ skin(){if(!ROYAL_ONLY)setSkin(S.skin==='royal'?'modern':'royal');return false},
  envelope(){const e=$('.env');if(!e)return false;const open=!e.classList.contains('open');e.classList.toggle('open',open);$('.inv-after')?.classList.toggle('show',open);if(open)toast('You are invited. See you on 17 December.');return false},
  tent(i){$$('.tent').forEach((t,k)=>{const on=k===+i&&!t.classList.contains('open');t.classList.toggle('open',on);t.setAttribute('aria-expanded',on)});return false},
  eventIcs(){const a={id:'event',title:'11 Years of Impact: Around the World in 11 Years',date:'2026-12-17',start:'10:00',end:'21:00',location:'Main hall',description:'The 11th anniversary celebration of Impact Analytics.'};S.acts.some(x=>x.id==='event')||S.acts.push(a);ics('event');S.acts=S.acts.filter(x=>x.id!=='event');return false},
@@ -57,6 +59,9 @@ let HERO=null,VOYAGE=null,BOARD=null;
 function mountRoyal(){HERO&&HERO.stop();HERO=null;VOYAGE&&VOYAGE.stop();VOYAGE=null;BOARD&&BOARD.stop();BOARD=null;
  if(S.skin!=='royal')return;const a=$('#arch');if(a)HERO=new Hero(a);const v=$('#voyage');if(v)VOYAGE=new Voyage(v);const b=$('[data-board]');if(b)BOARD=new Board(b);tickRoyal()}
 function tickRoyal(){const d=Math.max(0,TARGET_MS()-Date.now()),v={d:Math.floor(d/864e5),h:Math.floor(d%864e5/36e5),m:Math.floor(d%36e5/6e4),s:Math.floor(d%6e4/1e3)};
+ if(typeof DIAL_C!=='undefined'){const frac={d:Math.min(1,v.d/30),h:v.h/24,m:v.m/60,s:v.s/60};
+  $$('[data-rdial]').forEach(el=>{const k=el.dataset.rdial,f=frac[k],arc=el.querySelector('.d-arc'),orb=el.querySelector('.d-orb'),prev=+el.dataset.f;
+   const wrap=!isNaN(prev)&&f>prev+.5;el.classList.toggle('jump',wrap);arc.style.strokeDashoffset=(DIAL_C*(1-f)).toFixed(2);orb.style.transform=`rotate(${(f*360).toFixed(2)}deg)`;el.dataset.f=f})}
  for(const k in v)$$('[data-rcd="'+k+'"]').forEach(el=>{const t=String(v[k]).padStart(2,'0');if(el.textContent!==t){el.textContent=t;el.classList.remove('tk');el.offsetWidth;el.classList.add('tk')}});
  const ist=new Date().toLocaleTimeString('en-IN',{timeZone:TZ,hour:'2-digit',minute:'2-digit',hour12:false});$$('[data-ist]').forEach(e=>e.textContent=ist)}
 const TARGET_MS=()=>Date.parse(EVENT.starts);

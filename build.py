@@ -51,7 +51,6 @@ CROWN = '<svg width="14" height="14" viewBox="0 0 64 64" fill="none" stroke="cur
 body = f'''<header class="top"><div class="wrap">
  <a href="#home" aria-label="Impact Events home"><img class="logo adapt" src="{b64('assets/Logo.png')}" alt="Impact Analytics" width="200" height="66"></a>
  <nav aria-label="Main">{''.join(f'<a href="#{k}" data-nav="{k}">{l}</a>' for k, l, _ in nav)}</nav>
- <button class="skin-toggle" data-act="skin" aria-pressed="false" aria-label="Switch to the Royal theme"><span class="sk-l">Modern</span><span class="sk-track"><span class="sk-knob">{CROWN}</span></span><span class="sk-r">Royal</span></button>
  <a class="btn sec sm bell" href="#reminders">{svg('bell', 18)}<span class="reminder-label">Reminders</span><span class="dot"></span></a>
 </div></header>
 <canvas id="ambient" aria-hidden="true"></canvas>

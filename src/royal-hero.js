@@ -4,7 +4,14 @@
  through the scene. Drag the globe to spin it. Scrolling lifts the title away and brings the globe forward. */
 const FLOURISH='M4 76V26C4 14 14 4 26 4h50M12 76V30c0-10 8-18 18-18h46M4 52c18 0 26-10 26-26M52 4c0 18-10 26-26 26M30 30a5 5 0 1010 0 5 5 0 00-10 0M76 4l6 4-6 4-6-4zM4 76l4 6 4-6-4-6z';
 const flourish=c=>`<svg class="rh-fl ${c}" viewBox="0 0 90 90" aria-hidden="true"><path d="${FLOURISH}" fill="none" stroke="url(#gGold)" stroke-width="1.6" stroke-linecap="round"/></svg>`;
-const rhUnit=(k,l)=>`<div class="rh-u"><b class="tn" data-rcd="${k}">--</b><span>${l}</span></div>`;
+/* one astrolabe dial: tick ring, a glowing arc for the time left in that unit, an orbiting star */
+const DIAL_R=46,DIAL_C=2*Math.PI*DIAL_R;
+const rhUnit=(k,l)=>`<div class="rh-u" data-rdial="${k}"><svg class="dial" viewBox="0 0 120 120" aria-hidden="true">
+ <circle cx="60" cy="60" r="57" class="d-out"/><circle cx="60" cy="60" r="40" class="d-disc"/>
+ ${Array.from({length:60},(_,i)=>{const a=i*6*Math.PI/180,r1=i%5?52.5:50.5;return `<line x1="${(60+Math.sin(a)*54).toFixed(2)}" y1="${(60-Math.cos(a)*54).toFixed(2)}" x2="${(60+Math.sin(a)*r1).toFixed(2)}" y2="${(60-Math.cos(a)*r1).toFixed(2)}" class="${i%5?'tk':'tk5'}"/>`}).join('')}
+ <circle cx="60" cy="60" r="${DIAL_R}" class="d-track"/><circle cx="60" cy="60" r="${DIAL_R}" class="d-arc" stroke-dasharray="${DIAL_C.toFixed(2)}" stroke-dashoffset="${DIAL_C.toFixed(2)}" transform="rotate(-90 60 60)"/>
+ <g class="d-orb"><path d="M60 8.5l1.4 4.1 4.1 1.4-4.1 1.4-1.4 4.1-1.4-4.1-4.1-1.4 4.1-1.4z" class="d-star"/></g></svg>
+ <b class="tn" data-rcd="${k}">--</b><span>${l}</span></div>`;
 function rHero(){return `<section class="r-hero" id="arch"><div class="rh-pin"><canvas class="rh-dust" aria-hidden="true"></canvas><div class="rh-rays" aria-hidden="true"></div>
  ${flourish('tl')}${flourish('tr')}${flourish('bl')}${flourish('br')}
  <div class="rh-grid">
@@ -12,7 +19,7 @@ function rHero(){return `<section class="r-hero" id="arch"><div class="rh-pin"><
    <p class="rh-eb"><i></i><span>The 11<sup>th</sup> Anniversary Celebration</span><i></i></p>
    <h1 class="rh-title" aria-label="Around the World in 11 Years"><span class="t1">Around the</span><span class="t2">World</span><span class="t3">in <em>11</em> Years</span></h1>
    <p class="rh-sub">Thursday, 17 December 2026<span>◆</span>Hilton Embassy Tech Village, Bangalore</p>
-   <div class="rh-count" role="timer" aria-label="Countdown to the celebration">${rhUnit('d','Days')}<i>◆</i>${rhUnit('h','Hours')}<i>◆</i>${rhUnit('m','Minutes')}<i>◆</i>${rhUnit('s','Seconds')}</div>
+   <div class="rh-count" role="timer" aria-label="Countdown to the celebration"><svg class="constel" viewBox="0 0 100 20" preserveAspectRatio="none" aria-hidden="true"><path d="M12.5 10 Q25 2 37.5 10 T62.5 10 T87.5 10"/></svg>${rhUnit('d','Days')}${rhUnit('h','Hours')}${rhUnit('m','Minutes')}${rhUnit('s','Seconds')}</div>
    <div class="ctas"><a class="btn" href="#invite">${ic('star',18)} Open your invitation</a><a class="btn sec" href="#voyage">Begin the voyage</a></div>
   </div>
   <div class="rh-orb"><canvas class="globe" aria-label="A turning gold globe tracing the voyage routes" role="img"></canvas>

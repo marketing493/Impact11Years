@@ -9,13 +9,13 @@ An installable web app for the Impact Analytics 11th anniversary (17 December 20
 - **Organizer dashboard** at `/#admin`. Add, edit and delete activities and their timings. Changes reach every employee within a minute.
 - **Install and reminders.** People pin the app to their home screen on Android or iOS and turn on reminders. Each phone gets a notification 10 minutes before every session.
 
-## Two designs
+## Design
 
-A switch in the header flips between **Modern** (the IA brand system) and **Royal**, built on the event theme "11th Anniversary · Around the World in 11 Years". Velvet curtains close and open on the switch, and the choice is remembered on each device.
+The app runs the **Royal** design, built on the event theme "11th Anniversary · Around the World in 11 Years". The earlier **Modern** design (IA brand system) is switched off for now but kept in the code. Set `ROYAL_ONLY = false` in `src/royal.js` to bring back the header switch between the two.
 
 Royal uses royal navy, gilded gold and ivory with Cinzel capitals. Its home page has:
 
-- **The entrance:** a luminous gold globe drawn from Natural Earth land data, with glowing routes between the voyage stops, an orbiting plane and a medallion. Around it: engraved gold title lettering, a countdown, gilded corner flourishes, gold dust and a faint damask. Drag the globe to spin it.
+- **The entrance:** a luminous gold globe drawn from Natural Earth land data, with glowing routes between the voyage stops, an orbiting plane and a medallion. Around it: engraved gold title lettering, a countdown of four gold astrolabe dials with glowing arcs and orbiting stars, gilded corner flourishes, gold dust and a faint damask. Drag the globe to spin it.
 - **A wax-sealed invitation** that opens on tap.
 - **The voyage:** a gold plane flies a dotted world map (Natural Earth land data) and stops at a postcard for each milestone.
 - **A split-flap departures board** for the programme.
