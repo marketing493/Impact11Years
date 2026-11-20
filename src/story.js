@@ -35,8 +35,8 @@ class Story{
   this.pin.addEventListener('pointermove',e=>{if(e.pointerType!=='mouse'){this.ptr=null;return}const r=this.cv.getBoundingClientRect();this.ptr={x:e.clientX-r.left,y:e.clientY-r.top}});this.pin.addEventListener('pointerleave',()=>this.ptr=null);
   /* the score: a tap starts it, it follows the chapters and fades out when the story leaves the screen */
   this.sbtn=sec.querySelector('[data-sound]');
-  if(this.sbtn){if(!SCORE.supported)this.sbtn.hidden=true;const paint=on=>{this.sbtn.setAttribute('aria-pressed',on);this.sbtn.querySelector('.lbl').textContent=on?'Sound on':'Play the score';this.sbtn.setAttribute('aria-label',on?'Mute the story score':'Play the story score')};
-   paint(SCORE.on);this.unsub=SCORE.onChange(paint);this.sbtn.addEventListener('click',e=>{e.stopPropagation();SCORE.setChapter(this.idx||Math.round(this.cs));SCORE.toggle()})}
+  if(this.sbtn){if(!SCORE.supported)this.sbtn.hidden=true;const paint=(on,blocked)=>{this.sbtn.setAttribute('aria-pressed',on);this.sbtn.querySelector('.lbl').textContent=on?(blocked?'Tap for sound':'Sound on'):'Play the score';this.sbtn.classList.toggle('wait',!!(on&&blocked));this.sbtn.setAttribute('aria-label',on?'Mute the story score':'Play the story score')};
+   paint(SCORE.on,SCORE.blocked);this.unsub=SCORE.onChange(paint);this.sbtn.addEventListener('click',e=>{e.stopPropagation();SCORE.setChapter(this.idx||Math.round(this.cs));SCORE.toggle()})}
   this.loop=this.loop.bind(this);requestAnimationFrame(this.loop);this.update();if(this.phone)this.setupSteps()}
  absTop(){return this.sec.getBoundingClientRect().top+scrollY}
  destroy(){this.alive=false;SCORE.setVisible(false);this.unsub&&this.unsub();this.ac&&this.ac.abort();document.documentElement.classList.remove('story-locked')}
@@ -118,7 +118,7 @@ class Journey{
  constructor(sec){this.sec=sec;this.pin=sec.querySelector('.hj-pin');this.track=sec.querySelector('.hj-track');this.panels=[...sec.querySelectorAll('.hj-panel')];this.ticks=[...sec.querySelectorAll('.hj-line span')];this.count=sec.querySelector('.hj-count');this.resize();this.update()}
  destroy(){}
  resize(){this.vw=this.pin.clientWidth;this.tw=this.track.scrollWidth;this.dist=Math.max(1,this.tw-this.vw);this.sec.style.height=(this.dist+innerHeight)+'px'}
- update(){const r=this.sec.getBoundingClientRect(),p=clamp(-r.top/this.dist),x=-p*this.dist,vw=this.vw;
+ update(){const r=this.sec.getBoundingClientRect(),p=clamp(-r.top/this.dist),x=-p*this.dist,vw=this.vw;SCORE.setVisible(r.bottom>innerHeight*.4&&r.top<innerHeight*.6);
   this.track.style.transform=`translate3d(${x.toFixed(1)}px,0,0)`;this.pin.style.setProperty('--hx',x+'px');this.pin.style.setProperty('--p',p.toFixed(4));
   let act=0,best=1e9;
   this.panels.forEach((pn,i)=>{const left=pn.offsetLeft+x,w=pn.offsetWidth,center=left+w/2;
@@ -126,7 +126,7 @@ class Journey{
    pn.querySelector('.hj-deco')?.style.setProperty('--px',((center-vw/2)*-.35).toFixed(1));
    const dd=Math.abs(center-vw/2);if(dd<best){best=dd;act=i}});
   this.pin.style.backgroundColor=act===this.panels.length-1?'#264CD7':act%2?'#1C1B1B':'#264CD7';if(act===0)this.pin.style.backgroundColor='#1C1B1B';
-  const yi=Math.max(0,act-1);this.ticks.forEach((t,i)=>t.classList.toggle('on',i<=yi&&act>0));if(this.count)this.count.textContent=JOURNEY[yi][0]}
+  const yi=Math.max(0,act-1);this.ticks.forEach((t,i)=>t.classList.toggle('on',i<=yi&&act>0));if(this.count)this.count.textContent=JOURNEY[yi][0];SCORE.setChapter(Math.min(5,yi))}
 }
-function mountStory(){STORY_I&&STORY_I.destroy();STORY_I=null;JOURNEY_I=null;const s=$('#story');if(s)STORY_I=new Story(s);const j=$('#journey');if(j)JOURNEY_I=new Journey(j)}
+function mountStory(){if(JOURNEY_I)SCORE.setVisible(false);STORY_I&&STORY_I.destroy();STORY_I=null;JOURNEY_I=null;const s=$('#story');if(s)STORY_I=new Story(s);const j=$('#journey');if(j)JOURNEY_I=new Journey(j)}
 addEventListener('resize',()=>{STORY_I&&STORY_I.resize();JOURNEY_I&&(JOURNEY_I.resize(),JOURNEY_I.update())});

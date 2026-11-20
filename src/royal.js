@@ -17,49 +17,12 @@ const ROYAL_ACT={
 
 /* ---------- pieces ---------- */
 const royalDrapes=(chand=true)=>`<div class="drape l" aria-hidden="true"></div><div class="drape r" aria-hidden="true"></div>${chand?'<svg class="chand" viewBox="0 0 200 140" aria-hidden="true"><use href="#chandelier"/></svg>':''}`;
-const arcPt=(cx,cy,r,deg)=>[cx+r*Math.cos(deg*Math.PI/180),cy-r*Math.sin(deg*Math.PI/180)];
-function archSvg(){const cx=500,cy=540,arc=(r,a1,a2)=>{const p1=arcPt(cx,cy,r,a1),p2=arcPt(cx,cy,r,a2);return `M${p1[0].toFixed(1)} ${p1[1].toFixed(1)} A${r} ${r} 0 0 1 ${p2[0].toFixed(1)} ${p2[1].toFixed(1)}`};
- const cL=arcPt(cx,cy,468,141),cR=arcPt(cx,cy,468,39),bL=arcPt(cx,cy,420,205),bR=arcPt(cx,cy,420,-25),pl=arcPt(cx,cy,420,188);
- return `<svg class="arch" viewBox="0 0 1000 960" role="img" aria-label="11th Anniversary, Around the World in 11 Years">
- <defs><path id="arcA" d="${arc(436,170,10)}"/><path id="arcB" d="${arc(392,163,17)}"/></defs>
- <circle cx="${cx}" cy="${cy}" r="478" fill="none" stroke="url(#gGold)" stroke-width="7"/>
- <circle cx="${cx}" cy="${cy}" r="420" fill="none" stroke="url(#gNavy)" stroke-width="104"/>
- <circle cx="${cx}" cy="${cy}" r="466" fill="none" stroke="#D4AF61" stroke-width="1.2" stroke-dasharray="2 7" opacity=".7"/>
- <circle cx="${cx}" cy="${cy}" r="370" fill="none" stroke="url(#gGold)" stroke-width="6"/>
- <circle cx="${cx}" cy="${cy}" r="380" fill="none" stroke="#D4AF61" stroke-width="1" opacity=".6"/>
- <text class="arch-t1"><textPath href="#arcA" startOffset="50%" text-anchor="middle">11TH ANNIVERSARY</textPath></text>
- <text class="arch-t2"><textPath href="#arcB" startOffset="50%" text-anchor="middle">AROUND THE WORLD IN 11 YEARS</textPath></text>
- <use href="#balloon" x="${(bL[0]-26).toFixed(0)}" y="${(bL[1]-36).toFixed(0)}" width="52" height="72" class="arch-bal"/>
- <use href="#balloon" x="${(bR[0]-26).toFixed(0)}" y="${(bR[1]-36).toFixed(0)}" width="52" height="72" class="arch-bal b2"/>
- <g transform="translate(${pl[0].toFixed(0)} ${pl[1].toFixed(0)}) rotate(-58)"><use href="#plane" x="-22" y="-22" width="44" height="44"/></g>
- <g class="cmp" style="--cx:${cL[0].toFixed(0)}px;--cy:${cL[1].toFixed(0)}px"><use href="#compass" x="${(cL[0]-78).toFixed(0)}" y="${(cL[1]-78).toFixed(0)}" width="156" height="156"/></g>
- <g class="cmp r" style="--cx:${cR[0].toFixed(0)}px;--cy:${cR[1].toFixed(0)}px"><use href="#compass" x="${(cR[0]-78).toFixed(0)}" y="${(cR[1]-78).toFixed(0)}" width="156" height="156"/></g>
- </svg>`}
-function stanchions(){/* carpet, gold edges, velvet ropes and gold posts in one perspective drawing */
- const ex=y=>70+(y-40)*1.1,N=6,posts=[];for(const side of [-1,1])for(let k=0;k<N;k++){const t=Math.pow((k+1)/N,1.35),y=40+t*300,x=500+side*(ex(y)+14+t*16),h=34+t*130;posts.push({side,x,y,h})}
- let ropes='';for(const side of [-1,1]){const ps=posts.filter(p=>p.side===side);for(let k=0;k<ps.length-1;k++){const a=ps[k],b=ps[k+1],ya=a.y-a.h*.78,yb=b.y-b.h*.78,sag=10+b.h*.12;ropes+=`<path d="M${a.x.toFixed(1)} ${ya.toFixed(1)} Q${((a.x+b.x)/2).toFixed(1)} ${((ya+yb)/2+sag).toFixed(1)} ${b.x.toFixed(1)} ${yb.toFixed(1)}" fill="none" stroke="#2B4FD9" stroke-width="${(2+b.h*.05).toFixed(1)}" stroke-linecap="round"/>`}}
- const L0=500-ex(0),R0=500+ex(0),L1=500-ex(360),R1=500+ex(360);
- return `<svg class="posts" viewBox="0 0 1000 360" aria-hidden="true"><defs><pattern id="carpetP" width="40" height="36" patternUnits="userSpaceOnUse"><rect width="40" height="36" fill="#1E3FAE"/><rect y="18" width="40" height="18" fill="#2347C0"/></pattern><linearGradient id="carpetFade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#040A24" stop-opacity=".85"/><stop offset=".45" stop-color="#040A24" stop-opacity="0"/></linearGradient></defs>
- <polygon points="${L0},0 ${R0},0 ${R1},360 ${L1},360" fill="url(#carpetP)"/><polygon points="${L0},0 ${R0},0 ${R1},360 ${L1},360" fill="url(#carpetFade)"/>
- <path d="M${L0} 0L${L1} 360M${R0} 0L${R1} 360" stroke="url(#gGold)" stroke-width="5"/>
- ${ropes}${posts.map(p=>`<use href="#stanchion" x="${(p.x-p.h*.1).toFixed(1)}" y="${(p.y-p.h).toFixed(1)}" width="${(p.h*.2).toFixed(1)}" height="${p.h.toFixed(1)}"/>`).join('')}</svg>`}
-const BALLOONS=[[8,18,90,.6,0],[84,12,120,1,1.5],[70,48,60,.4,3],[18,56,70,.8,2],[92,64,48,.3,4.2],[42,8,44,.35,5]];
-function balloons(){return `<div class="balloons" aria-hidden="true">${BALLOONS.map(([x,y,s,d,dl])=>`<span class="bl" style="--x:${x}%;--y:${y}%;--s:${s}px;--d:${d};--dl:${-dl}s"><svg viewBox="0 0 100 140"><use href="#balloon"/></svg></span>`).join('')}</div>`}
 const flipUnit=(k,l)=>`<div class="rflip"><b class="tn" data-rcd="${k}">--</b><span>${l}</span></div>`;
 
 /* ---------- royal home ---------- */
 function vRoyalHome(){const up=upcoming();
  return `
- <section class="r-arch" id="arch"><div class="ra-pin"><canvas class="ra-stars" aria-hidden="true"></canvas><div class="ra-beams" aria-hidden="true"><i></i><i></i><i></i></div>
-  <svg class="chand top" viewBox="0 0 200 140" aria-hidden="true"><use href="#chandelier"/></svg>
-  ${balloons()}
-  <div class="ra-skyline" aria-hidden="true">${['pagoda','colosseum','eiffel','taj','bigben','liberty','opera'].map(k=>lmSvg(k,90,1.2)).join('')}</div>
-  <div class="ra-floor" aria-hidden="true">${stanchions()}</div>
-  <div class="ra-gate"><div class="ra-tunnel" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>${archSvg()}
-   <div class="ra-in"><p class="ra-date">17 · XII · MMXXVI</p><div class="gold-11">11</div><p class="ra-sub">Years of <em>Impact</em></p>
-    <div class="rflips" role="timer" aria-label="Countdown to the celebration">${flipUnit('d','Days')}${flipUnit('h','Hours')}${flipUnit('m','Min')}${flipUnit('s','Sec')}</div></div></div>
-  <div class="ra-welcome"><p class="eyebrow">Hilton Embassy Tech Village · Bangalore</p><h2>Welcome to the <em>celebration</em></h2><div class="ctas"><a class="btn" href="#invite">${ic('star',18)} Open your invitation</a><a class="btn sec" href="#event-schedule">See the programme</a></div></div>
-  <a class="ra-cue" href="#invite"><span></span>Step through the arch</a></div></section>
+ ${rHero()}
 
  <section class="band r-invite" id="invite"><div class="wrap inv-grid">
   <div class="col" style="gap:18px" data-rv><p class="eyebrow gold-eb">Your invitation</p><h2 class="r-h2">A seat at the <em>celebration</em></h2><p class="muted" style="max-width:44ch;font-size:18px">Eleven years, one journey around the world. Break the seal to read your invitation.</p>
@@ -90,30 +53,14 @@ function bunting(){const n=24;let tri='';for(let i=0;i<n;i++){const t=(i+.5)/n,x
  return `<svg class="bunting" viewBox="0 0 1000 110" preserveAspectRatio="none" aria-hidden="true"><path d="M0 8 Q500 112 1000 8" fill="none" stroke="#D4AF61" stroke-width="1.5"/>${tri}</svg>`}
 
 /* ---------- controllers ---------- */
-let ARCH=null,VOYAGE=null,BOARD=null;
-function mountRoyal(){ARCH&&ARCH.stop();ARCH=null;VOYAGE&&VOYAGE.stop();VOYAGE=null;BOARD&&BOARD.stop();BOARD=null;
- if(S.skin!=='royal')return;const a=$('#arch');if(a)ARCH=new Arch(a);const v=$('#voyage');if(v)VOYAGE=new Voyage(v);const b=$('[data-board]');if(b)BOARD=new Board(b);tickRoyal()}
+let HERO=null,VOYAGE=null,BOARD=null;
+function mountRoyal(){HERO&&HERO.stop();HERO=null;VOYAGE&&VOYAGE.stop();VOYAGE=null;BOARD&&BOARD.stop();BOARD=null;
+ if(S.skin!=='royal')return;const a=$('#arch');if(a)HERO=new Hero(a);const v=$('#voyage');if(v)VOYAGE=new Voyage(v);const b=$('[data-board]');if(b)BOARD=new Board(b);tickRoyal()}
 function tickRoyal(){const d=Math.max(0,TARGET_MS()-Date.now()),v={d:Math.floor(d/864e5),h:Math.floor(d%864e5/36e5),m:Math.floor(d%36e5/6e4),s:Math.floor(d%6e4/1e3)};
  for(const k in v)$$('[data-rcd="'+k+'"]').forEach(el=>{const t=String(v[k]).padStart(2,'0');if(el.textContent!==t){el.textContent=t;el.classList.remove('tk');el.offsetWidth;el.classList.add('tk')}});
  const ist=new Date().toLocaleTimeString('en-IN',{timeZone:TZ,hour:'2-digit',minute:'2-digit',hour12:false});$$('[data-ist]').forEach(e=>e.textContent=ist)}
 const TARGET_MS=()=>Date.parse(EVENT.starts);
 setInterval(()=>{if(S.skin==='royal'&&!document.hidden)tickRoyal()},1000);
-
-class Arch{constructor(sec){this.sec=sec;this.pin=sec.querySelector('.ra-pin');this.cv=sec.querySelector('.ra-stars');this.alive=true;this.resize();
-  this.onScroll=()=>this.update();addEventListener('scroll',this.onScroll,{passive:true});this.onResize=()=>this.resize();addEventListener('resize',this.onResize);
-  this.onMove=e=>{const r=this.pin.getBoundingClientRect();this.pin.style.setProperty('--ca',((e.clientX-r.left)/r.width-.5)*70+'deg')};this.pin.addEventListener('pointermove',this.onMove);
-  this.update();this.loop=this.loop.bind(this);requestAnimationFrame(this.loop)}
- stop(){this.alive=false;removeEventListener('scroll',this.onScroll);removeEventListener('resize',this.onResize)}
- resize(){const d=Math.min(2,devicePixelRatio||1);this.W=this.pin.clientWidth;this.H=this.pin.clientHeight;this.cv.width=this.W*d;this.cv.height=this.H*d;this.ctx=this.cv.getContext('2d');this.ctx.setTransform(d,0,0,d,0,0);
-  const r=seededRand(7);this.stars=Array.from({length:Math.round(this.W*this.H/5200)},()=>({x:r()*this.W,y:r()*this.H*.7,s:.4+r()*1.4,p:r()*6.28,v:.6+r()*1.8,g:r()<.25}))}
- update(){const r=this.sec.getBoundingClientRect(),span=this.sec.offsetHeight-innerHeight,p=clamp(-r.top/Math.max(1,span));this.p=p;this.vis=r.bottom>0&&r.top<innerHeight;
-  this.pin.style.setProperty('--p',RMQ.matches?0:p.toFixed(4));this.pin.classList.toggle('arrived',p>.7);const pat=this.sec.querySelector('#carpetP');if(pat&&!RMQ.matches)pat.setAttribute('patternTransform',`translate(0 ${(p*540).toFixed(1)})`)}
- loop(t){if(!this.alive)return;requestAnimationFrame(this.loop);if(!this.vis||document.hidden)return;const c=this.ctx;c.clearRect(0,0,this.W,this.H);
-  for(const s of this.stars){const a=RMQ.matches?.7:.35+.65*Math.abs(Math.sin(t/1000*s.v+s.p));c.globalAlpha=a;c.fillStyle=s.g?'#F3DFA2':'#F7F1E3';c.beginPath();c.arc(s.x,s.y,s.s,0,6.283);c.fill();
-   if(s.g&&s.s>1.2){c.globalAlpha=a*.5;c.fillRect(s.x-s.s*3,s.y-.3,s.s*6,.6);c.fillRect(s.x-.3,s.y-s.s*3,.6,s.s*6)}}
-  /* a shooting star now and then */
-  if(!RMQ.matches){const k=(t/1000)%9;if(k<1.1){const q=k/1.1,x=this.W*(.15+q*.5),y=this.H*(.08+q*.18);c.globalAlpha=1-q;const g=c.createLinearGradient(x,y,x-120,y-40);g.addColorStop(0,'#FFF1C1');g.addColorStop(1,'rgba(255,241,193,0)');c.strokeStyle=g;c.lineWidth=1.6;c.beginPath();c.moveTo(x,y);c.lineTo(x-120,y-40);c.stroke()}}
-  c.globalAlpha=1}}
 
 /* the voyage map: a gold plane flies the route as you scroll, the camera follows it */
 class Voyage{
@@ -122,7 +69,7 @@ class Voyage{
   this.land=[];WORLD.rows.forEach((row,y)=>{for(let i=0;i<row.length;i++){const v=parseInt(row[i],16);for(let b=0;b<4;b++)if(v&(8>>b))this.land.push([i*4+b,y])}});
   this.marks.innerHTML=STOPS.map((s,i)=>`<span class="vm" data-i="${i}"><span class="vm-lm">${lmSvg(s.lm,i===this.n-1?54:44,1.5)}</span><i></i><b class="tn">${JOURNEY[i]?JOURNEY[i][0]:''}</b></span>`).join('');this.mk=[...this.marks.children];
   sec.style.height=(this.n*80+100)+'vh';this.resize();this.onResize=()=>this.resize();addEventListener('resize',this.onResize);this.onScroll=()=>this.update();addEventListener('scroll',this.onScroll,{passive:true});
-  this.sbtn=sec.querySelector('[data-sound]');if(this.sbtn){if(!SCORE.supported)this.sbtn.hidden=true;const paint=on=>{this.sbtn.setAttribute('aria-pressed',on);this.sbtn.querySelector('.lbl').textContent=on?'Sound on':'Play the score'};paint(SCORE.on);this.unsub=SCORE.onChange(paint);this.sbtn.addEventListener('click',e=>{e.stopPropagation();SCORE.toggle()})}
+  this.sbtn=sec.querySelector('[data-sound]');if(this.sbtn){if(!SCORE.supported)this.sbtn.hidden=true;const paint=(on,blocked)=>{this.sbtn.setAttribute('aria-pressed',on);this.sbtn.querySelector('.lbl').textContent=on?(blocked?'Tap for sound':'Sound on'):'Play the score';this.sbtn.classList.toggle('wait',!!(on&&blocked))};paint(SCORE.on,SCORE.blocked);this.unsub=SCORE.onChange(paint);this.sbtn.addEventListener('click',e=>{e.stopPropagation();SCORE.toggle()})}
   this.update();this.loop=this.loop.bind(this);requestAnimationFrame(this.loop)}
  stop(){this.alive=false;removeEventListener('resize',this.onResize);removeEventListener('scroll',this.onScroll);this.unsub&&this.unsub();SCORE.setVisible(false)}
  resize(){const d=Math.min(2,devicePixelRatio||1),W=this.pin.clientWidth,H=this.pin.clientHeight;this.W=W;this.H=H;this.cv.width=W*d;this.cv.height=H*d;this.ctx.setTransform(d,0,0,d,0,0);

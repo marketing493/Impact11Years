@@ -15,14 +15,14 @@ A switch in the header flips between **Modern** (the IA brand system) and **Roya
 
 Royal uses royal navy, gilded gold and ivory with Cinzel capitals. Its home page has:
 
-- **The Grand Arch:** walk through it as you scroll, with turning compass roses, drifting balloons, spotlights, a chandelier, a gold carpet with stanchions and a gold flip countdown.
+- **The entrance:** a luminous gold globe drawn from Natural Earth land data, with glowing routes between the voyage stops, an orbiting plane and a medallion. Around it: engraved gold title lettering, a countdown, gilded corner flourishes, gold dust and a faint damask. Drag the globe to spin it.
 - **A wax-sealed invitation** that opens on tap.
 - **The voyage:** a gold plane flies a dotted world map (Natural Earth land data) and stops at a postcard for each milestone.
 - **A split-flap departures board** for the programme.
 - **World's Fair pavilion tents** whose curtains open on each category.
 - **The venue as a grand ballroom.**
 
-Every other page is restyled in the Royal theme too.
+Every other page is restyled in the Royal theme too. The music starts by itself when the voyage, the story or the Journey page comes on screen, once the visitor has tapped or clicked anywhere on the page. Muting is remembered.
 
 ## Deploy on Vercel
 

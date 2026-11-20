@@ -14,7 +14,17 @@ const DENSITY=[.45,.6,.75,.85,.9,1];
 const mtof=m=>440*Math.pow(2,(m-69)/12);
 
 class StoryScore{
- constructor(){this.on=false;this.ctx=null;this.ch=0;this.visible=false;this.voices=[];this.listeners=new Set()}
+ constructor(){this.on=false;this.ctx=null;this.ch=0;this.visible=false;this.voices=[];this.listeners=new Set();this.blocked=false;
+  this.muted=(()=>{try{return localStorage.getItem('ia11-muted')==='1'}catch(e){return false}})()}
+ /* Browsers allow sound only after the visitor has tapped, clicked or pressed a key on the page.
+    If that has not happened yet, wait for the first such gesture and start then. */
+ start(){if(!this.ctx&&!this.init())return;this.on=true;const c=this.ctx;
+  const go=()=>{if(c.state!=='running')c.resume().catch(()=>{});};go();this.setChord(this.ch,true);this.fade();
+  setTimeout(()=>{this.blocked=c.state!=='running';if(this.blocked)this.arm();this.emit()},120);this.emit()}
+ arm(){if(this.armed)return;this.armed=true;const kick=()=>{this.armed=false;['pointerdown','touchend','keydown','click'].forEach(e=>removeEventListener(e,kick,true));
+   if(!this.on||!this.ctx)return;this.ctx.resume().then(()=>{this.blocked=false;this.fade();this.emit()}).catch(()=>{})};
+  ['pointerdown','touchend','keydown','click'].forEach(e=>addEventListener(e,kick,true))}
+ emit(){this.listeners.forEach(f=>f(this.on,this.blocked))}
  get supported(){return Boolean(window.AudioContext||window.webkitAudioContext)}
  init(){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return false;
   try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}
@@ -60,13 +70,15 @@ class StoryScore{
   const s=c.createBufferSource(),bp=c.createBiquadFilter(),g=c.createGain();s.buffer=this.noise;bp.type='bandpass';bp.Q.value=1.4;bp.frequency.setValueAtTime(300,t);bp.frequency.exponentialRampToValueAtTime(3200,t+.7);
   g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.05,t+.25);g.gain.linearRampToValueAtTime(0,t+.8);s.connect(bp);bp.connect(g);g.connect(this.verb);s.start(t);s.stop(t+.9)}
  setChapter(i){if(i===this.ch)return;this.ch=i;if(this.ctx&&this.on){this.setChord(i);this.chime()}}
- setVisible(v){if(v===this.visible)return;this.visible=v;this.fade()}
+ setVisible(v){if(v===this.visible)return;this.visible=v;if(v&&!this.on&&!this.muted&&!document.hidden){this.start();return}this.fade()}
  fade(){if(!this.ctx)return;const want=this.on&&this.visible&&!document.hidden,c=this.ctx;
   clearTimeout(this.st);
   if(want){if(c.state==='suspended')c.resume();this.master.gain.setTargetAtTime(.6,c.currentTime,.7)}
   else{this.master.gain.setTargetAtTime(0,c.currentTime,.35);this.st=setTimeout(()=>{if(!(this.on&&this.visible&&!document.hidden))c.suspend()},1800)}}
  /* must run inside a tap or click */
- toggle(){if(!this.ctx&&!this.init())return false;this.on=!this.on;if(this.on){this.ctx.resume();this.setChord(this.ch,true)}this.fade();this.listeners.forEach(f=>f(this.on));return this.on}
+ toggle(){const turnOn=!this.on||this.blocked;try{localStorage.setItem('ia11-muted',turnOn?'0':'1')}catch(e){}this.muted=!turnOn;
+  if(turnOn){if(!this.ctx&&!this.init())return false;this.on=true;this.ctx.resume().then(()=>{this.blocked=false;this.emit()}).catch(()=>{});this.blocked=false;this.setChord(this.ch,true);this.fade()}
+  else{this.on=false;this.fade()}this.emit();return this.on}
  onChange(f){this.listeners.add(f);return()=>this.listeners.delete(f)}
 }
 const SCORE=new StoryScore();
