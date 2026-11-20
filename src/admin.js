@@ -43,6 +43,6 @@ function actModal(){const m=A_.modal;if(!m)return '';const a=m.a,locs=[...ZONES.
 async function adminTest(){
  if(S.server&&S.cfg.push&&'serviceWorker' in navigator){const reg=SW||await navigator.serviceWorker.getRegistration();const sub=reg&&await reg.pushManager.getSubscription();
   if(sub){const r=await fetch('/api/admin',{method:'POST',headers:adminHeaders(),body:JSON.stringify({subscription:sub})});const j=await r.json().catch(()=>({}));toast(r.ok?'Test sent through the push server.':(j.error||'Could not send the test.'));return}}
- if(!('Notification' in window)){toast('This browser does not support notifications.');return}
+ if(notifyStatus()!=='ok'){toast(NOTIFY_HELP[notifyStatus()]);return}
  if(Notification.permission!=='granted'){const p=await Notification.requestPermission();if(p!=='granted'){toast('Allow notifications to run the test.');return}}
  await showLocal('Test reminder','Notifications work on this device.','test');toast('Test shown on this device.')}

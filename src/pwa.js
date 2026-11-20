@@ -1,6 +1,18 @@
 /* ---------- install + reminders ----------
  Push mode: the server sends a Web Push 10 minutes before each session, even when the app is closed.
  Local mode (no server configured): the open app schedules the notifications itself. */
+/* What stands between this device and reminders.
+ iPhone and iPad only expose notifications to web apps opened from the home screen (iOS 16.4 or later),
+ so a normal Safari tab has no Notification API at all. */
+const iosVersion=()=>{const m=navigator.userAgent.match(/OS (\d+)_(\d+)/);return m?+m[1]+(+m[2])/100:null};
+function notifyStatus(){const p=S.pwa,has='Notification' in window&&'serviceWorker' in navigator;
+ if(p.ios&&!p.standalone)return 'ios-install';
+ if(!has)return p.ios?'ios-update':'unsupported';
+ return 'ok'}
+const NOTIFY_HELP={
+ 'ios-install':'On iPhone and iPad, reminders only work from the home screen app. Add it to your home screen (step 1), open Impact Events from your home screen, then tap Turn on reminders.',
+ 'ios-update':'Reminders need iOS 16.4 or later. Update your iPhone or iPad in Settings, General, Software Update, then open the app from your home screen again.',
+ 'unsupported':'This browser cannot show notifications. Try Chrome, Edge, Firefox or Safari on a computer, or the home screen app on your phone.'};
 const inFrame=(()=>{try{return window.self!==window.top}catch(e){return true}})();
 let SW=null;
 async function registerSW(){if(!('serviceWorker' in navigator)||!isSecureContext||inFrame)return null;try{SW=await navigator.serviceWorker.register('/sw.js');return SW}catch(e){return null}}
@@ -10,7 +22,7 @@ async function doInstall(){const p=S.pwa.prompt;if(!p)return;p.prompt();const r=
 const b64u=s=>{const p='='.repeat((4-s.length%4)%4),b=atob((s+p).replace(/-/g,'+').replace(/_/g,'/'));return Uint8Array.from(b,c=>c.charCodeAt(0))};
 
 async function remindersOn(){
- if(!('Notification' in window)){toast('This browser does not support notifications.');return}
+ const ns=notifyStatus();if(ns!=='ok'){toast(NOTIFY_HELP[ns]);render();return}
  const perm=await Notification.requestPermission();
  if(perm!=='granted'){toast('Notifications stay off. You can allow them later in settings.');render();return}
  const reg=SW||await registerSW();
@@ -29,7 +41,7 @@ async function remindersOff(){S.pwa.on=false;store.set('ia11-reminders',false);c
  toast('Reminders are off.');render()}
 async function showLocal(title,body,tag){try{const reg=SW||await navigator.serviceWorker?.getRegistration();if(reg){await reg.showNotification(title,{body,tag,icon:'/icons/icon-192.png',badge:'/icons/badge-96.png',data:{url:'/#event-schedule'}});return true}}catch(e){}
  try{new Notification(title,{body,tag,icon:'/icons/icon-192.png'});return true}catch(e){return false}}
-async function testNotif(){if(Notification.permission!=='granted'){toast('Turn on reminders first.');return}const ok=await showLocal('Starting in 10 minutes','This is how your reminders look.','test');if(!ok)toast('This browser blocked the test notification.')}
+async function testNotif(){if(notifyStatus()!=='ok'){toast(NOTIFY_HELP[notifyStatus()]);return}if(Notification.permission!=='granted'){toast('Turn on reminders first.');return}const ok=await showLocal('Starting in 10 minutes','This is how your reminders look.','test');if(!ok)toast('This browser blocked the test notification.')}
 
 let TIMERS=[];
 function clearLocal(){TIMERS.forEach(clearTimeout);TIMERS=[]}
