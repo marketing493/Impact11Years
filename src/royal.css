@@ -482,3 +482,15 @@ a.brow:hover{background:rgba(212,175,97,.07)}
 [data-skin="royal"] .ex-side h2,[data-skin="royal"] .venue-grid h2{font-size:clamp(30px,3vw,44px);line-height:1.08}
 [data-skin="royal"] .pin path{fill:#D4AF61}
 [data-skin="royal"] .pin circle{fill:#0A1744}
+
+/* monuments frieze */
+.r-sky{position:relative;z-index:1;padding:40px max(16px,env(safe-area-inset-left,0px)) 0;margin-top:-1px;background:linear-gradient(#040A24,#060D2C 60%,transparent)}
+.r-sky svg{display:block;width:100%;max-width:1320px;height:auto;margin:0 auto;overflow:visible}
+.mon path{fill:none;stroke:#F3DFA2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 2.2s var(--ease) calc(var(--i)*.18s),stroke .4s,filter .4s}
+.r-sky.drawn .mon path{stroke-dashoffset:0}
+.mons:not(.refl) .mon{cursor:pointer;transition:transform .5s var(--ease)}
+.mons:not(.refl) .mon:hover path,.mons:not(.refl) .mon:active path{stroke:#FFF8DC;filter:drop-shadow(0 0 4px #FFF1C1)}
+.mons.refl .mon path{stroke:#D4AF61}
+@media (max-width:700px){.r-sky{padding:28px 10px 0}.r-sky svg{width:100%;margin:0}}
+@media (prefers-reduced-motion:reduce){.mon path{stroke-dashoffset:0;transition:none}}
+.r-sky{overflow:hidden}

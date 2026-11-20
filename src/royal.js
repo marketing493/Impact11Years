@@ -25,6 +25,7 @@ const flipUnit=(k,l)=>`<div class="rflip"><b class="tn" data-rcd="${k}">--</b><s
 function vRoyalHome(){const up=upcoming();
  return `
  ${rHero()}
+ ${skyline()}
 
  <section class="band r-invite" id="invite"><div class="wrap inv-grid">
   <div class="col" style="gap:18px" data-rv><p class="eyebrow gold-eb">Your invitation</p><h2 class="r-h2">A seat at the <em>celebration</em></h2><p class="muted" style="max-width:44ch;font-size:18px">Eleven years, one journey around the world. Break the seal to read your invitation.</p>
@@ -56,7 +57,7 @@ function bunting(){const n=24;let tri='';for(let i=0;i<n;i++){const t=(i+.5)/n,x
 
 /* ---------- controllers ---------- */
 let HERO=null,VOYAGE=null,BOARD=null;
-function mountRoyal(){HERO&&HERO.stop();HERO=null;VOYAGE&&VOYAGE.stop();VOYAGE=null;BOARD&&BOARD.stop();BOARD=null;
+function mountRoyal(){mountSkyline();HERO&&HERO.stop();HERO=null;VOYAGE&&VOYAGE.stop();VOYAGE=null;BOARD&&BOARD.stop();BOARD=null;
  if(S.skin!=='royal')return;const a=$('#arch');if(a)HERO=new Hero(a);const v=$('#voyage');if(v)VOYAGE=new Voyage(v);const b=$('[data-board]');if(b)BOARD=new Board(b);tickRoyal()}
 function tickRoyal(){const d=Math.max(0,TARGET_MS()-Date.now()),v={d:Math.floor(d/864e5),h:Math.floor(d%864e5/36e5),m:Math.floor(d%36e5/6e4),s:Math.floor(d%6e4/1e3)};
  if(typeof DIAL_C!=='undefined'){const frac={d:Math.min(1,v.d/30),h:v.h/24,m:v.m/60,s:v.s/60};

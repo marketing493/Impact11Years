@@ -89,3 +89,21 @@ class Hero{constructor(sec){this.sec=sec;this.pin=sec.querySelector('.rh-pin');t
   g.globalAlpha=1;const P=ring(ang);if(!(P[2]<0&&Math.hypot(P[0]-cx,P[1]-cy)<R)){const N=ring(ang+.02),dir=Math.atan2(N[1]-P[1],N[0]-P[0]);g.save();g.translate(P[0],P[1]);g.rotate(dir+Math.PI/2);g.fillStyle='#F3DFA2';g.shadowColor='rgba(255,241,193,.9)';g.shadowBlur=10;
    g.beginPath();g.moveTo(0,-9);g.lineTo(1.6,-3);g.lineTo(9,2);g.lineTo(9,4);g.lineTo(1.6,2);g.lineTo(1.4,7);g.lineTo(4,9);g.lineTo(4,10.5);g.lineTo(0,9.5);g.lineTo(-4,10.5);g.lineTo(-4,9);g.lineTo(-1.4,7);g.lineTo(-1.6,2);g.lineTo(-9,4);g.lineTo(-9,2);g.lineTo(-1.6,-3);g.closePath();g.fill();g.restore()}}
 }
+
+/* ---------- the monuments frieze: the stage backdrop's skyline in gold line art ---------- */
+const SKYLINE=[['eiffel',95,3.1],['taj',265,2.3],['liberty',420,2.7],['colosseum',590,2.2],['bigben',760,3.1],['pagoda',925,2.5],['opera',1100,2.4]];
+function skyline(){const GY=210;
+ const mon=(k,x,s,i)=>`<g class="mon" style="--i:${i}" transform="translate(${(x-32*s).toFixed(1)} ${(GY-60*s).toFixed(1)}) scale(${s})"><path d="${LANDMARKS[k]}" pathLength="1" stroke-width="${(1.5/s).toFixed(3)}"/></g>`;
+ const art=SKYLINE.map((m,i)=>mon(m[0],m[1],m[2],i)).join('');
+ return `<section class="r-sky" aria-label="Paris, Agra, New York, Rome, London, Asia and Sydney in gold line art"><svg viewBox="0 0 1200 290" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+ <defs><linearGradient id="skyLine" x1="0" x2="1"><stop offset="0" stop-color="#D4AF61" stop-opacity="0"/><stop offset=".15" stop-color="#F3DFA2"/><stop offset=".85" stop-color="#F3DFA2"/><stop offset="1" stop-color="#D4AF61" stop-opacity="0"/></linearGradient>
+ <radialGradient id="skyGlow" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#F3DFA2" stop-opacity=".22"/><stop offset="1" stop-color="#F3DFA2" stop-opacity="0"/></radialGradient>
+ <linearGradient id="skyFade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient><mask id="skyMask"><rect x="0" y="${GY}" width="1200" height="80" fill="url(#skyFade)"/></mask>
+ <filter id="skyBloom" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+ <ellipse cx="600" cy="${GY}" rx="560" ry="46" fill="url(#skyGlow)"/>
+ <g class="mons" filter="url(#skyBloom)">${art}</g>
+ <g mask="url(#skyMask)"><g transform="translate(0 ${GY*2}) scale(1 -1)" class="mons refl">${art}</g></g>
+ <line x1="0" y1="${GY}" x2="1200" y2="${GY}" stroke="url(#skyLine)" stroke-width="1.4"/>
+ <path d="M592 ${GY}l8-6 8 6-8 6z" fill="#D4AF61"/></svg></section>`}
+function mountSkyline(){const s=$('.r-sky');if(!s)return;if(RMQ.matches||!('IntersectionObserver' in window)){s.classList.add('drawn');return}
+ const io=new IntersectionObserver(es=>{if(es[0].isIntersecting){s.classList.add('drawn');io.disconnect()}},{threshold:.35});io.observe(s)}
