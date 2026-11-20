@@ -48,7 +48,8 @@ let fxTick=false,ptr={x:innerWidth/2,y:innerHeight/2};
 function fxFrame(){fxTick=false;root.style.setProperty('--scroll',scrollY.toFixed(0));root.style.setProperty('--mx',((ptr.x/innerWidth)*2-1).toFixed(3));root.style.setProperty('--my',((ptr.y/innerHeight)*2-1).toFixed(3));
  if(window.AMB){AMB.tx=(ptr.x/innerWidth)*2-1;AMB.ty=(ptr.y/innerHeight)*2-1;
   const el=document.elementFromPoint(innerWidth/2,innerHeight/2),sec=el&&el.closest('[data-acc]');if(sec){const h=getComputedStyle(sec).getPropertyValue('--acc').trim();if(/^#[0-9a-f]{6}$/i.test(h))AMB.accT=hexRgb(h)}}
- STORY_I&&STORY_I.update();JOURNEY_I&&JOURNEY_I.update()}
+ STORY_I&&STORY_I.update();JOURNEY_I&&JOURNEY_I.update();
+ $$('[data-scrub]').forEach(el=>{const r=el.getBoundingClientRect(),p=clamp((innerHeight*.88-r.top)/(r.height+innerHeight*.35));el.style.setProperty('--sp',p.toFixed(3))})}
 const fxQueue=()=>{if(!fxTick){fxTick=true;requestAnimationFrame(fxFrame)}};
 addEventListener('scroll',fxQueue,{passive:true});addEventListener('resize',fxQueue);
 addEventListener('pointermove',e=>{if(e.pointerType==='touch')return;ptr={x:e.clientX,y:e.clientY};fxQueue()},{passive:true});

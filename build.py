@@ -19,7 +19,7 @@ BUILD = {'commit': git_sha(), 'branch': os.environ.get('VERCEL_GIT_COMMIT_REF', 
 defaults = (R / 'api/_defaults.js').read_text()
 defaults = json.loads(re.sub(r'^\s*export default\s*', '', defaults).rstrip().rstrip(';'))
 css = (R / 'src/styles.css').read_text()
-js = '\n'.join((R / f'src/{n}.js').read_text() for n in ['data', 'grid', 'fx', 'audio', 'story', 'app', 'pwa', 'admin', 'main'])
+js = '\n'.join((R / f'src/{n}.js').read_text() for n in ['data', 'grid', 'fx', 'audio', 'story', 'app', 'pages', 'pwa', 'admin', 'main'])
 js = (js.replace('__LOGO_H__', b64('assets/Logo.png'))
         .replace('__ICON__', b64('assets/icons/icon-192.png'))
         .replace('__DEFAULTS__', json.dumps(defaults, ensure_ascii=False)))

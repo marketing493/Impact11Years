@@ -12,9 +12,10 @@ function render(){
  $$('[data-nav]').forEach(a=>{const k=a.dataset.nav;a.toggleAttribute('aria-current',false);if(k===nav||(k==='event-about'&&S.route==='event'&&!['schedule','venue'].includes(S.sub)))a.setAttribute('aria-current','page')});
  $$('.bell .dot').forEach(d=>d.hidden=S.pwa.on&&('Notification' in window)&&Notification.permission==='granted');
  const cv=$('#igrid');if(cv)GRID_I=new ImpactGrid(cv,{mode:S.gridMode,target:Date.parse(EVENT.starts),onTick:srCountdown});
- mountScenes();mountStory();mountFx();ticks()}
+ mountScenes();mountStory();mountFx();mountSubnav();mountCounters();mountExplore();ticks();
+ if(S.pendingScroll){const id=S.pendingScroll;S.pendingScroll=null;setTimeout(()=>{const el=document.getElementById('act-'+id);el&&el.scrollIntoView({behavior:'smooth',block:'center'})},120)}}
 function srCountdown(diff){const el=$('#cd-sr');if(!el)return;const d=Math.floor(diff/864e5),h=Math.floor(diff%864e5/36e5),m=Math.floor(diff%36e5/6e4);el.textContent=diff>0?`${d} days, ${h} hours and ${m} minutes until ${EVENT.name}`:`${EVENT.name} is here`}
-function ticks(){$$('[data-rel]').forEach(el=>el.textContent=rel(+el.dataset.rel))}
+function ticks(){$$('[data-rel]').forEach(el=>el.textContent=rel(+el.dataset.rel));tickRibbons()}
 setInterval(ticks,30000);
 
 /* refresh: pick up organizer edits and roll sessions from next to now to past */
@@ -32,8 +33,26 @@ const ACT={
   /* update every scene in place so the 3D tilt is not reset */
   $$('.zone').forEach(b=>{const on=b.dataset.arg===z;b.classList.toggle('on',on);b.classList.toggle('dim',!on);b.setAttribute('aria-pressed',on)});
   $$('.zones button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.arg===z));
-  $$('.zonecard').forEach(c=>c.outerHTML=zoneCard());
-  if(S.route==='event'&&S.sub==='venue')document.getElementById('venue')?.scrollIntoView({behavior:'smooth',block:'start'});return false},
+  $$('.zonecard').forEach(c=>c.outerHTML=zoneCard());$$('.zrow').forEach(b=>b.setAttribute('aria-pressed',b.dataset.arg===z));drawRoute(z);return false},
+ /* event pages */
+ val(i){$$('.val').forEach((v,k)=>{const on=k===+i;v.classList.toggle('open',on);v.setAttribute('aria-expanded',on)});return false},
+ goCat(c){S.schedCat=c;S.openAct=null;location.hash='#event-schedule';return false},
+ schedCat(c){S.schedCat=c;refreshSchedule();return false},
+ openAct(id){if(!(S.route==='event'&&S.sub==='schedule')){S.openAct=id;S.schedCat='All';S.pendingScroll=id;location.hash='#event-schedule';return false}
+  const open=S.openAct!==id;S.openAct=open?id:null;
+  if(!$('#act-'+id)){S.schedCat='All';refreshSchedule(id);return false}
+  $$('.sx').forEach(el=>{const on=open&&el.id==='act-'+id;el.classList.toggle('open',on);el.querySelector('.sx-head').setAttribute('aria-expanded',on)});
+  $$('.rb-b').forEach(b=>b.classList.toggle('sel',open&&b.dataset.arg===id));
+  if(open)$('#act-'+id).scrollIntoView({behavior:RMQ.matches?'auto':'smooth',block:'center'});return false},
+ star(id){const on=!S.plan.has(id);if(on)S.plan.add(id);else S.plan.delete(id);store.set('ia11-plan',[...S.plan]);
+  toast(on?'Added to your plan.':'Removed from your plan.');
+  if(S.schedCat==='Plan'){refreshSchedule();return false}
+  $$(`.sx-star[data-arg="${CSS.escape(id)}"]`).forEach(b=>{b.setAttribute('aria-pressed',on);b.classList.remove('pop');b.offsetWidth;b.classList.add('pop')});
+  $$(`.rb-b[data-arg="${CSS.escape(id)}"]`).forEach(b=>b.classList.toggle('star',on));const f=$('.fbar');if(f)f.innerHTML=schedChips();const g=$('.gstats');if(g)g.outerHTML=glanceStats();return false},
+ mapZone(z){S.zone=ZONES.some(x=>x.id===z)?z:S.zone;location.hash='#event-venue';return false},
+ vview(v){S.view={...VIEWS[v]};S.spin=false;syncSpin();EXPLORE&&EXPLORE.apply(true);return false},
+ vspin(){S.spin=!S.spin;syncSpin();return false},
+ copyAddr(){const t=`${EVENT.venue}, ${EVENT.area}`;const ok=()=>toast('Address copied.');try{navigator.clipboard.writeText(t).then(ok,()=>toast(t))}catch(e){toast(t)}return false},
  ics(id){ics(id);return false},
  install(){doInstall();return false},remon(){remindersOn();return false},remoff(){remindersOff();return false},testnotif(){testNotif();return false},
  aNew(){const last=S.acts[S.acts.length-1];A_.modal={id:null,a:{title:'',date:last?last.date:'2026-12-17',start:last?last.end:'10:00',end:last?shift(last.end,30):'10:30',location:'Main hall',category:'Stage',description:''}}},
@@ -54,6 +73,7 @@ document.addEventListener('submit',async e=>{const f=e.target.closest('[data-for
   await saveActs(list,m.id?`Saved ${a.title}.`:`Added ${a.title} at ${a.start}.`);setTimeout(()=>{A_.flash=null},1700)}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&A_.modal){A_.modal=null;render()}});
 addEventListener('hashchange',()=>{const jump=parseHash();render();if(jump){requestAnimationFrame(()=>document.getElementById(jump)?.scrollIntoView({behavior:'smooth'}))}else scrollTo({top:0})});
+document.addEventListener('change',e=>{if(e.target.id==='wayfind'&&e.target.value){const a=S.acts.find(x=>x.id===e.target.value);if(a){ACT.zone(a.location);toast(`Follow the orange path to the ${a.location} for ${a.title}.`);$('.ex-stage')?.scrollIntoView({behavior:'smooth',block:'center'})}}});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){ticks();scheduleLocal()}});
 
 /* ---------- boot ---------- */
