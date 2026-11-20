@@ -42,7 +42,7 @@ function vRoyalHome(){const up=upcoming();
   <nav class="vy-stops" aria-label="Voyage stops">${STOPS.map((s,i)=>`<button data-act="voyageGo" data-arg="${i}"><i></i><span>${JOURNEY[i]?JOURNEY[i][0]:''}</span></button>`).join('')}</nav>
   <button class="sound vy-sound" data-sound aria-pressed="false" aria-label="Play the voyage score"><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="lbl">Play the score</span></button></div></section>
 
- <section class="band r-dep" id="departures"><div class="wrap"><div class="shead"><div data-rv><p class="eyebrow gold-eb">Departures · 17 December</p><h2 class="r-h2">Now <em>boarding</em></h2></div><div class="dep-clock" data-rv style="--i:1"><span>Bangalore time</span><b class="tn" data-ist>--:--</b></div></div>
+ <section class="band r-dep" id="departures"><div class="wrap"><div class="shead"><div data-rv><p class="eyebrow gold-eb">Departures, 17 December</p><h2 class="r-h2">Now <em>boarding</em></h2></div><div class="dep-clock" data-rv style="--i:1"><span>Bangalore time</span><b class="tn" data-ist>--:--</b></div></div>
   <div class="board" data-rv data-board><div class="brow bh"><span>Time</span><span>Destination</span><span class="bg">Gate</span><span>Remarks</span></div><div class="brows"></div></div>
   <div class="ctas" style="margin-top:22px"><a class="btn" href="#event-schedule">${ic('calendar',18)} Full programme</a><a class="btn sec" href="#reminders">${ic('bell',18)} Boarding call reminders</a></div></div></section>
 
@@ -108,7 +108,7 @@ class Voyage{
   this.pin.style.setProperty('--vp',(this.s/(this.n-1)).toFixed(4))}
  showCard(i){const s=STOPS[i],j=JOURNEY[i]||['','',''],last=i===this.n-1;this.card.classList.remove('in');this.card.offsetWidth;
   this.card.innerHTML=`<div class="pc-stamp">${lmSvg(s.lm,40,1.4)}<span>${j[0]}</span></div><div class="pc-mark"><span>IMPACT</span><b>${j[0]}</b><span>${String(i+1).padStart(2,'0')} / ${String(this.n).padStart(2,'0')}</span></div>
-  <p class="pc-eb">Stop ${i+1} of ${this.n} · ${esc(s.place)}</p><div class="pc-year tn">${j[0]}</div><h3>${esc(j[1])}</h3><p>${esc(j[2])}</p>${last?`<a class="btn" href="#event-schedule">${ic('calendar',16)} See the programme</a>`:''}<p class="pc-note">Sample milestones. The team adds the official story.</p>`;
+  <p class="pc-eb">Stop ${i+1} of ${this.n}, ${esc(s.place)}</p><div class="pc-year tn">${j[0]}</div><h3>${esc(j[1])}</h3><p>${esc(j[2])}</p>${last?`<a class="btn" href="#event-schedule">${ic('calendar',16)} See the programme</a>`:''}<p class="pc-note">Sample milestones. The team adds the official story.</p>`;
   this.card.classList.add('in')}
 }
 

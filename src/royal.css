@@ -457,3 +457,28 @@ a.brow:hover{background:rgba(212,175,97,.07)}
 [data-skin="royal"] .scrub span:not(:has(em)){color:color-mix(in srgb,#F7F1E3 calc(var(--w)*100%),#7480AD)}
 [data-skin="royal"] .scrub em{background:var(--goldgrad);background-size:220% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shimmer 6s linear infinite}
 [data-skin="royal"] .scrub::before{content:"XI";position:absolute;right:-.04em;top:50%;transform:translateY(-50%) translateX(calc((1 - var(--sp,1))*12%));font-family:var(--f-royal);font-weight:700;font-size:3.6em;line-height:1;color:transparent;-webkit-text-stroke:1px rgba(212,175,97,.16);pointer-events:none;z-index:-1}
+
+/* =====================================================================
+   Restraint pass: one memorable moment (the globe entrance and the voyage), everything else quiet
+   ===================================================================== */
+/* headings: engraved ivory, no single gold italic word. The hero title keeps its gold. */
+[data-skin="royal"] :is(h1,h2,h3) em:not(.rh-title em){font-style:normal;font-family:inherit;font-weight:inherit;letter-spacing:inherit;background:none;-webkit-background-clip:border-box;background-clip:border-box;color:inherit;-webkit-text-fill-color:currentColor;text-decoration:none;animation:none}
+[data-skin="royal"] .shead h2,[data-skin="royal"] .r-h2,[data-skin="royal"] .venue h2,[data-skin="royal"] #reminders h2{font-family:var(--f-royal);font-weight:600;letter-spacing:.01em;color:#F7F1E3}
+[data-skin="royal"] .shead h2{font-size:clamp(32px,3.6vw,50px);line-height:1.08}
+[data-skin="royal"] .r-h2{font-size:clamp(32px,3.6vw,50px)}
+[data-skin="royal"] .chap h2{font-family:var(--f-royal);font-weight:600;letter-spacing:.01em}
+/* labels that only repeat the heading go; informative ones (up next, live, clock) stay */
+[data-skin="royal"] :is(.gold-eb,.shead .eyebrow,.venue-grid .eyebrow,.ex-side>.eyebrow,#reminders .remind>.col>div>.eyebrow,.ehead .wrap>.eyebrow){display:none}
+[data-skin="royal"] .vy-head .r-h2{margin-top:0}
+/* motion only where a person acts, plus the entrance and the voyage */
+[data-skin="royal"] [data-rv]{opacity:1!important;transform:none!important;transition:none!important}
+[data-skin="royal"] [data-tilt],[data-skin="royal"] [data-magnet]{transform:none!important}
+[data-skin="royal"] [data-tilt]::after{display:none}
+[data-skin="royal"] .bt:hover .bt-go{transform:none}
+/* decoration: the gold dust field is enough */
+[data-skin="royal"] .sprinkles,[data-skin="royal"] .floaters:not(.rh-pin *){display:none}
+[data-skin="royal"] .marquee .track{animation-duration:60s}
+[data-skin="royal"] .band>.wrap>p.eyebrow:first-child{display:none}
+[data-skin="royal"] .ex-side h2,[data-skin="royal"] .venue-grid h2{font-size:clamp(30px,3vw,44px);line-height:1.08}
+[data-skin="royal"] .pin path{fill:#D4AF61}
+[data-skin="royal"] .pin circle{fill:#0A1744}
