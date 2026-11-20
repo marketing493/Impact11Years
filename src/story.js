@@ -24,63 +24,81 @@ function storySection(){return `<section class="story" id="story" style="height:
  <nav class="rail-p" aria-label="Story chapters">${CHAPTERS.map((c,i)=>`<button data-chap="${i}" class="${i?'':'on'}"><span>${['2015','Hustle','Retail','800+','Eleven','Now'][i]}</span><i></i></button>`).join('')}</nav><div class="story-dots" aria-hidden="true">${CHAPTERS.map((c,i)=>`<i data-sdot="${i}" class="${i?'':'on'}"></i>`).join('')}<span class="story-hint">Swipe up</span></div><div class="story-bar"></div></div></section>`}
 
 class Story{
- constructor(sec){this.sec=sec;this.pin=sec.querySelector('.story-pin');this.cv=sec.querySelector('canvas');this.ctx=this.cv.getContext('2d');this.chaps=[...sec.querySelectorAll('.chap')];this.btns=[...sec.querySelectorAll('[data-chap]')];this.dots=[...sec.querySelectorAll('[data-sdot]')];
-  this.n=CHAPTERS.length;this.cs=0;this.target=0;this.ptr=null;this.alive=true;this.resize();
+ constructor(sec){this.sec=sec;this.pin=sec.querySelector('.story-pin');this.cv=sec.querySelector('canvas');this.ctx=this.cv.getContext('2d');
+  this.chaps=[...sec.querySelectorAll('.chap')];this.btns=[...sec.querySelectorAll('[data-chap]')];this.dots=[...sec.querySelectorAll('[data-sdot]')];
+  this.n=CHAPTERS.length;this.cs=0;this.target=0;this.idx=0;this.tw=null;this.ptr=null;this.alive=true;
+  /* Phones get a stepped story: one screen, one chapter per swipe, a timed transition, and the page never moves. */
+  this.phone=matchMedia('(pointer: coarse)').matches||innerWidth<=820;
+  if(this.phone){sec.style.height='';sec.classList.add('stepped')}
+  this.resize();
   this.btns.forEach(b=>b.addEventListener('click',()=>{const i=+b.dataset.chap;scrollTo({top:this.absTop()+(i/(this.n-1))*(this.sec.offsetHeight-innerHeight)+2,behavior:'smooth'})}));
-  this.pin.addEventListener('pointermove',e=>{const r=this.cv.getBoundingClientRect();this.ptr={x:e.clientX-r.left,y:e.clientY-r.top}});this.pin.addEventListener('pointerleave',()=>this.ptr=null);
-  this.loop=this.loop.bind(this);requestAnimationFrame(this.loop);this.update();this.setupSteps()}
+  this.pin.addEventListener('pointermove',e=>{if(e.pointerType!=='mouse'){this.ptr=null;return}const r=this.cv.getBoundingClientRect();this.ptr={x:e.clientX-r.left,y:e.clientY-r.top}});this.pin.addEventListener('pointerleave',()=>this.ptr=null);
+  this.loop=this.loop.bind(this);requestAnimationFrame(this.loop);this.update();if(this.phone)this.setupSteps()}
  absTop(){return this.sec.getBoundingClientRect().top+scrollY}
- destroy(){this.alive=false;this.ac&&this.ac.abort()}
- /* Phones: the story locks in place and each swipe moves exactly one chapter.
-    Swiping past the first or last chapter releases the page. */
+ destroy(){this.alive=false;this.ac&&this.ac.abort();document.documentElement.classList.remove('story-locked')}
+ /* timed move to a chapter, starting from wherever the animation is right now */
+ show(i){i=Math.max(0,Math.min(this.n-1,i));if(i===this.idx&&!this.tw)return;this.idx=i;this.tw={from:this.cs,to:i,t0:performance.now(),d:RMQ.matches?1:Math.min(1400,820+Math.abs(i-this.cs)*180)}}
  setupSteps(){
-  const phone=matchMedia('(pointer: coarse)').matches||innerWidth<=820;if(!phone)return;
-  this.ac=new AbortController();const sig={signal:this.ac.signal},n=this.n;
-  this.idx=0;this.locked=false;this.busy=false;const r0=this.sec.getBoundingClientRect();this.lastTop=r0.top;this.lastBottom=r0.bottom;
-  const span=()=>this.sec.offsetHeight-innerHeight,yOf=i=>this.absTop()+i/(n-1)*span();
-  const glide=(y,ms=750)=>{this.busy=true;scrollTo({top:y,behavior:RMQ.matches?'auto':'smooth'});clearTimeout(this.bt);this.bt=setTimeout(()=>{this.busy=false},ms)};
-  const go=i=>{this.idx=i;this.locked=true;this.pin.dataset.locked='1';glide(yOf(i))};
-  const release=y=>{this.locked=false;delete this.pin.dataset.locked;glide(y,900)};
-  addEventListener('scroll',()=>{const r=this.sec.getBoundingClientRect();
-   if(!this.locked&&!this.busy&&r.top<=0&&r.bottom>=innerHeight){
-    const from=this.lastTop>0?0:this.lastBottom<innerHeight?n-1:Math.round(clamp(-r.top/span())*(n-1));go(from)}
-   this.lastTop=r.top;this.lastBottom=r.bottom},{passive:true,...sig});
-  let y0=null;
-  addEventListener('touchstart',e=>{y0=e.touches[0].clientY},{passive:true,...sig});
+  this.ac=new AbortController();const sig={signal:this.ac.signal},n=this.n,root=document.documentElement;
+  this.locked=false;this.busy=false;this.lastY=scrollY;
+  const glide=(y,ms)=>{this.busy=true;scrollTo({top:y,behavior:RMQ.matches?'auto':'smooth'});clearTimeout(this.bt);this.bt=setTimeout(()=>{this.busy=false;this.hold&&this.hold();this.lastY=scrollY},ms)};
+  const lock=from=>{this.locked=true;this.pin.dataset.locked='1';root.classList.add('story-locked');if(from!==undefined&&from!==this.idx){this.idx=from;this.cs=from;this.tw=null}glide(this.absTop(),650)};
+  const release=y=>{this.locked=false;delete this.pin.dataset.locked;root.classList.remove('story-locked');glide(y,1000)};
+  /* lock when the story arrives on screen: from above start at chapter 1, from below at the last one */
+  /* while locked, hold the story exactly at the top: catches leftover momentum and address bar shifts */
+  const hold=()=>{if(!this.locked)return;const top=this.sec.getBoundingClientRect().top;if(Math.abs(top)>1)scrollTo({top:this.absTop(),behavior:'auto'})};
+  this.hold=hold;
+  addEventListener('scroll',()=>{const y=scrollY,down=y>this.lastY;this.lastY=y;if(this.locked&&!this.busy){hold();this.lastY=scrollY;return}if(this.locked||this.busy)return;
+   const top=this.sec.getBoundingClientRect().top,H=innerHeight;
+   if(down&&top<H*.28&&top>-H*.5)lock(this.idx===n-1&&top<0?undefined:0);
+   else if(!down&&top>-H*.28&&top<H*.5)lock(this.idx===0&&top>0?undefined:n-1)},{passive:true,...sig});
+  let y0=null,t0=0;
+  addEventListener('touchstart',e=>{y0=e.touches[0].clientY;t0=performance.now()},{passive:true,...sig});
   addEventListener('touchmove',e=>{if(this.locked)e.preventDefault()},{passive:false,...sig});
-  addEventListener('touchend',e=>{if(!this.locked||y0===null)return;const dy=y0-e.changedTouches[0].clientY;y0=null;if(this.busy||Math.abs(dy)<28)return;
-   const next=this.idx+(dy>0?1:-1);
-   if(next<0)release(this.absTop()-innerHeight*.7);
-   else if(next>n-1)release(this.absTop()+this.sec.offsetHeight-Math.min(140,innerHeight*.2));
-   else go(next)},{passive:true,...sig});
-  addEventListener('keydown',e=>{if(!this.locked||this.busy)return;if(['ArrowDown','PageDown',' '].includes(e.key)){e.preventDefault();this.idx<n-1?go(this.idx+1):release(this.absTop()+this.sec.offsetHeight-140)}if(['ArrowUp','PageUp'].includes(e.key)){e.preventDefault();this.idx>0?go(this.idx-1):release(this.absTop()-innerHeight*.7)}},sig);
-  this.sec.querySelectorAll('[data-sdot]').forEach(d=>d.addEventListener('click',()=>go(+d.dataset.sdot),sig))}
- resize(){const d=Math.min(2,devicePixelRatio||1),W=this.pin.clientWidth,H=this.pin.clientHeight;this.W=W;this.H=H;this.cv.width=W*d;this.cv.height=H*d;this.ctx.setTransform(d,0,0,d,0,0);
-  const wide=W>820,railX=W-Math.max(24,(W-1200)/2)-150,ax=wide?W*.49:W*.06,aw=wide?Math.max(260,railX-W*.49-24):W*.88,ay=wide?H*.18:H*.1,ah=wide?H*.64:H*.36,maxCell=wide?30:20;
-  const shapes=CHAPTERS.map(c=>shapePoints(c.shape)),N=Math.max(...shapes.map(s=>s.pts.length))+90,r=seededRand(5);this.N=N;
-  const amb=Array.from({length:N},()=>[r()*W,r()*H]);this.swirl=Array.from({length:N},()=>(r()-.5)*160);this.stag=Array.from({length:N},(_,i)=>(i*7%41)/41*.32);
-  this.T=shapes.map((s,k)=>{const cell=Math.min(maxCell,aw/s.w,ah/s.h),ox=ax+(aw-s.w*cell)/2,oy=ay+(ah-s.h*cell)/2,order=[...s.pts];const rk=seededRand(31+k);
-   for(let i=order.length-1;i>0;i--){const j=Math.floor(rk()*(i+1));[order[i],order[j]]=[order[j],order[i]]}
+  addEventListener('touchend',e=>{if(!this.locked||y0===null)return;const dy=y0-e.changedTouches[0].clientY;y0=null;if(Math.abs(dy)<30||performance.now()-(this.stepAt||0)<380)return;
+   this.stepAt=performance.now();const next=this.idx+(dy>0?1:-1);
+   if(next<0)release(this.absTop()-innerHeight*.8);
+   else if(next>n-1)release(this.absTop()+this.sec.offsetHeight);
+   else this.show(next)},{passive:true,...sig});
+  addEventListener('wheel',e=>{if(this.locked)e.preventDefault()},{passive:false,...sig});
+  this.dots.forEach(d=>d.addEventListener('click',()=>this.show(+d.dataset.sdot),sig))}
+ resize(){const d=Math.min(2,devicePixelRatio||1),W=this.pin.clientWidth,H=this.pin.clientHeight;
+  /* ignore the small height changes from the phone's address bar so shapes never jump */
+  if(this.phone&&this.W===W&&Math.abs(H-this.H)<160&&this.T)return;
+  this.W=W;this.H=H;this.cv.width=W*d;this.cv.height=H*d;this.ctx.setTransform(d,0,0,d,0,0);
+  const wide=W>820,railX=W-Math.max(24,(W-1200)/2)-150,ax=wide?W*.49:W*.07,aw=wide?Math.max(260,railX-W*.49-24):W*.86,ay=wide?H*.18:H*.13,ah=wide?H*.64:H*.32,maxCell=wide?30:22;
+  const shapes=CHAPTERS.map(c=>shapePoints(c.shape)),N=Math.max(...shapes.map(s=>s.pts.length))+(wide?90:50),r=seededRand(5);this.N=N;
+  const amb=Array.from({length:N},()=>[r()*W,r()*H]),swing=wide?160:56;
+  this.swirl=Array.from({length:N},()=>(r()-.5)*swing);this.stag=Array.from({length:N},(_,i)=>(i*7%41)/41*(wide?.32:.2));
+  this.T=shapes.map((s,k)=>{const cell=Math.floor(Math.min(maxCell,aw/s.w,ah/s.h)),ox=Math.round(ax+(aw-s.w*cell)/2),oy=Math.round(ay+(ah-s.h*cell)/2),order=[...s.pts];const rk=seededRand(31+k);
+   /* phones: sort cells left to right so they travel in tidy columns; desktop keeps the scatter */
+   if(wide){for(let i=order.length-1;i>0;i--){const j=Math.floor(rk()*(i+1));[order[i],order[j]]=[order[j],order[i]]}}else order.sort((p,q)=>p.c-q.c||p.r-q.r);
    const pos=new Float32Array(N*2),sz=new Float32Array(N),al=new Float32Array(N),hot=new Uint8Array(N);
-   for(let i=0;i<N;i++){if(i<order.length){const p=order[i];pos[i*2]=ox+p.c*cell;pos[i*2+1]=oy+p.r*cell;sz[i]=cell*.8;al[i]=1;hot[i]=p.o?1:0}
-    else{pos[i*2]=amb[i][0]+Math.sin(k+i)*30;pos[i*2+1]=amb[i][1]+Math.cos(k*1.7+i)*30;sz[i]=2+(i%4);al[i]=.28;hot[i]=0}}
+   for(let i=0;i<N;i++){if(i<order.length){const p=order[i];pos[i*2]=ox+p.c*cell;pos[i*2+1]=oy+p.r*cell;sz[i]=Math.round(cell*.8);al[i]=1;hot[i]=p.o?1:0}
+    else{pos[i*2]=amb[i][0]+Math.sin(k+i)*30;pos[i*2+1]=amb[i][1]+Math.cos(k*1.7+i)*30;sz[i]=2+(i%3);al[i]=.24;hot[i]=0}}
    return {pos,sz,al,hot}})}
- update(){const r=this.sec.getBoundingClientRect(),span=this.sec.offsetHeight-innerHeight,p=clamp(-r.top/span);this.target=p*(this.n-1);this.visible=r.bottom>0&&r.top<innerHeight;this.pin.style.setProperty('--p',p.toFixed(4))}
+ update(){const r=this.sec.getBoundingClientRect();this.visible=r.bottom>0&&r.top<innerHeight;if(this.phone)return;
+  const span=this.sec.offsetHeight-innerHeight,p=clamp(-r.top/span);this.target=p*(this.n-1);this.pin.style.setProperty('--p',p.toFixed(4))}
  loop(t){if(!this.alive)return;requestAnimationFrame(this.loop);if(!this.visible||document.hidden)return;
-  this.cs+=(this.target-this.cs)*(RMQ.matches?1:.09);const cs=this.cs,k=Math.min(this.n-2,Math.floor(cs)),f=clamp(cs-k);
+  if(this.tw){const q=clamp((t-this.tw.t0)/this.tw.d);this.cs=this.tw.from+(this.tw.to-this.tw.from)*q;if(q>=1){this.cs=this.tw.to;this.tw=null}}
+  else if(!this.phone)this.cs+=(this.target-this.cs)*(RMQ.matches?1:.09);
+  const cs=this.cs,k=Math.min(this.n-2,Math.floor(cs)),f=clamp(cs-k),settled=this.phone&&!this.tw;
+  if(this.phone)this.pin.style.setProperty('--p',(cs/(this.n-1)).toFixed(4));
   /* background + copy */
   const kb=Math.min(this.n-1,Math.floor(cs)),fb=clamp(cs-kb);this.pin.style.background=lerpHex(CHAPTERS[kb].bg,CHAPTERS[Math.min(this.n-1,kb+1)].bg,ease(fb));
-  const wide=this.W>820;this.chaps.forEach((el,i)=>{const d=cs-i,o=clamp(1-Math.abs(d)*1.9);el.style.opacity=o.toFixed(3);el.style.transform=`translateY(${wide?'calc(-50% + ':'calc('}${(-d*70).toFixed(1)}px))`;el.style.pointerEvents=o>.6?'auto':'none'});
+  const wide=this.W>820;this.chaps.forEach((el,i)=>{const d=cs-i,o=clamp(1-Math.abs(d)*(this.phone?2.4:1.9));el.style.opacity=o.toFixed(3);el.style.transform=`translateY(${wide?'calc(-50% + ':'calc('}${(-d*(this.phone?36:70)).toFixed(1)}px))`;el.style.pointerEvents=o>.6?'auto':'none'});
   const act=Math.round(cs);this.btns.forEach((b,i)=>b.classList.toggle('on',i===act));if(act!==this.lastAct){this.lastAct=act;this.dots.forEach((d,i)=>d.classList.toggle('on',i===act));this.pin.dataset.ch=act}
   /* particles */
-  const c=this.ctx,A=this.T[k],B=this.T[k+1],N=this.N,ptr=this.ptr,still=RMQ.matches;c.clearRect(0,0,this.W,this.H);
-  for(let i=0;i<N;i++){const e=ease(clamp((f-this.stag[i])/.68));
+  const c=this.ctx,A=this.T[k],B=this.T[k+1],N=this.N,ptr=this.ptr,still=RMQ.matches,span=this.phone?.8:.68;c.clearRect(0,0,this.W,this.H);
+  for(let i=0;i<N;i++){const e=ease(clamp((f-this.stag[i])/span)),inShape=(e<.5?A:B).al[i]>.6;
    let x=A.pos[i*2]+(B.pos[i*2]-A.pos[i*2])*e,y=A.pos[i*2+1]+(B.pos[i*2+1]-A.pos[i*2+1])*e;
    const sw=Math.sin(e*Math.PI)*this.swirl[i],dx=B.pos[i*2]-A.pos[i*2],dy=B.pos[i*2+1]-A.pos[i*2+1],len=Math.hypot(dx,dy)||1;x+=-dy/len*sw;y+=dx/len*sw;
-   if(!still){x+=Math.sin(t*.0011+i)*1.4;y+=Math.cos(t*.0013+i*1.3)*1.4}
+   /* cells in a finished shape sit perfectly still on phones; loose cells keep drifting */
+   if(!still&&!(settled&&inShape)){x+=Math.sin(t*.0011+i)*1.4;y+=Math.cos(t*.0013+i*1.3)*1.4}
    if(ptr&&!still){const px=x-ptr.x,py=y-ptr.y,dd=Math.hypot(px,py);if(dd<110){const m=(110-dd)/110*34;x+=px/(dd||1)*m;y+=py/(dd||1)*m}}
    const s=A.sz[i]+(B.sz[i]-A.sz[i])*e,a=A.al[i]+(B.al[i]-A.al[i])*e,hot=e<.5?A.hot[i]:B.hot[i];
-   c.globalAlpha=a;c.fillStyle=hot?'#FF6F1C':a>.6?'#FFFFFF':'#B3C9F7';c.fillRect(x,y,s,s)}
+   c.globalAlpha=a;c.fillStyle=hot?'#FF6F1C':a>.6?'#FFFFFF':'#B3C9F7';
+   if(settled&&inShape)c.fillRect(Math.round(x),Math.round(y),s,s);else c.fillRect(x,y,s,s)}
   c.globalAlpha=1}
 }
 

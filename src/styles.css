@@ -443,3 +443,9 @@ html.rv-on [data-rv]:not(.in){opacity:0;transform:translateY(34px)}
  .story-hint::before{content:"";width:8px;height:8px;border-left:1.5px solid #fff;border-top:1.5px solid #fff;transform:rotate(45deg);animation:cue 1.6s var(--ease) infinite}
  .story-pin:not([data-ch="0"]) .story-hint{opacity:0}
  .story-pin[data-locked]{touch-action:none}}
+
+/* phones: the story is one screen and the page holds still while you step through it */
+.story.stepped{height:100svh}
+@supports not (height:100svh){.story.stepped{height:100vh}}
+.story.stepped .story-pin{position:relative}
+html.story-locked,html.story-locked body{overscroll-behavior:none}
