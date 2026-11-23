@@ -673,6 +673,46 @@ html,body{overscroll-behavior-y:none}
  .top .tone-toggle+.bell{margin-left:6px}}
 html,body{max-width:100%;overflow-x:clip}
 
+/* =====================================================================
+   Pavilions: realistic striped marquee tents
+   Roof stripes fan out from the peak with rounded shading, a scalloped valance hangs from a gold rail,
+   velvet curtains gather fully to the sides when opened, and the line-up sits on its own margins inside.
+   ===================================================================== */
+:root[data-tone="blue"] .tent{filter:drop-shadow(0 28px 26px rgba(8,18,70,.5))}
+:root[data-tone="blue"] .tents{align-items:stretch}
+:root[data-tone="blue"] .t-flag{width:3px;height:28px;background:linear-gradient(90deg,#8C6A2C,#F3DFA2 50%,#8C6A2C);z-index:1}
+:root[data-tone="blue"] .t-flag::before{content:"";position:absolute;left:50%;bottom:-6px;width:11px;height:11px;margin-left:-5.5px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFF1C1,#D4AF61 55%,#7A5A22);box-shadow:0 2px 3px rgba(0,0,0,.35)}
+:root[data-tone="blue"] .t-roof{height:126px;clip-path:polygon(50% 0,57% 20%,68% 46%,82% 72%,100% 100%,0 100%,18% 72%,32% 46%,43% 20%);
+ background:linear-gradient(90deg,rgba(8,14,48,.3),rgba(8,14,48,0) 30%,rgba(255,255,255,.16) 50%,rgba(8,14,48,0) 70%,rgba(8,14,48,.3)),
+  linear-gradient(rgba(255,255,255,.1),rgba(8,14,48,.16)),
+  repeating-conic-gradient(from 85deg at 50% 0,#F7F1E3 0 10deg,#264CD7 10deg 20deg)}
+:root[data-tone="blue"] .t-val{position:relative;z-index:1;height:24px;margin-top:-1px;
+ background:linear-gradient(#F3DFA2,#B8944A) top/100% 4px no-repeat,
+  radial-gradient(circle at 50% 4px,#F7F1E3 11.5px,transparent 12px) 0 0/48px 24px repeat-x,
+  radial-gradient(circle at 50% 4px,#264CD7 11.5px,transparent 12px) 24px 0/48px 24px repeat-x;
+ filter:drop-shadow(0 4px 3px rgba(0,0,0,.28))}
+:root[data-tone="blue"] .t-sign{margin-top:-10px;padding:7px 18px;box-shadow:0 8px 16px rgba(0,0,0,.4),inset 0 0 0 1px rgba(255,241,193,.7)}
+:root[data-tone="blue"] .t-body{flex:1;height:auto;min-height:250px;margin:-16px 12px 0;border-radius:0 0 6px 6px;
+ background:radial-gradient(ellipse 75% 40% at 50% 0,rgba(255,224,150,.26),transparent 72%),linear-gradient(#262424,#141313);
+ border:3px solid #D4AF61;border-top:0;box-shadow:inset 0 22px 26px -12px rgba(0,0,0,.7)}
+:root[data-tone="blue"] .t-list{position:relative;inset:auto;overflow:visible;padding:36px 22px 22px;gap:0;font-size:14px;line-height:1.35;color:#F4F4F6}
+:root[data-tone="blue"] .t-list>span{display:grid;grid-template-columns:auto 1fr;column-gap:12px;align-items:baseline;padding:10px 0;border-top:1px solid rgba(243,223,162,.16)}
+:root[data-tone="blue"] .t-list>span:first-child{border-top:0;padding-top:0}
+:root[data-tone="blue"] .t-list b{margin:0;color:#F3DFA2;font-family:var(--f-body);font-weight:600;font-size:12.5px;letter-spacing:.03em;font-variant-numeric:tabular-nums;padding:2px 7px;border:1px solid rgba(212,175,97,.55);border-radius:4px;white-space:nowrap}
+:root[data-tone="blue"] .t-list .tt{min-width:0;overflow-wrap:anywhere}
+:root[data-tone="blue"] :is(.t-cl,.t-cr){z-index:1;width:50.5%;
+ background:linear-gradient(rgba(255,255,255,.08),rgba(0,0,0,.28)),
+  repeating-linear-gradient(90deg,#1C3BAE 0,#3A5FE8 6px,#2A50DA 11px,#18339C 17px,#1C3BAE 22px);
+ box-shadow:inset 0 -40px 40px -12px rgba(0,0,0,.4);transition:transform .9s var(--ease)}
+:root[data-tone="blue"] .t-cl{box-shadow:inset 0 -40px 40px -12px rgba(0,0,0,.4),inset -8px 0 12px -6px rgba(0,0,0,.45)}
+:root[data-tone="blue"] .t-cr{box-shadow:inset 0 -40px 40px -12px rgba(0,0,0,.4),inset 8px 0 12px -6px rgba(0,0,0,.45)}
+/* opened: the curtains gather into narrow folds against the poles, clear of the line-up */
+:root[data-tone="blue"] :is(.tent:hover,.tent.open,.tent:focus-visible) .t-cl{transform:scaleX(.1)}
+:root[data-tone="blue"] :is(.tent:hover,.tent.open,.tent:focus-visible) .t-cr{transform:scaleX(.1)}
+:root[data-tone="blue"] .t-count{z-index:2;bottom:22px;padding:6px 14px;border-radius:999px;background:rgba(20,30,90,.55);border:1px solid rgba(212,175,97,.5)}
+@media (hover:none){:root[data-tone="blue"] .tent:hover:not(.open) .t-cl,:root[data-tone="blue"] .tent:hover:not(.open) .t-cr{transform:none}
+ :root[data-tone="blue"] .tent:hover:not(.open) .t-count{opacity:1}}
+
 /* ---------- performance ---------- */
 [data-off],[data-off] *,[data-off] *::before,[data-off] *::after{animation-play-state:paused!important}
 /* decorative loops that repaint large areas: calm on phones, still everywhere else */
