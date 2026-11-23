@@ -773,7 +773,8 @@ html,body{max-width:100%;overflow-x:clip}
 /* the globe keeps its size while the page scrolls (no zoom) */
 /* the globe zooms in as the hero scrolls away into the next section (the hero clips it, so it never covers the next section) */
 .rh-orb{transform:scale(calc(1 + var(--zp,0) * .9))!important;transform-origin:50% 92%;will-change:transform,opacity;opacity:clamp(0,calc(1.15 - var(--zp,0) * 2.4),1)}
-@media (max-width:1100px){.rh-orb{transform:scale(calc(1 + var(--zp,0) * .6))!important;transform-origin:50% 92%}}
+/* phones and tablets: no zoom or fade, the globe stays as it is */
+@media (max-width:1100px){.rh-orb{transform:none!important;opacity:1!important;will-change:auto}}
 
 /* =====================================================================
    Invitation desk: "arrived by airmail"
