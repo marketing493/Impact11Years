@@ -1069,6 +1069,50 @@ html,body{max-width:100%;overflow-x:clip}
 @keyframes drapeSheen{from{transform:translateX(0)}to{transform:translateX(260%)}}
 @media (prefers-reduced-motion:reduce){:root[data-tone="blue"] .drape,:root[data-tone="blue"] .drape::before{animation:none}}
 
+/* curtains drawn on canvas: the canvas carries the shape, folds and motion */
+:root[data-tone="blue"] .drape.has-cv{background:none;box-shadow:none;clip-path:none!important;animation:none;transform:none;overflow:visible}
+:root[data-tone="blue"] .drape.has-cv::before{display:none}
+.drape-cv{position:absolute;inset:0;width:100%;height:100%;display:block}
+:root[data-tone="blue"] .drape.has-cv::after{z-index:1}
+
+/* ---------- round 7 ---------- */
+/* curtain canvases on their own layer, so redrawing them never repaints the rest of the venue */
+.drape-cv{will-change:transform;transform:translateZ(0)}
+/* hero: the top corners of the frame sit just under the header */
+.rh-fl.tl,.rh-fl.tr{top:14px}
+@media (max-width:900px){.rh-fl.tl,.rh-fl.tr{top:10px}}
+/* invitation: the text column is centred on the envelope (the envelope keeps room above it for the pass) */
+@media (min-width:901px){.inv-grid>.col{padding-top:min(30vw,230px)}}
+/* a larger boarding pass */
+:root[data-tone="blue"] .env-card{left:1%;right:1%}
+.env-card .bp-main{padding:22px 24px 22px 26px}
+.env-card .bp-top{font-size:12px}
+.env-card .bp-route{margin:14px 0 18px}
+.env-card .bp-route b{font-size:42px}
+.env-card .bp-route small{font-size:12px}
+.env-card .bp-grid{padding-top:14px;gap:10px}
+.env-card .bp-grid small,.env-card .bp-stub small{font-size:10.5px}
+.env-card .bp-grid b{font-size:15px;margin-top:4px}
+.env-card .bp-stub{width:124px;padding:18px 12px;gap:3px}
+.env-card .bp-stub b{font-size:36px}
+.env-card .bp-stub b.sm{font-size:14px}
+.env-card .bp-bar{width:88px;height:34px;margin-top:10px}
+@media (max-width:900px){
+ .env-card .bp-main{padding:16px 14px 16px 16px}
+ .env-card .bp-route b{font-size:30px}
+ .env-card .bp-grid b{font-size:14px}
+ .env-card .bp-stub{width:92px;padding:14px 8px}
+ .env-card .bp-stub b{font-size:28px}
+ .env-card .bp-bar{width:66px;height:28px}
+ :root[data-tone="blue"] .env-wrap{padding-top:clamp(200px,54vw,260px)}}
+/* reminders: more room after step 1 */
+:root[data-tone="blue"] #reminders .steps{gap:44px}
+#reminders [data-act="install"]{margin-bottom:12px}
+
+/* phones: the larger pass settles lower so it stays clear of the header */
+@keyframes passOutM{0%{transform:translateY(105%)}60%{transform:translateY(-96%)}100%{transform:translateY(-62%) rotate(-2deg)}}
+@media (max-width:900px){:root[data-tone="blue"] .env.open .env-card{animation-name:passOutM}:root[data-tone="blue"] .env-wrap{padding-top:clamp(150px,40vw,200px)}}
+
 /* ---------- logos: 15% smaller, with breathing room ---------- */
 .top .logo11{width:clamp(124px,10.8vw,152px)}
 .top .wrap>a:first-child{padding:10px 6px 10px 0}

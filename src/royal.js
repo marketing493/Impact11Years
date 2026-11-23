@@ -64,9 +64,44 @@ function bunting(){const n=24;let tri='';for(let i=0;i<n;i++){const t=(i+.5)/n,x
  return `<svg class="bunting" viewBox="0 0 1000 110" preserveAspectRatio="none" aria-hidden="true"><path d="M0 8 Q500 112 1000 8" fill="none" stroke="#D4AF61" stroke-width="1.5"/>${tri}</svg>`}
 
 /* ---------- controllers ---------- */
-let HERO=null,VOYAGE=null,BOARD=null;
-function mountRoyal(){syncTone();mountSkyline();HERO&&HERO.stop();HERO=null;VOYAGE&&VOYAGE.stop();VOYAGE=null;BOARD&&BOARD.stop();BOARD=null;
- if(S.skin!=='royal')return;const a=$('#arch');if(a)HERO=new Hero(a);const v=$('#voyage');if(v)VOYAGE=new Voyage(v);const b=$('[data-board]');if(b)BOARD=new Board(b);tickRoyal()}
+
+/* ---------- venue curtains: velvet drawn on a canvas, folds gathered at the tie-back, swaying softly ---------- */
+class Curtain{
+ constructor(el){this.el=el;this.right=el.classList.contains('r');this.cv=document.createElement('canvas');this.cv.className='drape-cv';this.cv.setAttribute('aria-hidden','true');el.prepend(this.cv);el.classList.add('has-cv');
+  this.c=this.cv.getContext('2d');this.alive=true;this.vis=false;this.seed=this.right?2.3:0;this.resize();
+  this.onResize=()=>{if(this.el.clientWidth===this.W&&Math.abs(this.el.clientHeight-this.H)<4)return;this.resize();this.draw(performance.now())};addEventListener('resize',this.onResize);
+  this.loop=this.loop.bind(this);this.io=new IntersectionObserver(es=>{this.vis=es[0].isIntersecting;if(this.vis)this.kick()},{rootMargin:'80px 0px'});this.io.observe(el);
+  this.onWake=()=>this.kick();addEventListener('ia-wake',this.onWake);this.draw(0)}
+ kick(d){if(this.raf||this.tmo)return;if(d>0)this.tmo=setTimeout(()=>{this.tmo=0;this.kick()},d);else this.raf=requestAnimationFrame(this.loop)}
+ stop(){this.alive=false;this.io.disconnect();removeEventListener('resize',this.onResize);removeEventListener('ia-wake',this.onWake)}
+ resize(){const d=1;this.W=this.el.clientWidth;this.H=this.el.clientHeight;this.cv.width=Math.max(1,Math.round(this.W*d));this.cv.height=Math.max(1,Math.round(this.H*d));this.c.setTransform(d,0,0,d,0,0)}
+ loop(t){this.raf=0;if(!this.alive||!this.vis||document.hidden)return;this.draw(t);if(!RMQ.matches)this.kick(this.W<80?66:34)}
+ /* inner edge of the curtain (fraction of its width) at a height (fraction of its height): swept to the tie-back, then flared to the floor */
+ edge(y){if(y<=.52){const s=y/.52;return .30+.70*(1-s)*(1-s)}return .30+.17*Math.sin((y-.52)/.48*Math.PI/2)}
+ /* how freely the fabric moves: held by the rail and the tie-back, free at the hem */
+ free(y){return y<=.52?.3*Math.sin(Math.PI*y/.52):Math.pow((y-.52)/.48,1.25)}
+ draw(t){const c=this.c,W=this.W,H=this.H;if(!W||!H)return;const T=t/1000,still=RMQ.matches;c.clearRect(0,0,W,H);
+  const N=W<80?8:Math.max(14,Math.round(W/4)),ROWS=W<80?16:24,folds=Math.max(3.5,W/30),A=Math.min(14,W*.085),sd=this.seed;
+  const X=(u,y)=>{const sw=still?0:A*this.free(y)*(Math.sin(T*.62+y*2.4+u*1.6+sd)+.45*Math.sin(T*1.07+y*4.3+sd*1.7));const x=u*this.edge(y)*W+sw*u;return this.right?W-x:x};
+  const ys=[];for(let j=0;j<=ROWS;j++)ys.push(j/ROWS);
+  for(let k=0;k<N;k++){const u0=k/N,u1=(k+1)/N,um=(u0+u1)/2;
+   c.beginPath();for(let j=0;j<=ROWS;j++){const x=X(u0,ys[j]);j?c.lineTo(x,ys[j]*H):c.moveTo(x,0)}for(let j=ROWS;j>=0;j--)c.lineTo(X(u1,ys[j])+(this.right?-.6:.6),ys[j]*H);c.closePath();
+   const g=c.createLinearGradient(0,0,0,H);
+   for(let j=0;j<=ROWS;j+=3){const y=ys[j],w=this.edge(y);
+    const ph=um*folds*6.283+.9*Math.sin(um*7.3+sd)+.45*Math.sin(um*folds*2.3*6.283+sd*2)+(still?0:.4*Math.sin(T*.9+um*5.5+y*3.1+sd))+(1-w)*1.6;
+    let L=.18+.82*Math.pow(.5+.5*Math.sin(ph),1.15);
+    L*=.62+.38*Math.sqrt(w);
+    L*=.7+.3*Math.min(1,(1-um)*3.5);
+    const fl=Math.max(0,(y-.62)/.38);L*=1-.5*fl*fl+.06*(1-y);
+    if(y<.035)L*=.72;
+    const r=Math.round(14+L*92),gg=Math.round(30+L*118),b=Math.min(255,Math.round(98+L*150));
+    g.addColorStop(y,`rgb(${r},${gg},${b})`)}
+   c.fillStyle=g;c.fill()}
+  c.globalCompositeOperation='source-atop';const e=c.createLinearGradient(this.right?W:0,0,this.right?0:W,0);e.addColorStop(0,'rgba(0,0,0,0)');e.addColorStop(.55,'rgba(0,0,0,0)');e.addColorStop(1,'rgba(4,8,34,.35)');c.fillStyle=e;c.fillRect(0,0,W,H);c.globalCompositeOperation='source-over'}
+}
+let HERO=null,VOYAGE=null,BOARD=null,CURTAINS=[];
+function mountRoyal(){syncTone();mountSkyline();HERO&&HERO.stop();HERO=null;VOYAGE&&VOYAGE.stop();VOYAGE=null;BOARD&&BOARD.stop();BOARD=null;CURTAINS.forEach(c=>c.stop());CURTAINS=[];
+ if(S.skin!=='royal')return;const a=$('#arch');if(a)HERO=new Hero(a);const v=$('#voyage');if(v)VOYAGE=new Voyage(v);const b=$('[data-board]');if(b)BOARD=new Board(b);CURTAINS=$$('.venue .drape').map(e=>new Curtain(e));tickRoyal()}
 function tickRoyal(){const d=Math.max(0,TARGET_MS()-Date.now()),v={d:Math.floor(d/864e5),h:Math.floor(d%864e5/36e5),m:Math.floor(d%36e5/6e4),s:Math.floor(d%6e4/1e3)};
  if(typeof DIAL_C!=='undefined'){const frac={d:Math.min(1,v.d/30),h:v.h/24,m:v.m/60,s:v.s/60};
   $$('[data-rdial]').forEach(el=>{const k=el.dataset.rdial,f=frac[k],arc=el.querySelector('.d-arc'),orb=el.querySelector('.d-orb'),prev=+el.dataset.f;

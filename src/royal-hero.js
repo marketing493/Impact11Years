@@ -14,9 +14,9 @@ const rhUnit=(k,l)=>`<div class="rh-u" data-rdial="${k}"><svg class="dial" viewB
  <b class="tn" data-rcd="${k}">--</b><span>${l}</span></div>`;
 function rHero(){return `<section class="r-hero" id="arch"><div class="rh-pin"><canvas class="rh-dust" aria-hidden="true"></canvas><div class="rh-rays" aria-hidden="true"></div>
  ${flourish('tl')}${flourish('tr')}${flourish('bl')}${flourish('br')}
- <p class="rh-eb rh-frame-eb"><i></i><span>11 Years of Impact</span><i></i></p>
  <div class="rh-grid">
   <div class="rh-copy">
+   <p class="rh-eb"><i></i><span>11 Years of Impact</span><i></i></p>
    <h1 class="rh-title" aria-label="Around the World"><span class="t1">Around the</span><span class="t2">World</span></h1>
    <p class="rh-sub">Thursday, 17 December 2026<span>◆</span>Hilton Embassy Tech Village, Bangalore</p>
    <div class="rh-count" role="timer" aria-label="Countdown to the celebration"><svg class="constel" viewBox="0 0 100 20" preserveAspectRatio="none" aria-hidden="true"><path d="M12.5 10 Q25 2 37.5 10 T62.5 10 T87.5 10"/></svg>${rhUnit('d','Days')}${rhUnit('h','Hours')}${rhUnit('m','Minutes')}${rhUnit('s','Seconds')}</div>
@@ -70,7 +70,7 @@ class Hero{constructor(sec){this.sec=sec;this.pin=sec.querySelector('.rh-pin');t
   /* halo, solid body and outer rings never change: drawn once into a cached layer, then copied each frame */
   const tone=document.documentElement.dataset.tone;if(!this.gStatic||this.gStaticKey!==GW+'x'+GH+tone){this.gStaticKey=GW+'x'+GH+tone;const d=DPR(),sv=document.createElement('canvas');sv.width=Math.round(GW*d);sv.height=Math.round(GH*d);const sg=sv.getContext('2d');sg.scale(d,d);
    const HR=Math.min(R*1.55,cx,cy,GW-cx,GH-cy),halo=sg.createRadialGradient(cx,cy,R*.6,cx,cy,HR);halo.addColorStop(0,'rgba(243,223,162,.16)');halo.addColorStop(.45,'rgba(212,175,97,.07)');halo.addColorStop(1,'rgba(212,175,97,0)');sg.fillStyle=halo;sg.beginPath();sg.arc(cx,cy,HR,0,6.283);sg.fill();
-   const body=sg.createRadialGradient(cx-R*.35,cy-R*.4,R*.1,cx,cy,R);if(tone==='blue'){body.addColorStop(0,'#5A7BE6');body.addColorStop(.6,'#2E55DC');body.addColorStop(1,'#2445C4')}else{body.addColorStop(0,'#1E3FAE');body.addColorStop(.7,'#0B1A52');body.addColorStop(1,'#060D2C')}sg.fillStyle=body;sg.beginPath();sg.arc(cx,cy,R,0,6.283);sg.fill();
+   const body=sg.createRadialGradient(cx-R*.35,cy-R*.4,R*.1,cx,cy,R);if(tone==='blue'){body.addColorStop(0,'#264CD7');body.addColorStop(.62,'#22388C');body.addColorStop(1,'#1C1B1B')}else{body.addColorStop(0,'#1E3FAE');body.addColorStop(.7,'#0B1A52');body.addColorStop(1,'#060D2C')}sg.fillStyle=body;sg.beginPath();sg.arc(cx,cy,R,0,6.283);sg.fill();
    {const rim=sg.createRadialGradient(cx,cy,R*.86,cx,cy,R*1.02);rim.addColorStop(0,'rgba(243,223,162,0)');rim.addColorStop(1,'rgba(243,223,162,.45)');sg.fillStyle=rim;sg.beginPath();sg.arc(cx,cy,R*1.02,0,6.283);sg.fill()}
    sg.strokeStyle='rgba(212,175,97,.75)';sg.lineWidth=1.2;sg.beginPath();sg.arc(cx,cy,R*1.1,0,6.283);sg.stroke();
    sg.setLineDash([2,6]);sg.strokeStyle='rgba(212,175,97,.45)';sg.beginPath();sg.arc(cx,cy,R*1.18,0,6.283);sg.stroke();this.gStatic=sv}
