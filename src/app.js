@@ -88,9 +88,9 @@ function venueBand(){return `<section class="band inkfield venue" id="venue" dat
 
 function remindBand(){const p=S.pwa,ns=notifyStatus(),canNotify=ns==='ok',perm=canNotify?Notification.permission:'unsupported',on=p.on&&perm==='granted';
  const s1done=p.standalone;
- let s1=s1done?`<span class="pill p-blue">${ic('check',13)} Added to your home screen</span>`:p.prompt?`<button class="btn" data-act="install">${ic('addbox',18)} Add to home screen</button>`:p.ios?`<div class="ios"><span>1. Open this page in Safari${/CriOS|FxiOS|EdgiOS|FBAN|FBAV|Instagram|Line\//.test(navigator.userAgent)?' (you are in another app or browser right now)':''}.</span><span>2. Tap ${ic('share',16)} Share at the bottom of the screen.</span><span>3. Choose ${ic('addbox',16)} Add to Home Screen, then Add.</span></div>`:`<p class="sm muted">On Android, open the browser menu and choose Install app or Add to home screen. On a computer, use the install icon in the address bar.</p>`;
+ let s1=s1done?`<span class="pill p-blue">${ic('check',13)} Added to your home screen</span>`:p.prompt?`<button class="btn" data-act="install">${ic('addbox',18)} Add to home screen</button>`:`<button class="btn" data-act="howInstall">${ic('addbox',18)} Add to home screen</button>`;
  let s2;if(on)s2=`<div class="row wrapx"><span class="pill p-blue">${ic('check',13)} Reminders are on</span><button class="btn ghost sm" data-act="testnotif">Send a test</button><button class="btn ghost sm" data-act="remoff">Turn off</button></div>`;
- else if(ns==='ios-install')s2=`<div class="ios"><span>${ic('lock',16)} iPhone and iPad only allow reminders from the home screen app.</span><span>Do step 1, then open <b>Impact Events</b> from your home screen and tap Turn on reminders here.</span></div>`;
+ else if(ns==='ios-install')s2=`<button class="btn" data-act="howRemind">${ic('bell',18)} Turn on reminders</button>`;
  else if(ns==='ios-update')s2=`<p class="sm muted">${NOTIFY_HELP['ios-update']}</p>`;
  else if(!canNotify)s2=`<p class="sm muted">${NOTIFY_HELP.unsupported}</p>`;
  else if(perm==='denied')s2=`<p class="sm muted">Notifications are blocked for this site. Allow them in your browser or phone settings, then come back.</p>`;

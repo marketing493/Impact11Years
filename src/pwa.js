@@ -54,3 +54,17 @@ async function scheduleLocal(){clearLocal();if(!S.pwa.on||!('Notification' in wi
  for(const a of S.acts){const at=startMs(a)-LEAD_MIN*6e4,key=a.id+a.date+a.start;if(fired[key])continue;const wait=at-now;
   if(wait<=0&&startMs(a)>now){fired[key]=1;store.set('ia11-fired',fired);showLocal(`Starting in ${Math.max(1,Math.round((startMs(a)-now)/6e4))} minutes`,`${a.title}, ${a.location} at ${a.start}`,'act-'+a.id)}
   else if(wait>0&&wait<864e5)TIMERS.push(setTimeout(()=>{const f=store.get('ia11-fired',{});if(f[key])return;f[key]=1;store.set('ia11-fired',f);showLocal(`Starting in ${LEAD_MIN} minutes`,`${a.title}, ${a.location} at ${a.start}`,'act-'+a.id)},wait))}}
+
+/* ---------- how-to sheet for browsers that cannot install or allow reminders on a tap (iPhone Safari, Firefox, desktop Safari) ---------- */
+function howSheet(kind){const ios=S.pwa.ios,inApp=/CriOS|FxiOS|EdgiOS|FBAN|FBAV|Instagram|Line\//.test(navigator.userAgent);
+ const steps=kind==='remind'
+  ?[[ic('addbox',22),'Add the app to your home screen','Use the Add to home screen button in step 1.'],[ic('star',22),'Open Impact Events from your home screen','iPhone and iPad only allow reminders from the home screen app.'],[ic('bell',22),'Tap Turn on reminders','Then allow notifications when your phone asks.']]
+  :ios?[[ic('share',22),inApp?'Open this page in Safari':'Tap Share',inApp?'You are in another app or browser right now. Copy the link and open it in Safari.':'The Share button is at the bottom of the screen in Safari.'],[ic('addbox',22),'Choose Add to Home Screen','Scroll down the list if you do not see it.'],[ic('check',22),'Tap Add','The Impact Events icon appears on your home screen.']]
+  :[[ic('addbox',22),'On Android','Open the browser menu (three dots) and choose Install app or Add to home screen.'],[ic('star',22),'On a computer','Click the install icon at the right of the address bar.'],[ic('check',22),'Then open it','The Impact Events app opens full screen, like any other app.']];
+ const w=document.createElement('div');w.className='modal-w how-w';w.setAttribute('role','dialog');w.setAttribute('aria-modal','true');w.setAttribute('aria-label',kind==='remind'?'How to turn on reminders':'How to add to home screen');
+ w.innerHTML=`<div class="modal how"><div class="how-h"><h3>${kind==='remind'?'Turn on reminders':'Add to home screen'}</h3><button class="icon-btn how-x" aria-label="Close">${ic('x',18)}</button></div>
+  <ol class="how-s">${steps.map(([i,t,d],k)=>`<li><span class="how-n">${k+1}</span><span class="how-i">${i}</span><span class="how-t"><b>${t}</b><small>${d}</small></span></li>`).join('')}</ol>
+  <button class="btn how-ok">Got it</button></div>`;
+ const close=()=>{w.remove();document.removeEventListener('keydown',esc_)};const esc_=e=>{if(e.key==='Escape')close()};
+ w.addEventListener('click',e=>{if(e.target===w||e.target.closest('.how-x,.how-ok'))close()});document.addEventListener('keydown',esc_);
+ document.body.append(w);w.querySelector('.how-ok').focus()}

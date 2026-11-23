@@ -1199,6 +1199,21 @@ html,body{max-width:100%;overflow-x:clip}
  padding:14px max(32px,calc((100vw - var(--max))/2)) 16px}
 @media (max-width:820px){:root[data-tone="blue"] .vy-head{padding:12px 16px 14px}}
 
+/* how-to sheet: matches the site (black panel, gold accents); slides up from the bottom on phones */
+:root[data-tone="blue"] .how{background:#1C1B1B;border:1px solid rgba(235,201,107,.45);gap:18px}
+.how-h{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.how-h h3{font-family:'Spectral',Georgia,serif;font-weight:400;font-size:28px;background:var(--goldtext);-webkit-background-clip:text;background-clip:text;color:transparent}
+.how-x{flex:none;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(244,244,246,.08)!important;color:#F4F4F6;border:0}
+.how-s{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.how-s li{display:grid;grid-template-columns:auto auto 1fr;gap:12px;align-items:center;padding:12px 14px;border-radius:12px;background:rgba(38,76,215,.22);border:1px solid rgba(244,244,246,.1)}
+.how-n{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#1C1B1B;background:var(--goldtext)}
+.how-i{color:#F7E3A1;display:flex}
+.how-t b{display:block;font-size:15.5px;color:#FFFFFF;font-weight:600}
+.how-t small{display:block;font-size:13.5px;line-height:1.4;color:rgba(244,244,246,.75);margin-top:2px}
+.how-ok{align-self:stretch;justify-content:center}
+@media (max-width:900px){.how-w{align-items:flex-end;padding:0}.how{max-width:none;border-radius:20px 20px 0 0;padding:22px 18px calc(22px + env(safe-area-inset-bottom,0px));animation:howUp .3s var(--ease)}}
+@keyframes howUp{from{transform:translateY(40px);opacity:0}}
+
 /* ---------- logos: 15% smaller, with breathing room ---------- */
 .top .logo11{width:clamp(124px,10.8vw,152px)}
 .top .wrap>a:first-child{padding:10px 6px 10px 0}
