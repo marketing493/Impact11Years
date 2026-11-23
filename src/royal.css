@@ -1176,6 +1176,14 @@ html,body{max-width:100%;overflow-x:clip}
 .bg-edge.t{top:0;-webkit-mask:linear-gradient(#000,transparent);mask:linear-gradient(#000,transparent)}
 .bg-edge.b{bottom:0;-webkit-mask:linear-gradient(transparent,#000);mask:linear-gradient(transparent,#000)}
 
+/* a little breathing room below the hero, in the hero's own colours */
+:root[data-tone="blue"] .r-hero{padding-bottom:56px;background:var(--e-hero)!important}
+@media (max-width:900px){:root[data-tone="blue"] .r-hero{padding-bottom:32px}}
+/* Paris stamp in the invitation */
+.istamp.s5{--r:8deg;left:9%;bottom:10%}
+@supports (animation-timeline:view()){.istamp.s5{animation-name:driftB}}
+@media (max-width:900px){.istamp.s5{left:auto;right:6%;bottom:2%;top:auto}}
+
 /* ---------- logos: 15% smaller, with breathing room ---------- */
 .top .logo11{width:clamp(124px,10.8vw,152px)}
 .top .wrap>a:first-child{padding:10px 6px 10px 0}
