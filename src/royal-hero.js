@@ -34,9 +34,10 @@ function rHero(){return `<section class="r-hero" id="arch"><div class="rh-pin"><
 class Hero{constructor(sec){this.sec=sec;this.pin=sec.querySelector('.rh-pin');this.dust=sec.querySelector('.rh-dust');this.gcv=sec.querySelector('.globe');this.alive=true;
   /* land points as lon/lat, sampled from the dot mask */
   this.land=[];WORLD.rows.forEach((row,y)=>{for(let i=0;i<row.length;i++){const v=parseInt(row[i],16);for(let b=0;b<4;b++)if(v&(8>>b)){const gx=i*4+b;this.land.push([(-180+(gx+.5)*360/WORLD.W)*Math.PI/180,(WORLD.lat0-(y+.5)*(WORLD.lat0-WORLD.lat1)/WORLD.H)*Math.PI/180])}}});
-  this.stops=STOPS.map(s=>[s.lon*Math.PI/180,s.lat*Math.PI/180]);
+  this.stops=STOPS.filter(s=>s.lm!=='taj').map(s=>[s.lon*Math.PI/180,s.lat*Math.PI/180]);
   /* a dozen extra glowing points on land, chosen once (seeded, so they stay put between visits) */
-  {const r=seededRand(311),picks=[];for(let k=0;k<400&&picks.length<12;k++){const p=this.land[Math.floor(r()*this.land.length)];if(picks.every(o=>Math.hypot(o[0]-p[0],o[1]-p[1])>.35))picks.push(p)}
+  {const r=seededRand(311),picks=[];for(let k=0;k<400&&picks.length<12;k++){const p=this.land[Math.floor(r()*this.land.length)];const dlo=p[0]*180/Math.PI,dla=p[1]*180/Math.PI,india=dlo>66&&dlo<98&&dla>5&&dla<37,northAm=dlo<-50&&dla>12;if(!india&&!northAm&&picks.every(o=>Math.hypot(o[0]-p[0],o[1]-p[1])>.35))picks.push(p)}
+   const D=Math.PI/180;for(const [lo,la] of [[-118.24,34.05],[-87.63,41.88],[-96.8,32.78],[-114.07,51.05]])picks.push([lo*D,la*D]);
    this.sparks=picks.map(p=>[p[0],p[1],r(),1.5+r()*.6])}
   this.rot=-1.25;this.vel=0;this.tvel=0;this.drag=null;this.tilt=.12;this.idle=0;this.hit=sec.querySelector('.globe-hit');
   this.resize();this.onResize=()=>{if(this.pin.clientWidth===this.W&&Math.abs(this.pin.clientHeight-this.H)<180)return;this.resize()};addEventListener('resize',this.onResize);this.onScroll=()=>this.update();addEventListener('scroll',this.onScroll,{passive:true});

@@ -1184,6 +1184,13 @@ html,body{max-width:100%;overflow-x:clip}
 @supports (animation-timeline:view()){.istamp.s5{animation-name:driftB}}
 @media (max-width:900px){.istamp.s5{left:auto;right:6%;bottom:2%;top:auto}}
 
+/* marquee: text and black bar 30% smaller */
+:root[data-tone="blue"] .marquee span{font-size:clamp(28px,4.2vw,59px);gap:34px}
+:root[data-tone="blue"] .marquee .track{gap:34px}
+:root[data-tone="blue"] .marquee span::after{width:13px;height:13px}
+:root[data-tone="blue"] .marquee{padding-block:calc(var(--mq) + 11px)}
+@media (max-width:900px){:root[data-tone="blue"] .marquee{padding-block:calc(var(--mq) + 8px)}}
+
 /* ---------- logos: 15% smaller, with breathing room ---------- */
 .top .logo11{width:clamp(124px,10.8vw,152px)}
 .top .wrap>a:first-child{padding:10px 6px 10px 0}
