@@ -529,136 +529,7 @@ footer .logo11{width:200px}
 .top .bell{margin-left:auto}
 @media (max-width:820px){main{padding-bottom:0}.totop{bottom:calc(20px + env(safe-area-inset-bottom,0px))}#toast{bottom:calc(24px + env(safe-area-inset-bottom,0px))}.ra-cue{bottom:calc(22px + env(safe-area-inset-bottom,0px))}.rh-grid{padding-bottom:calc(48px + env(safe-area-inset-bottom,0px))}}
 
-/* =====================================================================
-   Impact Blue version: the Royal design on Impact Blue #264CD7, with the same gold and ivory
-   ===================================================================== */
-.tone-toggle{margin-left:auto;border-color:rgba(212,175,97,.45);background:rgba(10,23,68,.35);color:#C9CFEA}
-.top .tone-toggle+.bell{margin-left:12px}
-.tone-toggle .sk-track{background:#0A1744;border-color:rgba(212,175,97,.45)}
-.tone-toggle .sk-knob{background:var(--goldgrad);color:#0A1744}
-.tone-toggle[aria-pressed="true"] .sk-knob{transform:translateX(18px);background:#264CD7;color:#F3DFA2;box-shadow:0 0 0 1px #D4AF61}
-.tone-toggle[aria-pressed="false"] .sk-l,.tone-toggle[aria-pressed="true"] .sk-r{color:var(--gold-hi);font-family:var(--f-royal);letter-spacing:.06em}
-.tone-toggle[aria-pressed="true"] .sk-l,.tone-toggle[aria-pressed="false"] .sk-r{color:#C9CFEA;font-family:inherit;letter-spacing:0}
-:root[data-skin="royal"][data-tone="blue"]{--bg:#264CD7;--surface:#1F42C2;--surface-2:#1A3AB0;--muted:#E1E7FC;--faint:#AFC0F5;--line:rgba(243,223,162,.32);--line-2:rgba(243,223,162,.45)}
-[data-tone="blue"] body{background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'><g fill='none' stroke='%23F3DFA2' stroke-opacity='.09' stroke-width='1'><path d='M70 34c10 14 10 22 0 36-10-14-10-22 0-36zM70 106c10-14 10-22 0-36-10 14-10 22 0 36zM34 70c14-10 22-10 36 0-14 10-22 10-36 0zM106 70c-14-10-22-10-36 0 14 10 22 10 36 0z'/><circle cx='70' cy='70' r='4'/></g></svg>"),radial-gradient(1400px 800px at 50% 0%,#3A62EA 0,transparent 65%),#264CD7}
-[data-tone="blue"] body::before{background:#1E40BC}
-[data-tone="blue"] .top{background:rgba(27,59,181,.88);border-bottom-color:rgba(243,223,162,.55)}
-[data-tone="blue"] footer,[data-tone="blue"] .marquee{background:#1B3BB5}
-[data-tone="blue"] .rh-pin{background:radial-gradient(ellipse 62% 78% at 74% 50%,#4570F0 0%,#264CD7 46%,#1B3BB5 100%)}
-[data-tone="blue"] .rh-eb{color:#F3DFA2}
-[data-tone="blue"] .rh-sub,[data-tone="blue"] .rh-drag,[data-tone="blue"] .rh-u span,[data-tone="blue"] .dep-clock span{color:#E1E7FC}
-[data-tone="blue"] .constel path{stroke:rgba(243,223,162,.65)}
-[data-tone="blue"] .r-sky{background:linear-gradient(#1B3BB5,#264CD7)}
-[data-tone="blue"] .vy-pin{background:radial-gradient(ellipse 90% 70% at 50% 45%,#3A62EA 0%,#264CD7 55%,#1B3BB5 100%)}
-[data-tone="blue"] .vy-pin::before{background:linear-gradient(#1E40BC 30%,rgba(30,64,188,0))}
-[data-tone="blue"] .venue,[data-tone="blue"] .inkfield{background:radial-gradient(80% 70% at 50% 0%,#3A62EA 0%,#1B3BB5 80%)}
-[data-tone="blue"] .lock{background:#14309A}
-[data-tone="blue"] .card{background:linear-gradient(180deg,rgba(243,223,162,.06),transparent 40%),#1F42C2}
-[data-tone="blue"] .glass{background:rgba(14,36,140,.35);border-color:rgba(243,223,162,.55)}
-[data-tone="blue"] .btn.sec,[data-tone="blue"] .btn.glassy{background:rgba(14,36,140,.45);border-color:rgba(243,223,162,.7)}
-[data-tone="blue"] .t-body{background:linear-gradient(#14309A,#0F2580)}
-[data-tone="blue"] .drape{background:repeating-linear-gradient(90deg,#14309A 0 12px,#2347C9 12px 24px,#14309A 24px 38px)}
-[data-tone="blue"] .modal{background:#1F42C2}
-[data-tone="blue"] .ios{background:#1A3AB0}
-@media (max-width:820px){.tone-toggle{padding:5px 6px}}
-.pc-eb{padding-right:0;max-width:calc(100% - 170px)}
-@media (max-width:820px){.pc-eb{max-width:calc(100% - 64px)}}
-[data-tone="blue"] .postcard{box-shadow:inset 0 0 0 6px #F7F1E3,inset 0 0 0 7px rgba(212,175,97,.8),0 30px 60px -22px rgba(10,23,68,.9)}
-
-/* =====================================================================
-   Impact Blue version, aligned to the IA brand guidelines.
-   Brand palette only: Impact Blue #264CD7, Black #1C1B1B, Off-White #F4F4F6, White, Grays, Accent Orange (sparingly).
-   Gold and ivory stay as the celebration accents. Headlines in Spectral Light (the ABC Otto alternate), text in Inter Tight.
-   Shading uses Black or White overlays on Impact Blue, never new blues.
-   ===================================================================== */
-:root[data-skin="royal"][data-tone="blue"]{
- --bg:#264CD7;--surface:rgba(28,27,27,.24);--surface-2:rgba(28,27,27,.36);--fg:#FFFFFF;--muted:rgba(244,244,246,.82);--faint:rgba(244,244,246,.55);
- --line:rgba(244,244,246,.22);--line-2:rgba(244,244,246,.34);--blue:#264CD7;--orange:#FF6F1C;
- --f-royal:'Spectral',Georgia,'Times New Roman',serif}
-/* surfaces: Impact Blue with the brand thin-line grid and grain; black for dark panels */
-:root[data-tone="blue"] body{background:linear-gradient(rgba(244,244,246,.10) 1px,transparent 1px) 0 0/48px 48px,linear-gradient(90deg,rgba(244,244,246,.10) 1px,transparent 1px) 0 0/48px 48px,#264CD7}
-:root[data-tone="blue"] body::before{background:#264CD7}
-:root[data-tone="blue"] .top{background:rgba(38,76,215,.94);border-bottom:1px solid rgba(212,175,97,.6);box-shadow:none}
-:root[data-tone="blue"] footer,:root[data-tone="blue"] .marquee{background:#1C1B1B;border-color:rgba(212,175,97,.4)}
-:root[data-tone="blue"] :is(.rh-pin,.vy-pin,.venue,.inkfield,.bluefield,.r-invite,.r-dep,.r-fair,.r-sky){background:#264CD7}
-:root[data-tone="blue"] .rh-pin{background:radial-gradient(ellipse 60% 70% at 72% 50%,rgba(255,255,255,.16),transparent 70%),#264CD7}
-:root[data-tone="blue"] .rh-pin::before{opacity:1;background-image:linear-gradient(rgba(244,244,246,.10) 1px,transparent 1px),linear-gradient(90deg,rgba(244,244,246,.10) 1px,transparent 1px);background-size:48px 48px;-webkit-mask:none;mask:none}
-:root[data-tone="blue"] .vy-pin::before{background:linear-gradient(#264CD7 30%,rgba(38,76,215,0))}
-:root[data-tone="blue"] :is(.bluefield,.inkfield)::before{background-image:linear-gradient(rgba(244,244,246,.10) 1px,transparent 1px),linear-gradient(90deg,rgba(244,244,246,.10) 1px,transparent 1px)}
-/* type: Spectral Light headlines, Inter Tight labels */
-:root[data-tone="blue"] :is(h1,h2,h3,.r-h2,.rh-title span,.rh-u b,.pc-year,.ec-t,.dep-clock b,.vm b,.marquee span,.t-count b,.postcard h3,.zonecard h3,.medal text){font-family:'Spectral',Georgia,serif;font-weight:300;letter-spacing:-.01em}
-:root[data-tone="blue"] .rh-title .t1,:root[data-tone="blue"] .rh-title .t3{letter-spacing:-.005em;color:#FFFFFF}
-:root[data-tone="blue"] .rh-title .t2{letter-spacing:-.035em;line-height:.88}
-:root[data-tone="blue"] :is(.rh-eb,.ec-k,.ec-d,.pc-eb,.env-hint,.brow.bh,.t-sign,.rh-cue,.sk-r,.sk-l,.rh-u span,.dep-clock span){font-family:var(--f-body);font-weight:500}
-:root[data-tone="blue"] .rh-eb{color:#F3DFA2;letter-spacing:.14em}
-:root[data-tone="blue"] :is(.rh-sub,.rh-drag,.rh-u span,.dep-clock span,.muted){color:rgba(244,244,246,.86)}
-/* countdown dials and medal: black discs */
-:root[data-tone="blue"] .d-disc{fill:#1C1B1B;stroke:rgba(212,175,97,.45)}
-:root[data-tone="blue"] .medal circle[fill="#0A1744"]{fill:#1C1B1B}
-:root[data-tone="blue"] .constel path{stroke:rgba(244,244,246,.55)}
-/* cards, glass, buttons */
-:root[data-tone="blue"] .card{background:rgba(28,27,27,.24);border-color:rgba(244,244,246,.22)}
-:root[data-tone="blue"] .glass{background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.32)}
-:root[data-tone="blue"] :is(.btn.sec,.btn.glassy){background:rgba(28,27,27,.22);color:#F3DFA2;border-color:rgba(212,175,97,.7)}
-:root[data-tone="blue"] .btn.white{background:#FFFFFF;color:#264CD7;border-color:#FFFFFF}
-:root[data-tone="blue"] .icon-btn{background:#1C1B1B}
-:root[data-tone="blue"] .tone-toggle{background:rgba(28,27,27,.22);color:#F4F4F6}
-:root[data-tone="blue"] .tone-toggle .sk-track{background:#1C1B1B}
-:root[data-tone="blue"] .tone-toggle[aria-pressed="true"] .sk-knob{background:#264CD7;color:#F3DFA2}
-:root[data-tone="blue"] .modal{background:#1C1B1B}
-:root[data-tone="blue"] .ios{background:rgba(28,27,27,.3)}
-:root[data-tone="blue"] .lock{background:#1C1B1B}
-/* invitation: black envelope back, Impact Blue front and flap, ivory card with black lettering */
-:root[data-tone="blue"] .env-back{background:#1C1B1B;border-color:rgba(212,175,97,.6)}
-:root[data-tone="blue"] .env-front{background:#264CD7;box-shadow:inset 0 0 60px rgba(28,27,27,.35)}
-:root[data-tone="blue"] .env-flap{background:linear-gradient(rgba(255,255,255,.08),rgba(28,27,27,.18)),#264CD7}
-:root[data-tone="blue"] :is(.ec-s,.ec-d,.postcard h3){color:#1C1B1B}
-:root[data-tone="blue"] :is(.ec-k,.ec-v,.postcard p){color:rgba(28,27,27,.72)}
-:root[data-tone="blue"] .env-hint{color:#F3DFA2}
-/* voyage */
-:root[data-tone="blue"] .vm i{background:#1C1B1B}
-:root[data-tone="blue"] .pc-stamp{background:#264CD7;color:#F3DFA2}
-:root[data-tone="blue"] .pc-mark{border-color:rgba(28,27,27,.3);color:rgba(28,27,27,.45)}
-:root[data-tone="blue"] .pc-note{color:rgba(28,27,27,.55)!important}
-:root[data-tone="blue"] .postcard{box-shadow:inset 0 0 0 6px #F7F1E3,inset 0 0 0 7px rgba(212,175,97,.8),0 30px 60px -22px rgba(28,27,27,.7)}
-/* departures board: brand black, off-white type, orange for boarding (accent used sparingly) */
-:root[data-tone="blue"] .board{background:#1C1B1B;box-shadow:0 40px 70px -34px rgba(28,27,27,.9)}
-:root[data-tone="blue"] .fc{background:linear-gradient(rgba(244,244,246,.09) 50%,rgba(244,244,246,.05) 50%);color:#F4F4F6}
-:root[data-tone="blue"] .brow.ok .rem .fc{color:#F4F4F6}
-:root[data-tone="blue"] .brow.board .rem .fc{background:#FF6F1C;color:#1C1B1B}
-/* pavilions: Impact Blue and ivory stripes, black interior */
-:root[data-tone="blue"] .t-roof{background:repeating-linear-gradient(90deg,#264CD7 0 9%,#F7F1E3 9% 18%)}
-:root[data-tone="blue"] .t-val{background:radial-gradient(circle at 50% 0,#1C1B1B 10px,transparent 11px) 0 0/24px 22px repeat-x,linear-gradient(#D4AF61,#D4AF61) top/100% 3px no-repeat}
-:root[data-tone="blue"] .t-body{background:#1C1B1B}
-:root[data-tone="blue"] :is(.t-cl,.t-cr){background:repeating-linear-gradient(90deg,#264CD7 0 9px,rgba(28,27,27,.25) 9px 18px),#264CD7}
-:root[data-tone="blue"] .t-sign{color:#1C1B1B}
-:root[data-tone="blue"] .pen[fill="#0F2160"]{fill:#1C1B1B}
-/* venue */
-:root[data-tone="blue"] .floor{background:#1C1B1B}
-:root[data-tone="blue"] .floor::before{background-image:linear-gradient(rgba(244,244,246,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(244,244,246,.12) 1px,transparent 1px)}
-:root[data-tone="blue"] .drape{background:repeating-linear-gradient(90deg,#264CD7 0 12px,rgba(28,27,27,.28) 12px 24px,#264CD7 24px 38px),#264CD7}
-:root[data-tone="blue"] .zrow,:root[data-tone="blue"] .zones button{background:rgba(28,27,27,.18)}
-/* curtain transition */
-:root[data-tone="blue"] .curtain i{background:repeating-linear-gradient(90deg,#264CD7 0 18px,rgba(28,27,27,.3) 18px 32px,#264CD7 32px 50px),#264CD7}
-:root[data-tone="blue"] .curtain .c-val{background:radial-gradient(circle at 50% 100%,transparent 26px,#1C1B1B 27px) 0 0/80px 84px repeat-x}
-:root[data-tone="blue"] :is(.env-front,.env-flap){background:#1C1B1B;box-shadow:none}
-:root[data-tone="blue"] .env-back{background:#1C1B1B}
-:root[data-tone="blue"] :is(.zones button,.zrow,.viewbar button)[aria-pressed="true"]{background:var(--goldgrad);color:#1C1B1B;border-color:#D4AF61}
-:root[data-tone="blue"] .pc-eb{letter-spacing:.08em;font-size:11px;max-width:calc(100% - 190px)}
-:root[data-tone="blue"] :is(.t-cl,.t-cr){background:repeating-linear-gradient(90deg,#264CD7 0 9px,#1C1B1B 9px 11px),#264CD7}
-/* Impact Blue sits first: knob on the left for Impact Blue, on the right for Midnight */
-.tone-toggle[aria-pressed="true"] .sk-knob{transform:none;background:#264CD7;color:#F3DFA2;box-shadow:0 0 0 1px #D4AF61}
-.tone-toggle[aria-pressed="false"] .sk-knob{transform:translateX(18px);background:var(--goldgrad);color:#0A1744}
-.tone-toggle[aria-pressed="true"] .sk-l,.tone-toggle[aria-pressed="false"] .sk-r{color:var(--gold-hi);font-family:var(--f-body);font-weight:500;letter-spacing:0}
-.tone-toggle[aria-pressed="false"] .sk-l,.tone-toggle[aria-pressed="true"] .sk-r{color:#C9CFEA;font-family:var(--f-body);font-weight:400;letter-spacing:0}
-
-/* voyage map ornaments */
-.vy-vig{position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse 75% 70% at 50% 52%,transparent 55%,rgba(4,10,36,.55) 100%)}
-[data-tone="blue"] .vy-vig{background:radial-gradient(ellipse 75% 70% at 50% 52%,transparent 55%,rgba(28,27,27,.28) 100%)}
-.vy-rose{position:absolute;z-index:1;right:max(24px,calc((100vw - var(--max))/2));bottom:16vh;width:clamp(120px,13vw,190px);height:auto;opacity:.32;transform:rotate(calc(var(--vp,0) * 300deg));transition:transform .4s linear;pointer-events:none}
-@media (max-width:820px){.vy-rose{display:none}}
-
-/* ---------- mobile polish ---------- */
+/* ==============================================================/* ---------- mobile polish ---------- */
 html,body{overscroll-behavior-y:none}
 [id]{scroll-margin-top:calc(80px + env(safe-area-inset-top,0px))}
 @media (pointer:coarse){
@@ -672,3 +543,26 @@ html,body{overscroll-behavior-y:none}
  .tone-toggle{padding:4px}
  .top .tone-toggle+.bell{margin-left:6px}}
 html,body{max-width:100%;overflow-x:clip}
+
+/* ---------- performance ---------- */
+[data-off],[data-off] *,[data-off] *::before,[data-off] *::after{animation-play-state:paused!important}
+/* decorative loops that repaint large areas: calm on phones, still everywhere else */
+.rh-rays{animation:none}
+.rh-title .t2{animation:riseIn 1.4s var(--ease) both .45s}
+@media (pointer:coarse),(max-width:820px){
+ .seal,.pen,.t-flag::after,.d-star,.chand .flame,.rh-u b.tk{animation:none!important}
+ .d-arc,.d-orb{transition:none}
+ .top,.glass,.sound,.tone-toggle,.subnav,.tabbar,.fl.glass i,.fl.ftag i{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+ [data-skin="royal"] .top{background:rgba(7,15,48,.97)}
+ .glass{background:rgba(10,23,68,.55)}
+ :root[data-tone="blue"] .top{background:#264CD7}
+ :root[data-tone="blue"] .glass{background:rgba(255,255,255,.14)}
+ .bluefield::after,.inkfield::after{mix-blend-mode:normal;opacity:.08}}
+.r-hero,.r-voyage,.r-dep,.r-fair,.venue,#reminders,.r-invite{contain:layout paint}
+.fc.g{animation:flapc2 .11s linear}
+@keyframes flapc2{50%{transform:scaleY(.1)}}
+/* sound equaliser: scale on the compositor instead of animating height (no layout every frame) */
+.sound .eq i{height:14px;transform-origin:50% 100%;transform:scaleY(.29)}
+@keyframes eq{0%,100%{transform:scaleY(.29)}50%{transform:scaleY(1)}}
+/* phones: the current-stop ring pulses a few times on arrival, then rests */
+@media (pointer:coarse),(max-width:820px){.vm.cur i::after{animation-iteration-count:4}}

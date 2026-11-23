@@ -12,10 +12,15 @@ function render(){
  $$('[data-nav]').forEach(a=>{const k=a.dataset.nav;a.toggleAttribute('aria-current',false);if(k===nav||(k==='event-about'&&S.route==='event'&&!['schedule','venue'].includes(S.sub)))a.setAttribute('aria-current','page')});
  $$('.bell .dot').forEach(d=>d.hidden=S.pwa.on&&('Notification' in window)&&Notification.permission==='granted');
  const cv=$('#igrid');if(cv)GRID_I=new ImpactGrid(cv,{mode:S.gridMode,target:Date.parse(EVENT.starts),onTick:srCountdown});
- mountScenes();mountStory();mountFx();mountSubnav();mountCounters();mountExplore();mountRoyal();ticks();
+ mountScenes();mountStory();mountFx();mountOffscreen();mountSubnav();mountCounters();mountExplore();mountRoyal();ticks();
  $$('[data-act="skin"]').forEach(b=>{b.setAttribute('aria-pressed',S.skin==='royal');b.setAttribute('aria-label',S.skin==='royal'?'Switch to the Modern theme':'Switch to the Royal theme')});
  if(S.pendingScroll){const id=S.pendingScroll;S.pendingScroll=null;setTimeout(()=>{const el=document.getElementById('act-'+id);el&&el.scrollIntoView({behavior:'smooth',block:'center'})},120)}}
 function srCountdown(diff){const el=$('#cd-sr');if(!el)return;const d=Math.floor(diff/864e5),h=Math.floor(diff%864e5/36e5),m=Math.floor(diff%36e5/6e4);el.textContent=diff>0?`${d} days, ${h} hours and ${m} minutes until ${EVENT.name}`:`${EVENT.name} is here`}
+/* sections off screen pause their CSS animations, so the phone only works on what is visible */
+let OFF_IO=null;
+function mountOffscreen(){OFF_IO&&OFF_IO.disconnect();if(!('IntersectionObserver' in window))return;
+ OFF_IO=new IntersectionObserver(es=>es.forEach(e=>e.target.toggleAttribute('data-off',!e.isIntersecting)),{rootMargin:'0px'});
+ $$('#app>section:not(.r-voyage),#app>.marquee,#app>div,footer,.vy-pin').forEach(el=>OFF_IO.observe(el))}
 function ticks(){$$('[data-rel]').forEach(el=>el.textContent=rel(+el.dataset.rel));tickRibbons()}
 setInterval(ticks,30000);
 
@@ -29,7 +34,7 @@ function softRefresh(full){if(S.route!=='home'||S.skin!=='royal'){render();retur
 let lastKey='';
 setInterval(async()=>{if(document.hidden||A_.modal)return;const sig0=actsSig(S.acts),before=sig0+S.acts.map(statusOf).join();
  if(S.server){try{const r=await fetch('/api/activities',{cache:'no-store'});const j=await r.json();S.acts=sortActs(j.activities||[])}catch(e){}}
- const sig1=actsSig(S.acts),after=sig1+S.acts.map(statusOf).join();if(S.server)store.set('ia11-acts-cache',S.acts);if(after!==before&&S.route!=='admin'){softRefresh(sig1!==sig0);scheduleLocal()}},60000);
+ const sig1=actsSig(S.acts),after=sig1+S.acts.map(statusOf).join();if(S.server)store.set('ia11-acts-cache',S.acts);if(after!==before&&S.route!=='admin'){softRefresh(sig1!==sig0);scheduleLocal()}},60000+Math.round(Math.random()*20000));
 
 /* ---------- actions ---------- */
 const ACT={

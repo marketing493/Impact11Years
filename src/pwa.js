@@ -16,7 +16,7 @@ const NOTIFY_HELP={
 const inFrame=(()=>{try{return window.self!==window.top}catch(e){return true}})();
 let SW=null;
 async function registerSW(){if(!('serviceWorker' in navigator)||!isSecureContext||inFrame)return null;try{SW=await navigator.serviceWorker.register('/sw.js');return SW}catch(e){return null}}
-function refreshReminders(){const r=$('#reminders');if(r&&S.route==='home')r.outerHTML=remindBand();else if(S.route==='home')render()}
+function refreshReminders(){const r=$('#reminders');if(r&&S.route==='home'){r.outerHTML=remindBand();const n=$('#reminders');if(n&&OFF_IO)OFF_IO.observe(n)}else if(S.route==='home')render()}
 addEventListener('beforeinstallprompt',e=>{e.preventDefault();S.pwa.prompt=e;if(S.route==='home')refreshReminders()});
 addEventListener('appinstalled',()=>{S.pwa.prompt=null;toast('Added to your home screen.');refreshReminders()});
 async function doInstall(){const p=S.pwa.prompt;if(!p)return;p.prompt();const r=await p.userChoice.catch(()=>null);S.pwa.prompt=null;if(r&&r.outcome==='accepted')toast('Installing the app.');refreshReminders()}
