@@ -55,7 +55,9 @@ class Hero{constructor(sec){this.sec=sec;this.pin=sec.querySelector('.rh-pin');t
   const gw=this.gcv.clientWidth,gh=this.gcv.clientHeight;this.GW=gw;this.GH=gh;this.gcv.width=gw*d;this.gcv.height=gh*d;this.gc=this.gcv.getContext('2d');this.gc.setTransform(d,0,0,d,0,0);
   const r=seededRand(23);this.motes=Array.from({length:Math.round(this.W*this.H/9000)},()=>({x:r()*this.W,y:r()*this.H,z:.3+r()*.7,ph:r()*6.28,v:.15+r()*.45,g:r()<.12,b:r()<.05}))}
  update(){const r=this.sec.getBoundingClientRect(),span=this.sec.offsetHeight-innerHeight,p=clamp(-r.top/Math.max(1,span));this.p=p;this.vis=r.bottom>0&&r.top<innerHeight;
-  this.pin.style.setProperty('--p',RMQ.matches?0:p.toFixed(4));if(this.vis)this.kick()}
+  this.pin.style.setProperty('--p',RMQ.matches?0:p.toFixed(4));
+  /* how far the hero has scrolled away (0 at the top of the page, 1 once it has left the screen): drives the globe zoom */
+  const zp=RMQ.matches?0:clamp(-r.top/Math.max(1,r.height));if(this.zp!==zp){this.zp=zp;this.pin.style.setProperty('--zp',zp.toFixed(4))}if(this.vis)this.kick()}
  proj(lon,lat,R,cx,cy,lift=1){const l=lon+this.rot,x=Math.cos(lat)*Math.sin(l),y=Math.sin(lat),z=Math.cos(lat)*Math.cos(l),ct=Math.cos(this.tilt),st=Math.sin(this.tilt);
   return [cx+x*R*lift,cy-(y*ct-z*st)*R*lift,y*st+z*ct]}
  loop(t){this.raf=0;if(!this.alive||!this.vis||document.hidden)return;this.lastT=t;this.kick(HERO_MS-16);const still=RMQ.matches;
