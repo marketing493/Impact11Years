@@ -135,7 +135,7 @@ class Voyage{
  goTo(i){const span=this.sec.offsetHeight-innerHeight,top=this.sec.getBoundingClientRect().top+scrollY;scrollTo({top:top+i/(this.n-1)*span+2,behavior:RMQ.matches?'auto':'smooth'})}
  where(s){const k=Math.min(this.n-2,Math.floor(s)),f=s-k,t=f<.18?0:f>.82?1:ease((f-.18)/.64);return {k,t,pos:this.bez(this.legs[k],t),tan:this.bez(this.legs[k],Math.min(1,t+.01)),prev:this.bez(this.legs[k],Math.max(0,t-.01))}}
  loop(time){this.raf=0;if(!this.alive||!this.vis||document.hidden)return;this.lastT=time;
-  const ds=this.target-this.s;if(LITE&&this.cam&&this.layer&&Math.abs(ds)<.0004&&this.settled>3)return;this.kick(FRAME_MS-16);this.settled=Math.abs(ds)<.0004?(this.settled||0)+1:0;this.s+=ds*(RMQ.matches?1:.08);const W=this.W,H=this.H,c=this.ctx,w=this.where(this.s),P=w.pos;
+  const ds=this.target-this.s;if(LITE&&this.cam&&this.layer&&Math.abs(ds)<.0004&&this.settled>3)return;this.kick(MOTION_MS-16);this.settled=Math.abs(ds)<.0004?(this.settled||0)+1:0;this.s+=ds*(RMQ.matches?1:.08);const W=this.W,H=this.H,c=this.ctx,w=this.where(this.s),P=w.pos;
   /* camera follows the plane */
   const want=[Math.max(Math.min(P[0]-W*(this.phone?.5:.6),this.mapW-W),0),this.mapH<H?(this.mapH-H)/2-H*.06:Math.max(Math.min(P[1]-H*.56,this.mapH-H),0)];
   if(!this.cam)this.cam=want;this.cam=[this.cam[0]+(want[0]-this.cam[0])*.08,this.cam[1]+(want[1]-this.cam[1])*.08];const cx=this.cam[0],cy=this.cam[1];
@@ -154,7 +154,7 @@ class Voyage{
   const trace=()=>{c.beginPath();for(let k=0;k<=w.k;k++){const L=this.legs[k],tt=k<w.k?1:w.t,steps=48;c.moveTo(L.a[0]-cx,L.a[1]-cy);for(let i=1;i<=steps*tt;i++){const q=this.bez(L,i/steps);c.lineTo(q[0]-cx,q[1]-cy)}if(k===w.k)c.lineTo(px,py)}};
   c.strokeStyle='rgba(243,223,162,.18)';c.lineWidth=10;trace();c.stroke();
   const grad=c.createLinearGradient(0,0,W,H);grad.addColorStop(0,'#D4AF61');grad.addColorStop(.5,'#FFF1C1');grad.addColorStop(1,'#E9CD86');
-  c.strokeStyle=grad;c.lineWidth=2.4;c.shadowColor='rgba(255,241,193,.9)';c.shadowBlur=10;trace();c.stroke();c.shadowBlur=0;
+  c.strokeStyle='rgba(255,241,193,.3)';c.lineWidth=5;trace();c.stroke();c.strokeStyle=grad;c.lineWidth=2.4;trace();c.stroke();
   /* sparkling trail behind the plane */
   if(w.t>0&&w.t<1&&!still){const L=this.legs[w.k];for(let i=1;i<=14;i++){const tt=Math.max(0,w.t-i*.012),q=this.bez(L,tt),a=1-i/14,j=Math.sin(time/120+i*1.7)*1.6;c.globalAlpha=a*.9;c.fillStyle='#FFF1C1';c.beginPath();c.arc(q[0]-cx+j,q[1]-cy-j,.6+a*2.2,0,6.283);c.fill()}c.globalAlpha=1}
   /* markers, plane, postcard */

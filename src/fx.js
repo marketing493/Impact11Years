@@ -6,7 +6,10 @@ const RMQ=matchMedia('(prefers-reduced-motion: reduce)');
 const LITE=matchMedia('(pointer: coarse)').matches||innerWidth<=820||(navigator.hardwareConcurrency||8)<=4;
 const DPR=()=>Math.min(LITE?1.5:2,devicePixelRatio||1);
 const FRAME_MS=LITE?33:16;
-const HERO_MS=LITE?42:16;
+/* animation frame budget: full 60 fps everywhere, 30 fps only on slow devices (4 cores or fewer) */
+const SLOW=(navigator.hardwareConcurrency||8)<=4;
+const HERO_MS=SLOW?33:16;
+const MOTION_MS=SLOW?33:16;
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)dispatchEvent(new Event('ia-wake'))});
 /* Brand accents. Rule from the brand guide: one solution colour per composition, so every section,
    chapter and journey moment declares a single accent with data-acc and everything inside it follows. */
@@ -60,8 +63,13 @@ function floaters(items,extra=''){return `<div class="floaters ${extra}" aria-hi
 let fxTick=false,ptr={x:innerWidth/2,y:innerHeight/2};
 const TOTOP=document.getElementById('totop');
 if(TOTOP)TOTOP.addEventListener('click',()=>{scrollTo({top:0,behavior:RMQ.matches?'auto':'smooth'});TOTOP.blur()});
+/* root-level variables are inherited by every element, so they are written only when their value
+   really changes: --mx/--my follow the pointer (not the scroll), and --scroll is not used by the royal design */
+const ROOTV={};const setRoot=(k,v)=>{if(ROOTV[k]!==v){ROOTV[k]=v;root.style.setProperty(k,v)}};
 function fxFrame(){fxTick=false;const royal=root.dataset.skin==='royal';
- if(TOTOP){const max=document.documentElement.scrollHeight-innerHeight,inScene=innerWidth<=820&&['voyage','story'].some(id=>{const e=document.getElementById(id);if(!e)return false;const r=e.getBoundingClientRect();return r.top<=1&&r.bottom>=innerHeight-1}),show=scrollY>innerHeight*1.2&&!inScene;TOTOP.hidden=!show;TOTOP.style.setProperty('--tp',max>0?(scrollY/max).toFixed(3):0)}root.style.setProperty('--scroll',scrollY.toFixed(0));root.style.setProperty('--mx',((ptr.x/innerWidth)*2-1).toFixed(3));root.style.setProperty('--my',((ptr.y/innerHeight)*2-1).toFixed(3));
+ if(TOTOP){/* read layout first, then write */const max=document.documentElement.scrollHeight-innerHeight,inScene=innerWidth<=820&&['voyage','story'].some(id=>{const e=document.getElementById(id);if(!e)return false;const r=e.getBoundingClientRect();return r.top<=1&&r.bottom>=innerHeight-1}),show=scrollY>innerHeight*1.2&&!inScene;
+  if(TOTOP.hidden===show)TOTOP.hidden=!show;const tp=max>0?(scrollY/max).toFixed(3):'0';if(TOTOP.__tp!==tp){TOTOP.__tp=tp;TOTOP.style.setProperty('--tp',tp)}}
+ if(!royal)setRoot('--scroll',scrollY.toFixed(0));setRoot('--mx',((ptr.x/innerWidth)*2-1).toFixed(3));setRoot('--my',((ptr.y/innerHeight)*2-1).toFixed(3));
  if(royal){if(window.AMB){AMB.tx=(ptr.x/innerWidth)*2-1;AMB.ty=(ptr.y/innerHeight)*2-1}return}
  if(window.AMB){AMB.tx=(ptr.x/innerWidth)*2-1;AMB.ty=(ptr.y/innerHeight)*2-1;
   const el=document.elementFromPoint(innerWidth/2,innerHeight/2),sec=el&&el.closest('[data-acc]');if(sec&&root.dataset.skin!=='royal'){const h=getComputedStyle(sec).getPropertyValue('--acc').trim();if(/^#[0-9a-f]{6}$/i.test(h))AMB.accT=hexRgb(h)}}
