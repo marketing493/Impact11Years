@@ -35,6 +35,9 @@ class Hero{constructor(sec){this.sec=sec;this.pin=sec.querySelector('.rh-pin');t
   /* land points as lon/lat, sampled from the dot mask */
   this.land=[];WORLD.rows.forEach((row,y)=>{for(let i=0;i<row.length;i++){const v=parseInt(row[i],16);for(let b=0;b<4;b++)if(v&(8>>b)){const gx=i*4+b;this.land.push([(-180+(gx+.5)*360/WORLD.W)*Math.PI/180,(WORLD.lat0-(y+.5)*(WORLD.lat0-WORLD.lat1)/WORLD.H)*Math.PI/180])}}});
   this.stops=STOPS.map(s=>[s.lon*Math.PI/180,s.lat*Math.PI/180]);
+  /* a dozen extra glowing points on land, chosen once (seeded, so they stay put between visits) */
+  {const r=seededRand(311),picks=[];for(let k=0;k<400&&picks.length<12;k++){const p=this.land[Math.floor(r()*this.land.length)];if(picks.every(o=>Math.hypot(o[0]-p[0],o[1]-p[1])>.35))picks.push(p)}
+   this.sparks=picks.map(p=>[p[0],p[1],r(),1.5+r()*.6])}
   this.rot=-1.25;this.vel=0;this.tvel=0;this.drag=null;this.tilt=.12;this.idle=0;this.hit=sec.querySelector('.globe-hit');
   this.resize();this.onResize=()=>{if(this.pin.clientWidth===this.W&&Math.abs(this.pin.clientHeight-this.H)<180)return;this.resize()};addEventListener('resize',this.onResize);this.onScroll=()=>this.update();addEventListener('scroll',this.onScroll,{passive:true});
   /* drag in any direction: sideways spins the globe, up and down tips it over the poles */
@@ -85,11 +88,12 @@ class Hero{constructor(sec){this.sec=sec;this.pin=sec.querySelector('.rh-pin');t
    for(const [lo,la] of this.land){const q=this.proj(lo,la,R,cx,cy);if(q[2]<=0)continue;const z=q[2],sz=1.4+z*.9;paths[Math.min(B-1,Math.floor(z*B))].rect(q[0]-.9,q[1]-.9,sz,sz)}
    for(let i=0;i<B;i++){const z=(i+.5)/B;g.globalAlpha=.25+z*.75;g.fillStyle=z>.55?'#F3DFA2':'#C9A24A';g.fill(paths[i])}}
   g.globalAlpha=1;
-  /* routes between the voyage stops, lifted off the surface */
-  {const routes=new Path2D();for(let i=0;i<this.stops.length-1;i++){const a=this.stops[i],b=this.stops[i+1];let pen=false;
-   for(let k=0;k<=36;k++){const u=k/36,lo=a[0]+(((b[0]-a[0]+Math.PI*3)%(Math.PI*2))-Math.PI)*u,la=a[1]+(b[1]-a[1])*u,q=this.proj(lo,la,R,cx,cy,1+Math.sin(u*Math.PI)*.12);if(q[2]>-.05){pen?routes.lineTo(q[0],q[1]):routes.moveTo(q[0],q[1]);pen=true}else pen=false}}
-   g.lineCap='round';g.strokeStyle='rgba(255,241,193,.22)';g.lineWidth=6;g.stroke(routes);g.strokeStyle='rgba(255,241,193,.35)';g.lineWidth=3.2;g.stroke(routes);g.strokeStyle='#FFF1C1';g.lineWidth=1.6;g.stroke(routes)}
-  for(const [lo,la] of this.stops){const q=this.proj(lo,la,R,cx,cy);if(q[2]<=0)continue;const pulse=still?0:(t/1600)%1;g.fillStyle='#FFF1C1';g.beginPath();g.arc(q[0],q[1],2.6,0,6.283);g.fill();
+  /* glowing markers: the voyage stops, plus extra glowing points scattered over the land, each pulsing in its own rhythm */
+  for(const [lo,la,ph,sz] of this.sparks){const q=this.proj(lo,la,R,cx,cy);if(q[2]<=0)continue;const pulse=still?0:((t/2200)+ph)%1,a=.35+.65*q[2];
+   g.globalAlpha=a*.22;g.fillStyle='#FFF1C1';g.beginPath();g.arc(q[0],q[1],sz*5.5,0,6.283);g.fill();g.globalAlpha=a*.4;g.beginPath();g.arc(q[0],q[1],sz*2.8,0,6.283);g.fill();g.globalAlpha=a;g.beginPath();g.arc(q[0],q[1],sz,0,6.283);g.fill();
+   g.strokeStyle=`rgba(255,241,193,${(1-pulse)*.6*a})`;g.lineWidth=1;g.beginPath();g.arc(q[0],q[1],sz+1+pulse*8,0,6.283);g.stroke()}
+  g.globalAlpha=1;
+  for(const [lo,la] of this.stops){const q=this.proj(lo,la,R,cx,cy);if(q[2]<=0)continue;const pulse=still?0:(t/1600)%1;g.fillStyle='#FFF1C1';g.globalAlpha=.22;g.beginPath();g.arc(q[0],q[1],13,0,6.283);g.fill();g.globalAlpha=.45;g.beginPath();g.arc(q[0],q[1],6.5,0,6.283);g.fill();g.globalAlpha=1;g.beginPath();g.arc(q[0],q[1],2.6,0,6.283);g.fill();
    g.strokeStyle=`rgba(255,241,193,${(1-pulse)*.8})`;g.lineWidth=1;g.beginPath();g.arc(q[0],q[1],3+pulse*10,0,6.283);g.stroke()}
   /* orbit ring and the gold plane */
   const tiltO=-.32,ox=R*1.42,oy=R*.34,ang=still?.8:t/2600;const ring=a=>{const x=Math.cos(a)*ox,y=Math.sin(a)*oy;return [cx+x*Math.cos(tiltO)-y*Math.sin(tiltO),cy+x*Math.sin(tiltO)+y*Math.cos(tiltO),Math.sin(a)]};
