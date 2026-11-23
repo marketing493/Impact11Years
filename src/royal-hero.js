@@ -38,7 +38,8 @@ class Hero{constructor(sec){this.sec=sec;this.pin=sec.querySelector('.rh-pin');t
   /* a dozen extra glowing points on land, chosen once (seeded, so they stay put between visits) */
   {const r=seededRand(311),picks=[];for(let k=0;k<400&&picks.length<12;k++){const p=this.land[Math.floor(r()*this.land.length)];const dlo=p[0]*180/Math.PI,dla=p[1]*180/Math.PI,india=dlo>66&&dlo<98&&dla>5&&dla<37,northAm=dlo<-50&&dla>12;if(!india&&!northAm&&picks.every(o=>Math.hypot(o[0]-p[0],o[1]-p[1])>.35))picks.push(p)}
    const D=Math.PI/180;for(const [lo,la] of [[-118.24,34.05],[-87.63,41.88],[-96.8,32.78],[-114.07,51.05]])picks.push([lo*D,la*D]);
-   this.sparks=picks.map(p=>[p[0],p[1],r(),1.5+r()*.6])}
+   /* every glowing point, the voyage stops included, is drawn the same small size */
+   this.sparks=[...this.stops,...picks].map(p=>[p[0],p[1],r(),1.5])}
   this.rot=-1.25;this.vel=0;this.tvel=0;this.drag=null;this.tilt=.12;this.idle=0;this.hit=sec.querySelector('.globe-hit');
   this.resize();this.onResize=()=>{if(this.pin.clientWidth===this.W&&Math.abs(this.pin.clientHeight-this.H)<180)return;this.resize()};addEventListener('resize',this.onResize);this.onScroll=()=>this.update();addEventListener('scroll',this.onScroll,{passive:true});
   /* drag in any direction: sideways spins the globe, up and down tips it over the poles */
@@ -94,8 +95,6 @@ class Hero{constructor(sec){this.sec=sec;this.pin=sec.querySelector('.rh-pin');t
    g.globalAlpha=a*.22;g.fillStyle='#FFF1C1';g.beginPath();g.arc(q[0],q[1],sz*5.5,0,6.283);g.fill();g.globalAlpha=a*.4;g.beginPath();g.arc(q[0],q[1],sz*2.8,0,6.283);g.fill();g.globalAlpha=a;g.beginPath();g.arc(q[0],q[1],sz,0,6.283);g.fill();
    g.strokeStyle=`rgba(255,241,193,${(1-pulse)*.6*a})`;g.lineWidth=1;g.beginPath();g.arc(q[0],q[1],sz+1+pulse*8,0,6.283);g.stroke()}
   g.globalAlpha=1;
-  for(const [lo,la] of this.stops){const q=this.proj(lo,la,R,cx,cy);if(q[2]<=0)continue;const pulse=still?0:(t/1600)%1;g.fillStyle='#FFF1C1';g.globalAlpha=.22;g.beginPath();g.arc(q[0],q[1],13,0,6.283);g.fill();g.globalAlpha=.45;g.beginPath();g.arc(q[0],q[1],6.5,0,6.283);g.fill();g.globalAlpha=1;g.beginPath();g.arc(q[0],q[1],2.6,0,6.283);g.fill();
-   g.strokeStyle=`rgba(255,241,193,${(1-pulse)*.8})`;g.lineWidth=1;g.beginPath();g.arc(q[0],q[1],3+pulse*10,0,6.283);g.stroke()}
   /* orbit ring and the gold plane */
   const tiltO=-.32,ox=R*1.42,oy=R*.34,ang=still?.8:t/2600;const ring=a=>{const x=Math.cos(a)*ox,y=Math.sin(a)*oy;return [cx+x*Math.cos(tiltO)-y*Math.sin(tiltO),cy+x*Math.sin(tiltO)+y*Math.cos(tiltO),Math.sin(a)]};
   {const fr=new Path2D(),bk=new Path2D();for(let k=0;k<120;k++){const a0=k/120*6.283,a1=(k+1)/120*6.283,p0=ring(a0),p1=ring(a1);if(p0[2]<0&&Math.hypot(p0[0]-cx,p0[1]-cy)<R)continue;const pp=p0[2]>0?fr:bk;pp.moveTo(p0[0],p0[1]);pp.lineTo(p1[0],p1[1])}
