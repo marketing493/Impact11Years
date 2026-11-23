@@ -16,15 +16,16 @@ const NOTIFY_HELP={
 const inFrame=(()=>{try{return window.self!==window.top}catch(e){return true}})();
 let SW=null;
 async function registerSW(){if(!('serviceWorker' in navigator)||!isSecureContext||inFrame)return null;try{SW=await navigator.serviceWorker.register('/sw.js');return SW}catch(e){return null}}
-addEventListener('beforeinstallprompt',e=>{e.preventDefault();S.pwa.prompt=e;if(S.route==='home')render()});
-addEventListener('appinstalled',()=>{S.pwa.prompt=null;toast('Added to your home screen.');render()});
-async function doInstall(){const p=S.pwa.prompt;if(!p)return;p.prompt();const r=await p.userChoice.catch(()=>null);S.pwa.prompt=null;if(r&&r.outcome==='accepted')toast('Installing the app.');render()}
+function refreshReminders(){const r=$('#reminders');if(r&&S.route==='home'){r.outerHTML=remindBand();const n=$('#reminders');if(n&&OFF_IO)OFF_IO.observe(n)}else if(S.route==='home')render()}
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();S.pwa.prompt=e;if(S.route==='home')refreshReminders()});
+addEventListener('appinstalled',()=>{S.pwa.prompt=null;toast('Added to your home screen.');refreshReminders()});
+async function doInstall(){const p=S.pwa.prompt;if(!p)return;p.prompt();const r=await p.userChoice.catch(()=>null);S.pwa.prompt=null;if(r&&r.outcome==='accepted')toast('Installing the app.');refreshReminders()}
 const b64u=s=>{const p='='.repeat((4-s.length%4)%4),b=atob((s+p).replace(/-/g,'+').replace(/_/g,'/'));return Uint8Array.from(b,c=>c.charCodeAt(0))};
 
 async function remindersOn(){
- const ns=notifyStatus();if(ns!=='ok'){toast(NOTIFY_HELP[ns]);render();return}
+ const ns=notifyStatus();if(ns!=='ok'){toast(NOTIFY_HELP[ns]);refreshReminders();return}
  const perm=await Notification.requestPermission();
- if(perm!=='granted'){toast('Notifications stay off. You can allow them later in settings.');render();return}
+ if(perm!=='granted'){toast('Notifications stay off. You can allow them later in settings.');refreshReminders();return}
  const reg=SW||await registerSW();
  if(S.server&&S.cfg.push&&reg&&'PushManager' in window){
   try{await navigator.serviceWorker.ready;let sub=await reg.pushManager.getSubscription();if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64u(S.cfg.vapidPublicKey)});
@@ -35,10 +36,10 @@ async function remindersOn(){
  if(S.pwa.mode==='push')toast('Reminders are on. You get an alert 10 minutes before each session.');
  else if(S.server)toast('Reminders are on while the app is open. Ask the organizers to finish push setup for closed-app alerts.');
  else toast('Reminders are on while the app is open.');
- render()}
+ refreshReminders()}
 async function remindersOff(){S.pwa.on=false;store.set('ia11-reminders',false);clearLocal();
  try{const reg=SW||await navigator.serviceWorker?.getRegistration();const sub=reg&&await reg.pushManager.getSubscription();if(sub){await fetch('/api/subscribe',{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({subscription:sub})}).catch(()=>{});await sub.unsubscribe()}}catch(e){}
- toast('Reminders are off.');render()}
+ toast('Reminders are off.');refreshReminders()}
 async function showLocal(title,body,tag){try{const reg=SW||await navigator.serviceWorker?.getRegistration();if(reg){await reg.showNotification(title,{body,tag,icon:'/icons/icon-192.png',badge:'/icons/badge-96.png',data:{url:'/#event-schedule'}});return true}}catch(e){}
  try{new Notification(title,{body,tag,icon:'/icons/icon-192.png'});return true}catch(e){return false}}
 async function testNotif(){if(notifyStatus()!=='ok'){toast(NOTIFY_HELP[notifyStatus()]);return}if(Notification.permission!=='granted'){toast('Turn on reminders first.');return}const ok=await showLocal('Starting in 10 minutes','This is how your reminders look.','test');if(!ok)toast('This browser blocked the test notification.')}

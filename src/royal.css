@@ -524,3 +524,35 @@ a.brow:hover{background:rgba(212,175,97,.07)}
 .logo11{display:block;width:200px;height:auto;filter:drop-shadow(0 1px 0 rgba(0,0,0,.35))}
 .top .logo11{width:clamp(170px,15vw,210px)}
 footer .logo11{width:200px}
+
+/* ---------- mobile polish ---------- */
+html,body{overscroll-behavior-y:none}
+[id]{scroll-margin-top:calc(80px + env(safe-area-inset-top,0px))}
+@media (pointer:coarse){
+ .tone-toggle,.top .bell,.sound,.zones button,.viewbar button,footer .btn,.btn.sm{min-height:44px}
+ .top .bell{min-width:44px}
+ .tone-toggle .sk-track{width:46px;height:28px}.tone-toggle .sk-knob{width:22px;height:22px}
+ .tone-toggle[aria-pressed="false"] .sk-knob{transform:translateX(18px)}
+ a,button{-webkit-tap-highlight-color:rgba(212,175,97,.18)}}
+
+/* ---------- performance ---------- */
+[data-off],[data-off] *,[data-off] *::before,[data-off] *::after{animation-play-state:paused!important}
+/* decorative loops that repaint large areas: calm on phones, still everywhere else */
+.rh-rays{animation:none}
+.rh-title .t2{animation:riseIn 1.4s var(--ease) both .45s}
+@media (pointer:coarse),(max-width:820px){
+ .seal,.pen,.t-flag::after,.d-star,.chand .flame,.rh-u b.tk{animation:none!important}
+ .d-arc,.d-orb{transition:none}
+ .top,.glass,.sound,.tone-toggle,.subnav,.tabbar,.fl.glass i,.fl.ftag i{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+ [data-skin="royal"] .top{background:rgba(7,15,48,.97)}
+ [data-skin="royal"] .tabbar{background:rgba(7,15,48,.98)}
+ .glass{background:rgba(10,23,68,.55)}
+ .bluefield::after,.inkfield::after{mix-blend-mode:normal;opacity:.08}}
+.r-hero,.r-voyage,.r-dep,.r-fair,.venue,#reminders,.r-invite{contain:layout paint}
+.fc.g{animation:flapc2 .11s linear}
+@keyframes flapc2{50%{transform:scaleY(.1)}}
+/* sound equaliser: scale on the compositor instead of animating height (no layout every frame) */
+.sound .eq i{height:14px;transform-origin:50% 100%;transform:scaleY(.29)}
+@keyframes eq{0%,100%{transform:scaleY(.29)}50%{transform:scaleY(1)}}
+/* phones: the current-stop ring pulses a few times on arrival, then rests */
+@media (pointer:coarse),(max-width:820px){.vm.cur i::after{animation-iteration-count:4}}

@@ -3,8 +3,7 @@ let GRID_I=null;
 function parseHash(){const h=location.hash.slice(1);
  if(h.startsWith('event-')&&SUBS.some(s=>s[0]===h.slice(6))){S.route='event';S.sub=h.slice(6);return null}
  if(h==='admin'){S.route='admin';return null}
- if(h==='reminders'||h==='venue'){S.route='home';return h}
- S.route='home';return null}
+ S.route='home';return h||null}
 function render(){
  if(GRID_I){GRID_I.destroy();GRID_I=null}
  $('#app').innerHTML=S.route==='event'?vEvent():S.route==='admin'?vAdmin():S.skin==='royal'?vRoyalHome():vHome();
@@ -12,18 +11,29 @@ function render(){
  $$('[data-nav]').forEach(a=>{const k=a.dataset.nav;a.toggleAttribute('aria-current',false);if(k===nav||(k==='event-about'&&S.route==='event'&&!['schedule','venue'].includes(S.sub)))a.setAttribute('aria-current','page')});
  $$('.bell .dot').forEach(d=>d.hidden=S.pwa.on&&('Notification' in window)&&Notification.permission==='granted');
  const cv=$('#igrid');if(cv)GRID_I=new ImpactGrid(cv,{mode:S.gridMode,target:Date.parse(EVENT.starts),onTick:srCountdown});
- mountScenes();mountStory();mountFx();mountSubnav();mountCounters();mountExplore();mountRoyal();ticks();
+ mountScenes();mountStory();mountFx();mountOffscreen();mountSubnav();mountCounters();mountExplore();mountRoyal();ticks();
  $$('[data-act="skin"]').forEach(b=>{b.setAttribute('aria-pressed',S.skin==='royal');b.setAttribute('aria-label',S.skin==='royal'?'Switch to the Modern theme':'Switch to the Royal theme')});
  if(S.pendingScroll){const id=S.pendingScroll;S.pendingScroll=null;setTimeout(()=>{const el=document.getElementById('act-'+id);el&&el.scrollIntoView({behavior:'smooth',block:'center'})},120)}}
 function srCountdown(diff){const el=$('#cd-sr');if(!el)return;const d=Math.floor(diff/864e5),h=Math.floor(diff%864e5/36e5),m=Math.floor(diff%36e5/6e4);el.textContent=diff>0?`${d} days, ${h} hours and ${m} minutes until ${EVENT.name}`:`${EVENT.name} is here`}
+/* sections off screen pause their CSS animations, so the phone only works on what is visible */
+let OFF_IO=null;
+function mountOffscreen(){OFF_IO&&OFF_IO.disconnect();if(!('IntersectionObserver' in window))return;
+ OFF_IO=new IntersectionObserver(es=>es.forEach(e=>e.target.toggleAttribute('data-off',!e.isIntersecting)),{rootMargin:'0px'});
+ $$('#app>section:not(.r-voyage),#app>.marquee,#app>div,footer,.vy-pin').forEach(el=>OFF_IO.observe(el))}
 function ticks(){$$('[data-rel]').forEach(el=>el.textContent=rel(+el.dataset.rel));tickRibbons()}
 setInterval(ticks,30000);
 
+const actsSig=l=>l.map(a=>[a.id,a.date,a.start,a.end,a.title,a.location,a.category,a.description].join('|')).join('\n');
+/* update only what shows the schedule, keeping the visitor's place and anything they opened */
+function softRefresh(full){if(S.route!=='home'||S.skin!=='royal'){render();return}
+ BOARD&&BOARD.build(false);$$('.zonecard').forEach(c=>c.outerHTML=zoneCard());
+ if(full){const t=$('.tents');if(t){const tmp=document.createElement('div');tmp.innerHTML=vRoyalHome();const nt=tmp.querySelector('.tents');if(nt)t.replaceWith(nt)}}
+ refreshReminders();ticks()}
 /* refresh: pick up organizer edits and roll sessions from next to now to past */
 let lastKey='';
-setInterval(async()=>{if(document.hidden||A_.modal)return;const before=JSON.stringify(S.acts)+S.acts.map(statusOf).join();
+setInterval(async()=>{if(document.hidden||A_.modal)return;const sig0=actsSig(S.acts),before=sig0+S.acts.map(statusOf).join();
  if(S.server){try{const r=await fetch('/api/activities',{cache:'no-store'});const j=await r.json();S.acts=sortActs(j.activities||[])}catch(e){}}
- const after=JSON.stringify(S.acts)+S.acts.map(statusOf).join();if(after!==before&&S.route!=='admin'){render();scheduleLocal()}},60000);
+ const sig1=actsSig(S.acts),after=sig1+S.acts.map(statusOf).join();if(S.server)store.set('ia11-acts-cache',S.acts);if(after!==before&&S.route!=='admin'){softRefresh(sig1!==sig0);scheduleLocal()}},60000+Math.round(Math.random()*20000));
 
 /* ---------- actions ---------- */
 const ACT={
@@ -74,13 +84,18 @@ document.addEventListener('submit',async e=>{const f=e.target.closest('[data-for
   const list=m.id?S.acts.map(x=>x.id===m.id?a:x):[...S.acts,a];A_.modal=null;A_.flash=a.id;
   await saveActs(list,m.id?`Saved ${a.title}.`:`Added ${a.title} at ${a.start}.`);setTimeout(()=>{A_.flash=null},1700)}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&A_.modal){A_.modal=null;render()}});
-addEventListener('hashchange',()=>{const jump=parseHash();render();if(jump){requestAnimationFrame(()=>document.getElementById(jump)?.scrollIntoView({behavior:'smooth'}))}else scrollTo({top:0})});
+/* links to a section on the current page glide there; nothing is re-rendered */
+function glideTo(id){const el=document.getElementById(id);if(!el)return false;el.scrollIntoView({behavior:RMQ.matches?'auto':'smooth',block:'start'});return true}
+document.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(!a||e.defaultPrevented)return;const id=a.getAttribute('href').slice(1);
+ if(!id||id==='admin'||S.route!=='home'||!document.getElementById(id))return;e.preventDefault();glideTo(id);try{history.replaceState(null,'','#'+id)}catch(_){}},true);
+addEventListener('hashchange',()=>{const id=location.hash.slice(1);if(S.route==='home'&&id&&id!=='admin'&&!id.startsWith('event-')&&glideTo(id))return;const jump=parseHash();render();if(jump){requestAnimationFrame(()=>document.getElementById(jump)?.scrollIntoView({behavior:'smooth'}))}else scrollTo({top:0})});
 document.addEventListener('change',e=>{if(e.target.id==='wayfind'&&e.target.value){const a=S.acts.find(x=>x.id===e.target.value);if(a){ACT.zone(a.location);toast(`Follow the orange path to the ${a.location} for ${a.title}.`);$('.ex-stage')?.scrollIntoView({behavior:'smooth',block:'center'})}}});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){ticks();scheduleLocal()}});
 
 /* ---------- boot ---------- */
-(async()=>{startAmbient();const jump=parseHash();S.acts=sortActs(store.get('ia11-acts',DEFAULT_ACTIVITIES));render();
+(async()=>{startAmbient();const jump=parseHash();S.acts=sortActs(store.get('ia11-acts-cache',null)||store.get('ia11-acts',DEFAULT_ACTIVITIES));const bootSig=actsSig(S.acts);render();
  await Promise.all([loadData(),registerSW()]);
  if(S.server&&S.cfg.admin&&A_.key)await adminLogin(A_.key);
- render();scheduleLocal();
- if(jump)setTimeout(()=>document.getElementById(jump)?.scrollIntoView({behavior:'smooth'}),60)})();
+ if(S.server)store.set('ia11-acts-cache',S.acts);
+ if(S.route==='home'&&S.skin==='royal')softRefresh(actsSig(S.acts)!==bootSig);else render();scheduleLocal();
+ if(jump&&jump!=='admin')setTimeout(()=>glideTo(jump),60)})();

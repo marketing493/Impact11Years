@@ -2,6 +2,12 @@
  Ambient: a fixed canvas of drifting cells at three depths, with scroll and pointer parallax.
  Plus: pointer and scroll CSS variables, scroll reveals, 3D tilt, magnetic buttons, drag-to-scroll. */
 const RMQ=matchMedia('(prefers-reduced-motion: reduce)');
+/* Performance budget. Phones and slow devices draw canvases at 30 frames a second and at most 1.5x pixel density. */
+const LITE=matchMedia('(pointer: coarse)').matches||innerWidth<=820||(navigator.hardwareConcurrency||8)<=4;
+const DPR=()=>Math.min(LITE?1.5:2,devicePixelRatio||1);
+const FRAME_MS=LITE?33:16;
+const HERO_MS=LITE?42:16;
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)dispatchEvent(new Event('ia-wake'))});
 /* Brand accents. Rule from the brand guide: one solution colour per composition, so every section,
    chapter and journey moment declares a single accent with data-acc and everything inside it follows. */
 const ACC={yellow:'#E3F576',purple:'#BEA8EF',green:'#3DD499',sky:'#B3C9F7',orange:'#FF6F1C'};
@@ -13,12 +19,13 @@ const root=document.documentElement;
 
 class Ambient{
  constructor(cv){this.cv=cv;this.ctx=cv.getContext('2d');this.acc=[179,201,247];this.accT=[179,201,247];this.mx=0;this.my=0;this.tx=0;this.ty=0;this.resize();
-  addEventListener('resize',()=>this.resize());this.loop=this.loop.bind(this);requestAnimationFrame(this.loop)}
- resize(){const d=Math.min(2,devicePixelRatio||1);this.w=innerWidth;this.h=innerHeight;this.cv.width=this.w*d;this.cv.height=this.h*d;this.ctx.setTransform(d,0,0,d,0,0);
+  addEventListener('resize',()=>{if(innerWidth===this.w&&Math.abs(innerHeight-this.h)<180)return;this.resize();this.kick()});this.loop=this.loop.bind(this);addEventListener('ia-wake',()=>this.kick());this.kick()}
+ kick(d){if(this.raf||this.tmo)return;if(d>0)this.tmo=setTimeout(()=>{this.tmo=0;this.kick()},d);else this.raf=requestAnimationFrame(this.loop)}
+ resize(){this.drawn=false;const d=LITE?1:Math.min(2,devicePixelRatio||1);this.w=innerWidth;this.h=Math.max(innerHeight,screen.height||0);this.cv.width=this.w*d;this.cv.height=this.h*d;this.ctx.setTransform(d,0,0,d,0,0);
   const n=Math.round(Math.min(46,Math.max(18,this.w*this.h/42000))),r=seededRand(17);
   const kinds=['glass','glass','glass','blue','sky','sky','outline','outline','cells','blue','plus','plus','acc','acc'];
   this.items=Array.from({length:n},(_,i)=>{const z=.25+r()*.85;return {x:r()*this.w,y:r()*this.h*1.4,z,s:(6+r()*46)*z,k:i%23===0?'hot':kinds[Math.floor(r()*kinds.length)],ph:r()*6.28,sp:.15+r()*.35,rot:r()*.6-.3,vr:(r()-.5)*.0016}})}
- loop(t){requestAnimationFrame(this.loop);if(document.hidden)return;
+ loop(t){this.raf=0;if(document.hidden)return;if(LITE&&this.drawn)return;this.lastT=t;this.drawn=true;if(!LITE)this.kick(17);
   this.mx+=((this.tx||0)-this.mx)*.05;this.my+=((this.ty||0)-this.my)*.05;
   const c=this.ctx,sy=scrollY,dark=matchMedia('(prefers-color-scheme: dark)').matches&&root.dataset.theme!=='light'||root.dataset.theme==='dark';
   const royal=root.dataset.skin==='royal';if(royal)this.accT=[212,175,97];
@@ -53,8 +60,9 @@ function floaters(items,extra=''){return `<div class="floaters ${extra}" aria-hi
 let fxTick=false,ptr={x:innerWidth/2,y:innerHeight/2};
 const TOTOP=document.getElementById('totop');
 if(TOTOP)TOTOP.addEventListener('click',()=>{scrollTo({top:0,behavior:RMQ.matches?'auto':'smooth'});TOTOP.blur()});
-function fxFrame(){fxTick=false;
+function fxFrame(){fxTick=false;const royal=root.dataset.skin==='royal';
  if(TOTOP){const max=document.documentElement.scrollHeight-innerHeight,inScene=innerWidth<=820&&['voyage','story'].some(id=>{const e=document.getElementById(id);if(!e)return false;const r=e.getBoundingClientRect();return r.top<=1&&r.bottom>=innerHeight-1}),show=scrollY>innerHeight*1.2&&!inScene;TOTOP.hidden=!show;TOTOP.style.setProperty('--tp',max>0?(scrollY/max).toFixed(3):0)}root.style.setProperty('--scroll',scrollY.toFixed(0));root.style.setProperty('--mx',((ptr.x/innerWidth)*2-1).toFixed(3));root.style.setProperty('--my',((ptr.y/innerHeight)*2-1).toFixed(3));
+ if(royal){if(window.AMB){AMB.tx=(ptr.x/innerWidth)*2-1;AMB.ty=(ptr.y/innerHeight)*2-1}return}
  if(window.AMB){AMB.tx=(ptr.x/innerWidth)*2-1;AMB.ty=(ptr.y/innerHeight)*2-1;
   const el=document.elementFromPoint(innerWidth/2,innerHeight/2),sec=el&&el.closest('[data-acc]');if(sec&&root.dataset.skin!=='royal'){const h=getComputedStyle(sec).getPropertyValue('--acc').trim();if(/^#[0-9a-f]{6}$/i.test(h))AMB.accT=hexRgb(h)}}
  STORY_I&&STORY_I.update();JOURNEY_I&&JOURNEY_I.update();

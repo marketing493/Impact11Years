@@ -36,33 +36,35 @@ class Hero{constructor(sec){this.sec=sec;this.pin=sec.querySelector('.rh-pin');t
   this.land=[];WORLD.rows.forEach((row,y)=>{for(let i=0;i<row.length;i++){const v=parseInt(row[i],16);for(let b=0;b<4;b++)if(v&(8>>b)){const gx=i*4+b;this.land.push([(-180+(gx+.5)*360/WORLD.W)*Math.PI/180,(WORLD.lat0-(y+.5)*(WORLD.lat0-WORLD.lat1)/WORLD.H)*Math.PI/180])}}});
   this.stops=STOPS.map(s=>[s.lon*Math.PI/180,s.lat*Math.PI/180]);
   this.rot=-1.25;this.vel=0;this.tvel=0;this.drag=null;this.tilt=-.38;this.idle=0;this.hit=sec.querySelector('.globe-hit');
-  this.resize();this.onResize=()=>this.resize();addEventListener('resize',this.onResize);this.onScroll=()=>this.update();addEventListener('scroll',this.onScroll,{passive:true});
+  this.resize();this.onResize=()=>{if(this.pin.clientWidth===this.W&&Math.abs(this.pin.clientHeight-this.H)<180)return;this.resize()};addEventListener('resize',this.onResize);this.onScroll=()=>this.update();addEventListener('scroll',this.onScroll,{passive:true});
   /* drag in any direction: sideways spins the globe, up and down tips it over the poles */
   const H_=this.hit;
   H_.addEventListener('pointerdown',e=>{this.drag={x:e.clientX,y:e.clientY,r:this.rot,t:this.tilt};try{H_.setPointerCapture(e.pointerId)}catch(_){}H_.classList.add('dragging');e.preventDefault()});
   H_.addEventListener('pointermove',e=>{if(!this.drag)return;const nr=this.drag.r+(e.clientX-this.drag.x)*.008,nt=this.drag.t-(e.clientY-this.drag.y)*.008;this.vel=nr-this.rot;this.tvel=nt-this.tilt;this.rot=nr;this.tilt=nt});
   const end=()=>{if(!this.drag)return;this.drag=null;this.idle=performance.now();H_.classList.remove('dragging')};H_.addEventListener('pointerup',end);H_.addEventListener('pointercancel',end);
-  this.update();this.loop=this.loop.bind(this);requestAnimationFrame(this.loop)}
- stop(){this.alive=false;removeEventListener('resize',this.onResize);removeEventListener('scroll',this.onScroll)}
- resize(){const d=Math.min(2,devicePixelRatio||1);
+  this.loop=this.loop.bind(this);this.onWake=()=>this.kick();addEventListener('ia-wake',this.onWake);this.update()}
+ kick(d){if(this.raf||this.tmo)return;if(d>0)this.tmo=setTimeout(()=>{this.tmo=0;this.kick()},d);else this.raf=requestAnimationFrame(this.loop)}
+ stop(){this.alive=false;removeEventListener('ia-wake',this.onWake);removeEventListener('resize',this.onResize);removeEventListener('scroll',this.onScroll)}
+ resize(){this.dustDone=false;const d=DPR();
   this.W=this.pin.clientWidth;this.H=this.pin.clientHeight;this.dust.width=this.W*d;this.dust.height=this.H*d;this.dc=this.dust.getContext('2d');this.dc.setTransform(d,0,0,d,0,0);
   const gw=this.gcv.clientWidth,gh=this.gcv.clientHeight;this.GW=gw;this.GH=gh;this.gcv.width=gw*d;this.gcv.height=gh*d;this.gc=this.gcv.getContext('2d');this.gc.setTransform(d,0,0,d,0,0);
   const r=seededRand(23);this.motes=Array.from({length:Math.round(this.W*this.H/9000)},()=>({x:r()*this.W,y:r()*this.H,z:.3+r()*.7,ph:r()*6.28,v:.15+r()*.45,g:r()<.12,b:r()<.05}))}
  update(){const r=this.sec.getBoundingClientRect(),span=this.sec.offsetHeight-innerHeight,p=clamp(-r.top/Math.max(1,span));this.p=p;this.vis=r.bottom>0&&r.top<innerHeight;
-  this.pin.style.setProperty('--p',RMQ.matches?0:p.toFixed(4))}
+  this.pin.style.setProperty('--p',RMQ.matches?0:p.toFixed(4));if(this.vis)this.kick()}
  proj(lon,lat,R,cx,cy,lift=1){const l=lon+this.rot,x=Math.cos(lat)*Math.sin(l),y=Math.sin(lat),z=Math.cos(lat)*Math.cos(l),ct=Math.cos(this.tilt),st=Math.sin(this.tilt);
   return [cx+x*R*lift,cy-(y*ct-z*st)*R*lift,y*st+z*ct]}
- loop(t){if(!this.alive)return;requestAnimationFrame(this.loop);if(!this.vis||document.hidden)return;const still=RMQ.matches;
+ loop(t){this.raf=0;if(!this.alive||!this.vis||document.hidden)return;this.lastT=t;this.kick(HERO_MS-16);const still=RMQ.matches;
   if(!this.drag){this.vel*=.94;this.tvel*=.92;this.rot+=still?0:.0016+this.vel;this.tilt+=this.tvel;
    /* after a few seconds of rest the globe settles back to its usual angle */
    if(!still&&performance.now()-this.idle>2500)this.tilt+=((-.38)-this.tilt)*.015}
   /* gold dust and bokeh */
-  const c=this.dc,W=this.W,H=this.H;c.clearRect(0,0,W,H);
+  if(!(LITE&&this.dustDone)){this.dustDone=true;const c=this.dc,W=this.W,H=this.H;c.clearRect(0,0,W,H);
   for(const m of this.motes){const y=still?m.y:((m.y-t*.012*m.v*m.z)%H+H)%H,x=m.x+(still?0:Math.sin(t/2600*m.v+m.ph)*14*m.z),tw=.35+.65*Math.abs(Math.sin(t/1400*m.v+m.ph));
-   if(m.b){const rr=18+m.z*34,g=c.createRadialGradient(x,y,0,x,y,rr);g.addColorStop(0,`rgba(243,223,162,${.07*tw})`);g.addColorStop(1,'rgba(243,223,162,0)');c.fillStyle=g;c.beginPath();c.arc(x,y,rr,0,6.283);c.fill();continue}
+   if(m.b){const rr=18+m.z*34;if(!this.bokeh){const bk=document.createElement('canvas');bk.width=bk.height=64;const bc=bk.getContext('2d'),bg=bc.createRadialGradient(32,32,0,32,32,32);bg.addColorStop(0,'rgba(243,223,162,1)');bg.addColorStop(1,'rgba(243,223,162,0)');bc.fillStyle=bg;bc.fillRect(0,0,64,64);this.bokeh=bk}c.globalAlpha=.07*tw;c.drawImage(this.bokeh,x-rr,y-rr,rr*2,rr*2);c.globalAlpha=1;continue}
    c.globalAlpha=tw*(.35+m.z*.55);c.fillStyle=m.g?'#FFF1C1':'#D4AF61';const s=.5+m.z*1.4;c.beginPath();c.arc(x,y,s,0,6.283);c.fill();
    if(m.g){c.globalAlpha=tw*.7;c.fillRect(x-s*4,y-.35,s*8,.7);c.fillRect(x-.35,y-s*4,.7,s*8)}}
   c.globalAlpha=1;
+}
   /* the globe */
   const g=this.gc,GW=this.GW,GH=this.GH,cx=GW/2,cy=GH/2,R=Math.min(GW*.44,GH*.43);if(this.hit&&this.hitR!==R){this.hitR=R;/* on touch screens the outer ring of the globe still scrolls the page */const k=matchMedia('(pointer: coarse)').matches?1.5:2.1;this.hit.style.width=this.hit.style.height=(R*k)+'px'}g.clearRect(0,0,GW,GH);
   const halo=g.createRadialGradient(cx,cy,R*.6,cx,cy,R*1.55);halo.addColorStop(0,'rgba(243,223,162,.16)');halo.addColorStop(.45,'rgba(212,175,97,.07)');halo.addColorStop(1,'rgba(212,175,97,0)');g.fillStyle=halo;g.beginPath();g.arc(cx,cy,R*1.55,0,6.283);g.fill();
