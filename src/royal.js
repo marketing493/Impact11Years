@@ -170,10 +170,10 @@ class Voyage{
   const sheen=c.createLinearGradient(0,0,this.mapW,this.mapH);(blue?[[0,'#C9A24A'],[.25,'#E9CD86'],[.5,'#D4AF61'],[.7,'#F3DFA2'],[1,'#C9A24A']]:[[0,'#B8944A'],[.22,'#F3DFA2'],[.45,'#D4AF61'],[.66,'#FFF1C1'],[.85,'#C9A24A'],[1,'#E9CD86']]).forEach(s=>sheen.addColorStop(s[0],s[1]));
   /* glow: paint the land once at grid resolution, then blur that single image (one filter pass, not one per dot) */
   const gl=document.createElement('canvas');gl.width=this.G.W;gl.height=this.G.H;const gc=gl.getContext('2d');gc.fillStyle='#D4AF61';for(const [x,y] of this.land)gc.fillRect(x,y,1,1);
-  c.save();c.filter='blur('+(cs*1.4).toFixed(1)+'px)';c.globalAlpha=blue?.32:.42;c.imageSmoothingEnabled=true;c.drawImage(gl,0,0,this.mapW,this.mapH);c.restore();
-  c.fillStyle=sheen;c.globalAlpha=blue?.9:.78;c.beginPath();for(const [x,y,coast] of this.land){if(coast)continue;const r=cs*.3;c.moveTo((x+.5)*cs+r,(y+.5)*cs);c.arc((x+.5)*cs,(y+.5)*cs,r,0,6.283)}c.fill();
-  c.globalAlpha=1;c.fillStyle=blue?'#F3DFA2':'#FFF1C1';c.beginPath();for(const [x,y,coast] of this.land){if(!coast)continue;const r=cs*.26;c.moveTo((x+.5)*cs+r,(y+.5)*cs);c.arc((x+.5)*cs,(y+.5)*cs,r,0,6.283)}c.fill();
-  this.layer=cv;this.layerTone=blue}
+  c.save();c.filter='blur('+(cs*1.4).toFixed(1)+'px)';c.globalAlpha=blue?.08:.42;c.imageSmoothingEnabled=true;c.drawImage(gl,0,0,this.mapW,this.mapH);c.restore();
+  c.fillStyle=sheen;c.globalAlpha=blue?.36:.78;c.beginPath();for(const [x,y,coast] of this.land){if(coast)continue;const r=cs*.3;c.moveTo((x+.5)*cs+r,(y+.5)*cs);c.arc((x+.5)*cs,(y+.5)*cs,r,0,6.283)}c.fill();
+  c.globalAlpha=blue?.46:1;c.fillStyle=blue?'#E9CD86':'#FFF1C1';c.beginPath();for(const [x,y,coast] of this.land){if(!coast)continue;const r=cs*.26;c.moveTo((x+.5)*cs+r,(y+.5)*cs);c.arc((x+.5)*cs,(y+.5)*cs,r,0,6.283)}c.fill();
+  c.globalAlpha=1;this.layer=cv;this.layerTone=blue}
  bez(L,t){const u=1-t;return [u*u*L.a[0]+2*u*t*L.c[0]+t*t*L.b[0],u*u*L.a[1]+2*u*t*L.c[1]+t*t*L.b[1]]}
  update(){const r=this.sec.getBoundingClientRect(),span=this.sec.offsetHeight-innerHeight,p=clamp(-r.top/Math.max(1,span));this.target=p*(this.n-1);this.vis=r.bottom>0&&r.top<innerHeight;SCORE.setVisible(r.bottom>innerHeight*.35&&r.top<innerHeight*.65);if(this.vis){this.settled=0;this.kick()}}
  goTo(i){const span=this.sec.offsetHeight-innerHeight,top=this.sec.getBoundingClientRect().top+scrollY;scrollTo({top:top+i/(this.n-1)*span+2,behavior:RMQ.matches?'auto':'smooth'})}
