@@ -1220,10 +1220,6 @@ html,body{max-width:100%;overflow-x:clip}
 /* departures: the hovered row is marked with a gold edge while its letters flip */
 @media (hover:hover) and (pointer:fine){:root[data-tone="blue"] .brows .brow{cursor:default}:root[data-tone="blue"] .brows .brow:hover{background:rgba(247,227,161,.07);box-shadow:inset 3px 0 0 #EBC96B}}
 
-/* map heading: no tinted band behind it (the land dots are muted, so the gold title reads on its own) */
-:root[data-tone="blue"] .vy-head{background:none}
-:root[data-tone="blue"] .vy-head .r-h2{filter:drop-shadow(0 2px 8px rgba(10,16,60,.55))}
-
 /* ---------- logos: 15% smaller, with breathing room ---------- */
 .top .logo11{width:clamp(124px,10.8vw,152px)}
 .top .wrap>a:first-child{padding:10px 6px 10px 0}
