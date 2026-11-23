@@ -95,9 +95,9 @@ class Voyage{
   c.clearRect(0,0,W,H);
   /* graticule */
   c.strokeStyle='rgba(212,175,97,.07)';c.lineWidth=1;c.beginPath();for(let lon=-180;lon<=180;lon+=30){const x=(lon+180)/360*this.mapW-cx;c.moveTo(x,-cy*0-this.mapH);c.lineTo(x,this.mapH*2)}for(let lat=-60;lat<=80;lat+=20){const y=(WORLD.lat0-lat)/(WORLD.lat0-WORLD.lat1)*this.mapH-cy;c.moveTo(0,y);c.lineTo(W,y)}c.stroke();
-  /* land as gold dots, brighter around the plane */
-  const cs=this.cell,rr=cs*.26;for(const [gx,gy] of this.land){const x=(gx+.5)*cs-cx,y=(gy+.5)*cs-cy;if(x<-cs||x>W+cs||y<-cs||y>H+cs)continue;const d=Math.hypot(x-(P[0]-cx),y-(P[1]-cy)),glow=Math.max(0,1-d/(cs*14));
-   c.globalAlpha=.32+glow*.6;c.fillStyle=glow>.15?'#F3DFA2':'#B8944A';c.beginPath();c.arc(x,y,rr*(1+glow*.5),0,6.283);c.fill()}c.globalAlpha=1;
+  /* land as gold dots, evenly lit (no spotlight around the plane) */
+  const cs=this.cell,rr=cs*.26;for(const [gx,gy] of this.land){const x=(gx+.5)*cs-cx,y=(gy+.5)*cs-cy;if(x<-cs||x>W+cs||y<-cs||y>H+cs)continue;
+   c.globalAlpha=.32;c.fillStyle='#B8944A';c.beginPath();c.arc(x,y,rr,0,6.283);c.fill()}c.globalAlpha=1;
   /* route: whole path faint and dashed, travelled path bright with a glow */
   c.setLineDash([4,6]);c.strokeStyle='rgba(212,175,97,.45)';c.lineWidth=1.5;c.beginPath();for(const L of this.legs){c.moveTo(L.a[0]-cx,L.a[1]-cy);c.quadraticCurveTo(L.c[0]-cx,L.c[1]-cy,L.b[0]-cx,L.b[1]-cy)}c.stroke();c.setLineDash([]);
   c.strokeStyle='#F3DFA2';c.lineWidth=2.6;c.shadowColor='rgba(243,223,162,.9)';c.shadowBlur=12;c.beginPath();
