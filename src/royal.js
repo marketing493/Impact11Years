@@ -33,7 +33,6 @@ const flipUnit=(k,l)=>`<div class="rflip"><b class="tn" data-rcd="${k}">--</b><s
 function vRoyalHome(){const up=upcoming();
  return `
  ${rHero()}
- ${skyline()}
 
  <section class="band r-invite" id="invite">${invDeco()}<div class="wrap inv-grid">
   <div class="col" style="gap:18px" data-rv><p class="eyebrow gold-eb">Your invitation</p><h2 class="r-h2">A seat at the <em>celebration</em></h2><p class="muted" style="max-width:44ch;font-size:18px">Eleven years, one journey around the world. Break the seal to view the invite.</p>
@@ -101,7 +100,7 @@ class Curtain{
 }
 
 /* each section fades to the shared horizontal gradient at its edges, so angled gradients meet seamlessly */
-const EDGES=[['.r-sky','hero','blue'],['#invite','blue','blue'],['#voyage .vy-pin','hero','hero'],['#departures','hero','mid'],['#fair','mid','mid'],['#venue','mid','hero'],['#reminders','hero','mid']];
+const EDGES=[['.r-sky','hero','blue'],['#invite','hero','blue'],['#voyage .vy-pin','hero','hero'],['#departures','hero','mid'],['#fair','mid','mid'],['#venue','mid','hero'],['#reminders','hero','mid']];
 function mountEdges(){if(document.documentElement.dataset.tone!=='blue')return;for(const [sel,top,bot] of EDGES){const el=$(sel);if(!el||el.querySelector(':scope>.bg-edge'))continue;
  el.insertAdjacentHTML('afterbegin',`<i class="bg-edge t" aria-hidden="true" style="--g:var(--e-${top})"></i><i class="bg-edge b" aria-hidden="true" style="--g:var(--e-${bot})"></i>`)}}
 let HERO=null,VOYAGE=null,BOARD=null,CURTAINS=[];
