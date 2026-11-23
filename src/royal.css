@@ -885,11 +885,11 @@ html,body{max-width:100%;overflow-x:clip}
 .rh-pin{position:relative}
 
 /* ---------- logos: 15% smaller, with breathing room ---------- */
-.top .logo11{width:clamp(145px,12.75vw,179px)}
+.top .logo11{width:clamp(124px,10.8vw,152px)}
 .top .wrap>a:first-child{padding:10px 6px 10px 0}
-footer .logo11{width:170px}
+footer .logo11{width:145px}
 footer .wrap>.logo11,footer .wrap>a:has(.logo11){margin:12px 0}
-@media (max-width:380px){.top .logo11{width:clamp(112px,34vw,136px)}}
+@media (max-width:380px){.top .logo11{width:clamp(100px,30vw,118px)}}
 
 /* ---------- performance ---------- */
 [data-off],[data-off] *,[data-off] *::before,[data-off] *::after{animation-play-state:paused!important}
