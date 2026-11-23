@@ -1167,8 +1167,10 @@ html,body{max-width:100%;overflow-x:clip}
 
 /* the old one-sided blends are replaced by edge bands on every section */
 :root[data-tone="blue"] :is(.r-sky,.r-dep,#reminders)::before,:root[data-tone="blue"] .r-fair::after{content:none}
-:root[data-tone="blue"] :is(.r-sky,.r-invite,.r-dep,.r-fair,.venue,#reminders,.vy-pin){position:relative;isolation:isolate}
-:root[data-tone="blue"] .vy-pin{position:sticky}
+:root[data-tone="blue"] :is(.r-sky,.r-invite,.r-dep,.r-fair,.venue){position:relative;isolation:isolate}
+:root[data-tone="blue"] #reminders{position:relative;isolation:isolate}
+/* the voyage screen stays sticky (it pins while the map plays); it only needs its own layer for the edge bands */
+:root[data-tone="blue"] .vy-pin{isolation:isolate}
 .bg-edge{position:absolute;left:0;right:0;height:min(32%,220px);z-index:-1;pointer-events:none;background:var(--g);display:block}
 .bg-edge.t{top:0;-webkit-mask:linear-gradient(#000,transparent);mask:linear-gradient(#000,transparent)}
 .bg-edge.b{bottom:0;-webkit-mask:linear-gradient(transparent,#000);mask:linear-gradient(transparent,#000)}
