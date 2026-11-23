@@ -14,10 +14,10 @@ const rhUnit=(k,l)=>`<div class="rh-u" data-rdial="${k}"><svg class="dial" viewB
  <b class="tn" data-rcd="${k}">--</b><span>${l}</span></div>`;
 function rHero(){return `<section class="r-hero" id="arch"><div class="rh-pin"><canvas class="rh-dust" aria-hidden="true"></canvas><div class="rh-rays" aria-hidden="true"></div>
  ${flourish('tl')}${flourish('tr')}${flourish('bl')}${flourish('br')}
+ <p class="rh-eb rh-frame-eb"><i></i><span>11 Years of Impact</span><i></i></p>
  <div class="rh-grid">
   <div class="rh-copy">
-   <p class="rh-eb"><i></i><span>11 Years of Impact</span><i></i></p>
-   <h1 class="rh-title" aria-label="Around the World in 11 Years"><span class="t1">Around the</span><span class="t2">World</span><span class="t3">in <em>11</em> Years</span></h1>
+   <h1 class="rh-title" aria-label="Around the World"><span class="t1">Around the</span><span class="t2">World</span></h1>
    <p class="rh-sub">Thursday, 17 December 2026<span>◆</span>Hilton Embassy Tech Village, Bangalore</p>
    <div class="rh-count" role="timer" aria-label="Countdown to the celebration"><svg class="constel" viewBox="0 0 100 20" preserveAspectRatio="none" aria-hidden="true"><path d="M12.5 10 Q25 2 37.5 10 T62.5 10 T87.5 10"/></svg>${rhUnit('d','Days')}${rhUnit('h','Hours')}${rhUnit('m','Minutes')}${rhUnit('s','Seconds')}</div>
    <div class="ctas"><a class="btn" href="#invite">${ic('star',18)} Open your invitation</a><a class="btn sec" href="#voyage">Begin the voyage</a></div>
@@ -69,9 +69,9 @@ class Hero{constructor(sec){this.sec=sec;this.pin=sec.querySelector('.rh-pin');t
   const g=this.gc,GW=this.GW,GH=this.GH,cx=GW/2,cy=GH/2,R=Math.min(GW*.44,GH*.43);if(this.hit&&this.hitR!==R){this.hitR=R;/* on touch screens the outer ring of the globe still scrolls the page */const k=matchMedia('(pointer: coarse)').matches?1.5:2.1;this.hit.style.width=this.hit.style.height=(R*k)+'px'}g.clearRect(0,0,GW,GH);
   /* halo, solid body and outer rings never change: drawn once into a cached layer, then copied each frame */
   const tone=document.documentElement.dataset.tone;if(!this.gStatic||this.gStaticKey!==GW+'x'+GH+tone){this.gStaticKey=GW+'x'+GH+tone;const d=DPR(),sv=document.createElement('canvas');sv.width=Math.round(GW*d);sv.height=Math.round(GH*d);const sg=sv.getContext('2d');sg.scale(d,d);
-   const HR=Math.min(R*1.55,cx,cy,GW-cx,GH-cy),halo=sg.createRadialGradient(cx,cy,R*.6,cx,cy,HR);if(tone==='blue'){halo.addColorStop(0,'rgba(38,76,215,.95)');halo.addColorStop(.5,'rgba(38,76,215,.45)');halo.addColorStop(1,'rgba(38,76,215,0)')}else{halo.addColorStop(0,'rgba(243,223,162,.16)');halo.addColorStop(.45,'rgba(212,175,97,.07)');halo.addColorStop(1,'rgba(212,175,97,0)')}sg.fillStyle=halo;sg.beginPath();sg.arc(cx,cy,HR,0,6.283);sg.fill();
-   if(tone==='blue'){sg.fillStyle='#22388C'}else{const body=sg.createRadialGradient(cx-R*.35,cy-R*.4,R*.1,cx,cy,R);body.addColorStop(0,'#1E3FAE');body.addColorStop(.7,'#0B1A52');body.addColorStop(1,'#060D2C');sg.fillStyle=body}sg.beginPath();sg.arc(cx,cy,R,0,6.283);sg.fill();
-   if(tone!=='blue'){const rim=sg.createRadialGradient(cx,cy,R*.86,cx,cy,R*1.02);rim.addColorStop(0,'rgba(243,223,162,0)');rim.addColorStop(1,'rgba(243,223,162,.45)');sg.fillStyle=rim;sg.beginPath();sg.arc(cx,cy,R*1.02,0,6.283);sg.fill()}
+   const HR=Math.min(R*1.55,cx,cy,GW-cx,GH-cy),halo=sg.createRadialGradient(cx,cy,R*.6,cx,cy,HR);halo.addColorStop(0,'rgba(243,223,162,.16)');halo.addColorStop(.45,'rgba(212,175,97,.07)');halo.addColorStop(1,'rgba(212,175,97,0)');sg.fillStyle=halo;sg.beginPath();sg.arc(cx,cy,HR,0,6.283);sg.fill();
+   const body=sg.createRadialGradient(cx-R*.35,cy-R*.4,R*.1,cx,cy,R);if(tone==='blue'){body.addColorStop(0,'#5A7BE6');body.addColorStop(.6,'#2E55DC');body.addColorStop(1,'#2445C4')}else{body.addColorStop(0,'#1E3FAE');body.addColorStop(.7,'#0B1A52');body.addColorStop(1,'#060D2C')}sg.fillStyle=body;sg.beginPath();sg.arc(cx,cy,R,0,6.283);sg.fill();
+   {const rim=sg.createRadialGradient(cx,cy,R*.86,cx,cy,R*1.02);rim.addColorStop(0,'rgba(243,223,162,0)');rim.addColorStop(1,'rgba(243,223,162,.45)');sg.fillStyle=rim;sg.beginPath();sg.arc(cx,cy,R*1.02,0,6.283);sg.fill()}
    sg.strokeStyle='rgba(212,175,97,.75)';sg.lineWidth=1.2;sg.beginPath();sg.arc(cx,cy,R*1.1,0,6.283);sg.stroke();
    sg.setLineDash([2,6]);sg.strokeStyle='rgba(212,175,97,.45)';sg.beginPath();sg.arc(cx,cy,R*1.18,0,6.283);sg.stroke();this.gStatic=sv}
   g.drawImage(this.gStatic,0,0,GW,GH);

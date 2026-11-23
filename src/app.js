@@ -84,7 +84,7 @@ function venueBand(){return `<section class="band inkfield venue" id="venue" dat
  <div class="facts"><div class="glass"><span>Date</span><b>17 Dec</b></div><div class="glass"><span>Doors open</span><b class="tn">9:00 AM</b></div><div class="glass"><span>First session</span><b class="tn">10:00 AM</b></div><div class="glass"><span>Shuttles</span><b>Every 20 min</b></div></div>
  <div class="zones" role="group" aria-label="Venue spaces">${ZONES.map(z=>`<button data-act="zone" data-arg="${esc(z.id)}" aria-pressed="${S.zone===z.id}"><i style="background:${z.top}"></i>${esc(z.id)}</button>`).join('')}</div>
  <div class="ctas"><a class="btn white" href="${EVENT.maps}" target="_blank" rel="noopener">${ic('pin',18)} Get directions</a></div></div>
- <div class="col" style="gap:14px" data-rv style="--i:1">${venueScene()}${zoneCard()}<p class="xs" style="opacity:.55">Illustrative layout. Follow the signs on the day.</p></div></div></section>`}
+ <div class="col" style="gap:14px" data-rv style="--i:1">${venueScene()}${S.skin==='royal'?'':zoneCard()}<p class="xs" style="opacity:.55">Illustrative layout. Follow the signs on the day.</p></div></div></section>`}
 
 function remindBand(){const p=S.pwa,ns=notifyStatus(),canNotify=ns==='ok',perm=canNotify?Notification.permission:'unsupported',on=p.on&&perm==='granted';
  const s1done=p.standalone;

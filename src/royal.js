@@ -36,12 +36,11 @@ function vRoyalHome(){const up=upcoming();
  ${skyline()}
 
  <section class="band r-invite" id="invite">${invDeco()}<div class="wrap inv-grid">
-  <div class="col" style="gap:18px" data-rv><p class="eyebrow gold-eb">Your invitation</p><h2 class="r-h2">A seat at the <em>celebration</em></h2><p class="muted" style="max-width:44ch;font-size:18px">Eleven years, one journey around the world. Break the seal to collect your boarding pass.</p>
-   <div class="inv-note" data-rv style="--i:2"><span class="in-k">You are cordially invited to</span><span class="in-t">11 Years of Impact</span><span class="in-d">${EVENT.dateLong}<i>◆</i>10:00 AM to 9:00 PM</span><span class="in-v">${EVENT.venue}, ${EVENT.area}</span></div>
+  <div class="col" style="gap:18px" data-rv><p class="eyebrow gold-eb">Your invitation</p><h2 class="r-h2">A seat at the <em>celebration</em></h2><p class="muted" style="max-width:44ch;font-size:18px">Eleven years, one journey around the world. Break the seal to view the invite.</p>
    <div class="inv-after"><div class="ctas"><button class="btn" data-act="eventIcs">${ic('ics',18)} Add to calendar</button><a class="btn sec" href="${EVENT.maps}" target="_blank" rel="noopener">${ic('pin',18)} Directions</a></div></div></div>
-  <div class="env-wrap" data-rv style="--i:1"><button class="env" data-act="envelope" aria-label="Open the envelope and collect your boarding pass">
+  <div class="env-wrap" data-rv style="--i:1"><button class="env" data-act="envelope" aria-label="Break the seal to view the invite">
    <span class="env-back"></span><span class="env-air" aria-hidden="true"></span>
-   <span class="env-card">${boardingPass()}</span>
+   <span class="env-pocket"><span class="env-card">${boardingPass()}</span></span>
    <span class="env-front"></span><span class="env-flap"></span><span class="seal"><b>11</b></span></button><p class="env-hint">Tap the seal</p></div></div></section>
 
  ${marquee()}
