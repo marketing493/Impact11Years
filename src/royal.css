@@ -769,6 +769,9 @@ html,body{max-width:100%;overflow-x:clip}
 @media (max-width:1100px){.rh-pin{height:auto;min-height:0}.rh-grid{padding-top:12px}}
 @media (max-width:900px){.rh-grid{padding-top:8px}}
 
+/* the globe keeps its size while the page scrolls (no zoom) */
+.rh-orb{transform:none!important;will-change:auto}
+
 /* ---------- logos: 15% smaller, with breathing room ---------- */
 .top .logo11{width:clamp(145px,12.75vw,179px)}
 .top .wrap>a:first-child{padding:10px 6px 10px 0}
