@@ -35,11 +35,12 @@ function vRoyalHome(){const up=upcoming();
  ${rHero()}
  ${skyline()}
 
- <section class="band r-invite" id="invite"><div class="wrap inv-grid">
+ <section class="band r-invite" id="invite">${invDeco()}<div class="wrap inv-grid">
   <div class="col" style="gap:18px" data-rv><p class="eyebrow gold-eb">Your invitation</p><h2 class="r-h2">A seat at the <em>celebration</em></h2><p class="muted" style="max-width:44ch;font-size:18px">Eleven years, one journey around the world. Break the seal to read your invitation.</p>
+   ${boardingPass()}
    <div class="inv-after"><div class="ctas"><button class="btn" data-act="eventIcs">${ic('ics',18)} Add to calendar</button><a class="btn sec" href="${EVENT.maps}" target="_blank" rel="noopener">${ic('pin',18)} Directions</a></div></div></div>
   <div class="env-wrap" data-rv style="--i:1"><button class="env" data-act="envelope" aria-label="Open the invitation">
-   <span class="env-back"></span>
+   <span class="env-back"></span><span class="env-air" aria-hidden="true"></span>
    <span class="env-card"><span class="ec-in"><span class="ec-orn">✦ ✦ ✦</span><span class="ec-k">You are cordially invited to the</span><span class="ec-t">11<sup>th</sup> Anniversary</span><span class="ec-s">Around the World in 11 Years</span><span class="ec-rule"></span><span class="ec-d">Thursday, 17 December 2026</span><span class="ec-d">10:00 AM to 9:00 PM</span><span class="ec-v">${EVENT.venue}<br>${EVENT.area}</span><span class="ec-orn">✦</span></span></span>
    <span class="env-front"></span><span class="env-flap"></span><span class="seal"><b>11</b></span></button><p class="env-hint">Tap the seal</p></div></div></section>
 
@@ -75,6 +76,29 @@ function tickRoyal(){const d=Math.max(0,TARGET_MS()-Date.now()),v={d:Math.floor(
  const ist=new Date().toLocaleTimeString('en-IN',{timeZone:TZ,hour:'2-digit',minute:'2-digit',hour12:false});$$('[data-ist]').forEach(e=>e.textContent=ist)}
 const TARGET_MS=()=>Date.parse(EVENT.starts);
 setInterval(()=>{if(S.skin==='royal'&&!document.hidden)tickRoyal()},1000);
+
+
+/* ---------- invitation desk: airmail stamps, a postmark, a flight path and a boarding pass ---------- */
+const PLANE_SVG=(s=22)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></svg>`;
+function invStamp(lm,label,val,cls){return `<span class="istamp ${cls}"><span class="is-in">${lmSvg(lm,44,1.5)}<b>${label}</b><i>${val}</i></span></span>`}
+function invDeco(){return `<div class="inv-deco" aria-hidden="true">
+ <svg class="inv-route" viewBox="0 0 1000 400" preserveAspectRatio="none"><path d="M0 210 C 240 -50, 600 -40, 800 110 S 950 330, 980 380" vector-effect="non-scaling-stroke"/></svg>
+ <span class="inv-plane">${PLANE_SVG(26)}</span>
+ <svg class="inv-pm" viewBox="0 0 220 220"><defs><path id="invPmPath" d="M110 110 m-84 0 a84 84 0 1 1 168 0 a84 84 0 1 1 -168 0"/></defs>
+  <circle cx="110" cy="110" r="104"/><circle cx="110" cy="110" r="100" stroke-dasharray="2 5"/><circle cx="110" cy="110" r="68"/>
+  <text class="pm-ring"><textPath href="#invPmPath">PAR AVION ✦ AIR MAIL ✦ IMPACT ANALYTICS ✦ 2015 TO 2026 ✦</textPath></text>
+  <text class="pm-big" x="110" y="106" text-anchor="middle">BLR</text><text class="pm-sm" x="110" y="132" text-anchor="middle">17 · XII · 2026</text></svg>
+ <svg class="inv-waves" viewBox="0 0 300 90" preserveAspectRatio="none"><path d="M0 15 q 18.75 -12 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0M0 45 q 18.75 -12 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0M0 75 q 18.75 -12 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0"/></svg>
+ ${invStamp('taj','India','11','s1')}${invStamp('bigben','London','11','s2')}${invStamp('eiffel','Paris','11','s3')}${invStamp('liberty','New York','11','s4')}
+</div>`}
+function boardingPass(){return `<div class="bpass" data-rv style="--i:2" aria-label="Boarding pass: flight IA 011 from 2015 to 2026, ${EVENT.dateLong}, boards 10:00 AM, ${EVENT.venue}">
+ <div class="bp-main">
+  <div class="bp-top"><span class="bp-air">${PLANE_SVG(14)} Impact Airways</span><span class="bp-cls">Flight IA 011</span></div>
+  <div class="bp-route"><div><b>2015</b><small>Where it began</small></div><span class="bp-line"><span>${PLANE_SVG(18)}</span></span><div class="r"><b>2026</b><small>Bangalore</small></div></div>
+  <div class="bp-grid"><div><small>Passenger</small><b>Every Impactian</b></div><div><small>Date</small><b>17 Dec</b></div><div><small>Boards</small><b>10:00</b></div><div><small>Gate</small><b>Hilton ETV</b></div></div>
+ </div>
+ <div class="bp-stub"><small>Seat</small><b>11A</b><small>Class</small><b class="sm">Royal</b><span class="bp-bar"></span></div>
+</div>`}
 
 /* the voyage map: a gold plane flies the route as you scroll, the camera follows it */
 class Voyage{

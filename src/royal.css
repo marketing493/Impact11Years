@@ -772,6 +772,84 @@ html,body{max-width:100%;overflow-x:clip}
 /* the globe keeps its size while the page scrolls (no zoom) */
 .rh-orb{transform:none!important;will-change:auto}
 
+/* =====================================================================
+   Invitation desk: "arrived by airmail"
+   ===================================================================== */
+.r-invite{position:relative;overflow:hidden}
+.r-invite>.wrap{position:relative;z-index:1}
+.inv-deco{position:absolute;inset:0;pointer-events:none;z-index:0}
+/* dotted gold flight path over the open sky above the envelope, and the plane that lands */
+.inv-route{position:absolute;left:12%;top:3%;width:62%;height:38%;overflow:visible}
+.inv-route path{fill:none;stroke:#F7E3A1;stroke-width:2;stroke-dasharray:2 9;stroke-linecap:round;opacity:.75}
+.inv-plane{position:absolute;left:calc(12% + 62% * .98);top:calc(3% + 38% * .95);color:#FFF6D6;transform:translate(-50%,-50%) rotate(150deg);filter:drop-shadow(0 4px 10px rgba(255,241,193,.6))}
+/* postmark ring and cancellation waves behind the envelope */
+.inv-pm{position:absolute;right:max(2%,calc((100vw - var(--max))/2 - 40px));top:4%;width:clamp(200px,24vw,320px);height:auto;fill:none;stroke:#F7E3A1;stroke-width:1.4;opacity:.38}
+.inv-pm text{fill:#F7E3A1;stroke:none;font-family:var(--f-body);font-weight:600}
+.inv-pm .pm-ring{font-size:13.5px;letter-spacing:3.2px}
+.inv-pm .pm-big{font-family:'Spectral',Georgia,serif;font-weight:400;font-size:40px;letter-spacing:2px}
+.inv-pm .pm-sm{font-size:12px;letter-spacing:2px}
+.inv-waves{position:absolute;right:calc(max(2%,calc((100vw - var(--max))/2 - 40px)) + clamp(170px,21vw,280px));top:calc(4% + clamp(70px,8vw,110px));width:clamp(160px,18vw,260px);height:clamp(50px,5.5vw,80px);fill:none;stroke:#F7E3A1;stroke-width:1.6;opacity:.3;overflow:visible}
+/* vintage stamps with perforated edges */
+.istamp{position:absolute;padding:7px;background:radial-gradient(circle at 5px 5px,transparent 3.2px,#F7F1E3 3.7px) -5px -5px/10px 10px;transform:rotate(var(--r,0deg));filter:drop-shadow(0 12px 18px rgba(10,16,60,.45))}
+.is-in{display:grid;justify-items:center;gap:2px;width:78px;padding:9px 6px 7px;background:#F7F1E3;box-shadow:inset 0 0 0 1px #D4AF61,inset 0 0 0 4px #F7F1E3,inset 0 0 0 5px rgba(38,76,215,.35);color:#264CD7}
+.is-in b{font-family:var(--f-body);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#1C1B1B;font-weight:600}
+.is-in i{position:absolute;top:10px;right:12px;font-style:normal;font-family:'Spectral',Georgia,serif;font-size:15px;color:#9C7A36}
+.istamp.s1{--r:-9deg;left:6%;top:9%}
+.istamp.s2{--r:7deg;left:38%;top:5%}
+.istamp.s3{--r:-5deg;left:45%;bottom:9%}
+.istamp.s4{--r:11deg;right:5%;bottom:12%}
+.istamp.s3 .is-in,.istamp.s4 .is-in{width:70px}
+/* airmail chevron border on the envelope */
+.env-air{position:absolute;inset:0;z-index:4;border-radius:10px;padding:9px;pointer-events:none;
+ background:repeating-linear-gradient(-45deg,#264CD7 0 14px,#F7F1E3 14px 28px,#C9A24A 28px 42px,#F7F1E3 42px 56px);
+ -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);
+ clip-path:polygon(0 0,50% 54%,100% 0,100% 100%,0 100%);opacity:.95}
+/* boarding pass */
+.bpass{display:flex;margin-top:10px;max-width:460px;transform:rotate(-1.6deg);filter:drop-shadow(0 22px 30px rgba(10,16,60,.45));transition:transform .5s var(--ease)}
+.bpass:hover{transform:rotate(0) translateY(-3px)}
+.bp-main,.bp-stub{background:radial-gradient(120% 90% at 0 0,#FFFDF5,#F7F1E3 60%,#EFE5CC);color:#1C1B1B}
+.bp-main{flex:1;min-width:0;padding:16px 18px 16px 20px;border-radius:12px 0 0 12px;-webkit-mask:radial-gradient(circle 9px at 100% 0,transparent 98%,#000) top/100% 51% no-repeat,radial-gradient(circle 9px at 100% 100%,transparent 98%,#000) bottom/100% 51% no-repeat;mask:radial-gradient(circle 9px at 100% 0,transparent 98%,#000) top/100% 51% no-repeat,radial-gradient(circle 9px at 100% 100%,transparent 98%,#000) bottom/100% 51% no-repeat;box-shadow:inset 0 3px 0 #264CD7}
+.bp-stub{width:104px;flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:14px 10px;border-radius:0 12px 12px 0;border-left:2px dashed rgba(28,27,27,.25);-webkit-mask:radial-gradient(circle 9px at 0 0,transparent 98%,#000) top/100% 51% no-repeat,radial-gradient(circle 9px at 0 100%,transparent 98%,#000) bottom/100% 51% no-repeat;mask:radial-gradient(circle 9px at 0 0,transparent 98%,#000) top/100% 51% no-repeat,radial-gradient(circle 9px at 0 100%,transparent 98%,#000) bottom/100% 51% no-repeat;box-shadow:inset 0 3px 0 #264CD7}
+.bp-top{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:600}
+.bp-air{display:inline-flex;align-items:center;gap:6px;color:#264CD7}
+.bp-air svg{transform:rotate(90deg)}
+.bp-cls{color:#9C7A36}
+.bp-route{display:flex;align-items:center;gap:12px;margin:10px 0 12px}
+.bp-route b{display:block;font-family:'Spectral',Georgia,serif;font-weight:400;font-size:34px;line-height:1;color:#264CD7;letter-spacing:-.01em}
+.bp-route small{display:block;font-size:10.5px;color:rgba(28,27,27,.6);margin-top:3px}
+.bp-route .r{text-align:right}
+.bp-line{flex:1;position:relative;height:2px;background:repeating-linear-gradient(90deg,#C9A24A 0 4px,transparent 4px 9px)}
+.bp-line span{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(90deg);color:#C9A24A;background:#F7F1E3;padding:0 4px;display:flex}
+.bp-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1.2fr;gap:8px;padding-top:10px;border-top:1px solid rgba(28,27,27,.12)}
+.bp-grid small,.bp-stub small{display:block;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:rgba(28,27,27,.55);font-weight:600}
+.bp-grid b{display:block;font-size:13px;font-weight:600;color:#1C1B1B;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bp-stub b{font-family:'Spectral',Georgia,serif;font-weight:400;font-size:30px;color:#264CD7;line-height:1.05}
+.bp-stub b.sm{font-family:var(--f-body);font-size:13px;font-weight:600;color:#9C7A36}
+.bp-bar{display:block;width:72px;height:26px;margin-top:8px;background:repeating-linear-gradient(90deg,#1C1B1B 0 2px,transparent 2px 3px,#1C1B1B 3px 4px,transparent 4px 7px,#1C1B1B 7px 10px,transparent 10px 11px)}
+/* scroll-driven motion (no script): stamps drift at different depths, the postmark turns, the route draws in */
+@supports (animation-timeline:view()){
+ .r-invite .istamp,.inv-pm,.inv-route,.inv-plane{animation-timeline:view();animation-fill-mode:both;animation-timing-function:linear}
+ .istamp.s1{animation-name:driftA}.istamp.s2{animation-name:driftB}.istamp.s3{animation-name:driftC}.istamp.s4{animation-name:driftB}
+ .inv-pm{animation-name:pmTurn}
+ .inv-route{animation-name:routeIn;animation-range:entry 10% cover 45%}
+ .inv-plane{animation-name:planeIn;animation-range:cover 35% cover 50%}}
+@keyframes driftA{from{transform:translateY(60px) rotate(var(--r))}to{transform:translateY(-60px) rotate(var(--r))}}
+@keyframes driftB{from{transform:translateY(30px) rotate(var(--r))}to{transform:translateY(-30px) rotate(var(--r))}}
+@keyframes driftC{from{transform:translateY(90px) rotate(var(--r))}to{transform:translateY(-90px) rotate(var(--r))}}
+@keyframes pmTurn{from{transform:rotate(-30deg)}to{transform:rotate(30deg)}}
+@keyframes routeIn{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes planeIn{from{opacity:0;transform:translate(-90%,-160%) rotate(150deg) scale(.7)}to{opacity:1;transform:translate(-50%,-50%) rotate(150deg) scale(1)}}
+@media (prefers-reduced-motion:reduce){.r-invite .istamp,.inv-pm,.inv-route,.inv-plane{animation:none!important}}
+@media (max-width:900px){
+ .inv-route,.inv-plane{display:none}
+ .inv-pm{width:180px;right:-30px;top:36%}
+ .inv-waves{display:none}
+ .istamp.s1{left:auto;right:5%;top:2%}.istamp.s2{display:none}.istamp.s3{left:5%;bottom:auto;top:57%}.istamp.s4{display:none}
+ .istamp .is-in{width:60px}.istamp svg{width:34px;height:34px}
+ .bpass{max-width:100%;transform:none}
+ .bp-route b{font-size:28px}.bp-stub{width:86px}
+ .bp-grid{grid-template-columns:1.4fr 1fr 1fr;row-gap:8px}.bp-grid>div:last-child{grid-column:1/-1}}
+
 /* ---------- logos: 15% smaller, with breathing room ---------- */
 .top .logo11{width:clamp(145px,12.75vw,179px)}
 .top .wrap>a:first-child{padding:10px 6px 10px 0}
