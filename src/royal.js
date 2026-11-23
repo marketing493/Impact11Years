@@ -41,7 +41,7 @@ function vRoyalHome(){const up=upcoming();
    <div class="inv-after"><div class="ctas"><button class="btn" data-act="eventIcs">${ic('ics',18)} Add to calendar</button><a class="btn sec" href="${EVENT.maps}" target="_blank" rel="noopener">${ic('pin',18)} Directions</a></div></div></div>
   <div class="env-wrap" data-rv style="--i:1"><button class="env" data-act="envelope" aria-label="Open the invitation">
    <span class="env-back"></span><span class="env-air" aria-hidden="true"></span>
-   <span class="env-card"><span class="ec-in"><span class="ec-orn">✦ ✦ ✦</span><span class="ec-k">You are cordially invited to the</span><span class="ec-t">11<sup>th</sup> Anniversary</span><span class="ec-s">Around the World in 11 Years</span><span class="ec-rule"></span><span class="ec-d">Thursday, 17 December 2026</span><span class="ec-d">10:00 AM to 9:00 PM</span><span class="ec-v">${EVENT.venue}<br>${EVENT.area}</span><span class="ec-orn">✦</span></span></span>
+   <span class="env-card"><span class="ec-in"><span class="ec-orn">✦ ✦ ✦</span><span class="ec-k">You are cordially invited to the</span><span class="ec-t">11 Years of Impact</span><span class="ec-s">Around the World in 11 Years</span><span class="ec-rule"></span><span class="ec-d">Thursday, 17 December 2026</span><span class="ec-d">10:00 AM to 9:00 PM</span><span class="ec-v">${EVENT.venue}<br>${EVENT.area}</span><span class="ec-orn">✦</span></span></span>
    <span class="env-front"></span><span class="env-flap"></span><span class="seal"><b>11</b></span></button><p class="env-hint">Tap the seal</p></div></div></section>
 
  ${marquee()}
@@ -89,13 +89,14 @@ function invDeco(){return `<div class="inv-deco" aria-hidden="true">
   <text class="pm-ring"><textPath href="#invPmPath">PAR AVION ✦ AIR MAIL ✦ IMPACT ANALYTICS ✦ 2015 TO 2026 ✦</textPath></text>
   <text class="pm-big" x="110" y="106" text-anchor="middle">BLR</text><text class="pm-sm" x="110" y="132" text-anchor="middle">17 · XII · 2026</text></svg>
  <svg class="inv-waves" viewBox="0 0 300 90" preserveAspectRatio="none"><path d="M0 15 q 18.75 -12 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0M0 45 q 18.75 -12 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0M0 75 q 18.75 -12 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0"/></svg>
+ <span class="ifl k1">✦</span><span class="ifl k2">✦</span><span class="ifl k3">✦</span><span class="ifl k4">✦</span><span class="ifl d1"></span><span class="ifl d2"></span><span class="ifl d3"></span><span class="ifl d4"></span><span class="ifl c1"></span><span class="ifl c2"></span><span class="ifl p1">${PLANE_SVG(16)}</span><span class="ifl p2">${PLANE_SVG(12)}</span>
  ${invStamp('taj','India','11','s1')}${invStamp('bigben','London','11','s2')}${invStamp('eiffel','Paris','11','s3')}${invStamp('liberty','New York','11','s4')}
 </div>`}
-function boardingPass(){return `<div class="bpass" data-rv style="--i:2" aria-label="Boarding pass: flight IA 011 from 2015 to 2026, ${EVENT.dateLong}, boards 10:00 AM, ${EVENT.venue}">
+function boardingPass(){return `<div class="bpass" data-rv style="--i:2" aria-label="Boarding pass: Impact Analytics flight IA 011 for every IA employee, from 2015 to 2026, ${EVENT.dateLong}, boards 10:00 AM, ${EVENT.venue}">
  <div class="bp-main">
-  <div class="bp-top"><span class="bp-air">${PLANE_SVG(14)} Impact Airways</span><span class="bp-cls">Flight IA 011</span></div>
+  <div class="bp-top"><span class="bp-air">${PLANE_SVG(14)} Impact Analytics</span><span class="bp-cls">Flight IA 011</span></div>
   <div class="bp-route"><div><b>2015</b><small>Where it began</small></div><span class="bp-line"><span>${PLANE_SVG(18)}</span></span><div class="r"><b>2026</b><small>Bangalore</small></div></div>
-  <div class="bp-grid"><div><small>Passenger</small><b>Every Impactian</b></div><div><small>Date</small><b>17 Dec</b></div><div><small>Boards</small><b>10:00</b></div><div><small>Gate</small><b>Hilton ETV</b></div></div>
+  <div class="bp-grid"><div><small>Passenger</small><b>Every IA Employee</b></div><div><small>Date</small><b>17 Dec</b></div><div><small>Boards</small><b>10:00</b></div><div><small>Gate</small><b>Hilton ETV</b></div></div>
  </div>
  <div class="bp-stub"><small>Seat</small><b>11A</b><small>Class</small><b class="sm">Royal</b><span class="bp-bar"></span></div>
 </div>`}

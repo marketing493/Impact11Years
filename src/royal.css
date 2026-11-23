@@ -850,6 +850,34 @@ html,body{max-width:100%;overflow-x:clip}
  .bp-route b{font-size:28px}.bp-stub{width:86px}
  .bp-grid{grid-template-columns:1.4fr 1fr 1fr;row-gap:8px}.bp-grid>div:last-child{grid-column:1/-1}}
 
+/* invitation: floating sparkles, motes, soft clouds and paper planes drifting in the background */
+.ifl{position:absolute;display:block;pointer-events:none;will-change:transform;animation:iflY var(--t,9s) ease-in-out var(--dl,0s) infinite alternate}
+.ifl.k1,.ifl.k2,.ifl.k3,.ifl.k4{color:#F7E3A1;text-shadow:0 0 10px rgba(255,241,193,.8);line-height:1}
+.ifl.k1{left:30%;top:22%;font-size:14px;--t:7s}
+.ifl.k2{left:58%;top:30%;font-size:10px;--t:9s;--dl:-3s}
+.ifl.k3{left:20%;bottom:14%;font-size:12px;--t:8s;--dl:-5s}
+.ifl.k4{right:18%;top:12%;font-size:9px;--t:10s;--dl:-2s}
+.ifl.d1,.ifl.d2,.ifl.d3,.ifl.d4{width:5px;height:5px;border-radius:50%;background:#FFF1C1;box-shadow:0 0 8px rgba(255,241,193,.9);opacity:.7}
+.ifl.d1{left:12%;top:48%;--t:11s}.ifl.d2{left:52%;top:62%;--t:8s;--dl:-4s;width:4px;height:4px}
+.ifl.d3{right:30%;bottom:22%;--t:12s;--dl:-6s}.ifl.d4{left:66%;top:14%;--t:9s;--dl:-1s;width:3px;height:3px}
+.ifl.c1,.ifl.c2{width:150px;height:42px;border-radius:42px;background:rgba(255,255,255,.07);filter:blur(1px);animation-name:iflX}
+.ifl.c1::before,.ifl.c2::before{content:"";position:absolute;left:28px;top:-22px;width:66px;height:52px;border-radius:50%;background:inherit}
+.ifl.c1::after,.ifl.c2::after{content:"";position:absolute;left:70px;top:-12px;width:48px;height:40px;border-radius:50%;background:inherit}
+.ifl.c1{left:24%;top:40%;--t:16s}.ifl.c2{right:8%;bottom:30%;--t:20s;--dl:-8s;transform:scale(.7)}
+.ifl.p1,.ifl.p2{color:rgba(255,246,214,.55);animation-name:iflP}
+.ifl.p1{left:8%;top:64%;--t:14s}.ifl.p2{left:62%;bottom:10%;--t:18s;--dl:-7s}
+@keyframes iflY{from{transform:translateY(-12px)}to{transform:translateY(12px)}}
+@keyframes iflX{from{transform:translateX(-30px)}to{transform:translateX(30px)}}
+@keyframes iflP{from{transform:translate(-24px,10px) rotate(70deg)}to{transform:translate(24px,-10px) rotate(80deg)}}
+@media (max-width:900px){.ifl.c2,.ifl.p2,.ifl.k2,.ifl.d4{display:none}.ifl.c1{left:auto;right:4%;top:44%}}
+@media (prefers-reduced-motion:reduce){.ifl{animation:none!important}}
+/* the sealed envelope glows softly until it is opened */
+.env::before{content:"";position:absolute;inset:-16% -12%;z-index:-1;border-radius:28px;pointer-events:none;background:radial-gradient(closest-side,rgba(255,236,170,.75),rgba(235,201,107,.35) 60%,transparent);filter:blur(18px);opacity:.6;animation:envGlow 3.6s ease-in-out infinite alternate;transition:opacity .6s}
+.env.open::before{animation:none;opacity:0}
+@keyframes envGlow{from{opacity:.4;transform:scale(.97)}to{opacity:1;transform:scale(1.03)}}
+.env:not(.open) .seal b{text-shadow:0 0 12px rgba(255,241,193,.7)}
+@media (prefers-reduced-motion:reduce){.env::before{animation:none;opacity:.55}}
+
 /* ---------- logos: 15% smaller, with breathing room ---------- */
 .top .logo11{width:clamp(145px,12.75vw,179px)}
 .top .wrap>a:first-child{padding:10px 6px 10px 0}
