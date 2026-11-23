@@ -1217,6 +1217,9 @@ html,body{max-width:100%;overflow-x:clip}
 /* phones: the India stamp sits in the open space under the text, on the left, held still so it never touches the text */
 @media (max-width:900px){.istamp.s1{left:6%;right:auto;top:calc(100% * 0 + 222px);animation:none!important;transform:rotate(var(--r))}}
 
+/* departures: the hovered row is marked with a gold edge while its letters flip */
+@media (hover:hover) and (pointer:fine){:root[data-tone="blue"] .brows .brow{cursor:default}:root[data-tone="blue"] .brows .brow:hover{background:rgba(247,227,161,.07);box-shadow:inset 3px 0 0 #EBC96B}}
+
 /* ---------- logos: 15% smaller, with breathing room ---------- */
 .top .logo11{width:clamp(124px,10.8vw,152px)}
 .top .wrap>a:first-child{padding:10px 6px 10px 0}

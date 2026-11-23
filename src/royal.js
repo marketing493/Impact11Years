@@ -215,6 +215,9 @@ class Voyage{
 /* split-flap departures board */
 const FLAP=' ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:-.&';
 class Board{constructor(el){this.el=el;this.rows=el.querySelector('.brows');this.alive=true;this.timers=[];this.build(true);
+  /* hovering a row re-flips its letters, left to right, like a split-flap row updating (mouse only, at most once a second per row) */
+  if(matchMedia('(hover: hover) and (pointer: fine)').matches&&!RMQ.matches)this.rows.addEventListener('mouseover',e=>{const row=e.target.closest('.brow');if(!row||row.contains(e.relatedTarget)||!this.played)return;const now=Date.now();if(now-(+row.dataset.fl||0)<1100)return;row.dataset.fl=now;
+   [...row.querySelectorAll('.fc')].forEach((c,i)=>this.flip(c,i*16))});
   this.io=new IntersectionObserver(es=>{if(es[0].isIntersecting&&!this.played){this.played=true;this.flipAll()}},{threshold:.3});this.io.observe(el);
   this.iv=setInterval(()=>{if(!document.hidden)this.build(false)},30000)}
  stop(){this.alive=false;this.io.disconnect();clearInterval(this.iv);this.timers.forEach(clearTimeout);this.raf&&cancelAnimationFrame(this.raf)}
