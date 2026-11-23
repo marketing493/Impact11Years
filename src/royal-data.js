@@ -7,6 +7,7 @@ const GOLD='#D4AF61',GOLD_HI='#F3DFA2',GOLD_LO='#9C7A36',NAVY='#0A1744',IVORY='#
 
 /* line-art landmarks, 64x64, drawn with a gold stroke */
 const LANDMARKS={
+ opera:'M6 48h52M10 48c3-10 8-17 15-21v21M22 48c3-12 9-21 18-26v26M36 48c4-10 10-16 18-18l-2 18M17 48c1-5 3-9 5-12M31 48c1-6 3-11 6-15M46 48c1-4 3-8 5-10M8 54q4-3 8 0t8 0t8 0t8 0t8 0t8 0',
  taj:'M14 58h36M20 58V36h24v22M24 36c0-10 8-13 8-20 0 7 8 10 8 20M32 16v-5M28 58v-8a4 4 0 018 0v8M12 58V30M52 58V30M10.5 30h3M50.5 30h3M12 28v-3M52 28v-3M23 36h18',
  bigben:'M25 60V18h14v42M23 18h18M27 18l5-11 5 11M32 7V2M28 23h8v8h-8zM32 27l2.5-2M25 37h14M25 47h14M22 60h20',
  eiffel:'M32 3v7M28 10h8M29 10l-5 22h16l-5-22M24 32l-7 27M40 32l7 27M15 59h34M25 45h14M21 46c4-7 18-7 22 0M27.5 21h9',
@@ -30,7 +31,7 @@ const STOPS=[
 const ROYAL_SPRITE=`<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="gGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9C7A36"/><stop offset=".25" stop-color="#F3DFA2"/><stop offset=".5" stop-color="#D4AF61"/><stop offset=".68" stop-color="#FFF1C1"/><stop offset=".85" stop-color="#B58C3F"/><stop offset="1" stop-color="#E9CD86"/></linearGradient>
 <linearGradient id="gNavy" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1B3592"/><stop offset="1" stop-color="#0A1744"/></linearGradient>
-<radialGradient id="dialDisc" cx="50%" cy="38%" r="70%"><stop offset="0" stop-color="#1E3FAE" stop-opacity=".55"/><stop offset=".7" stop-color="#0A1744" stop-opacity=".85"/><stop offset="1" stop-color="#050B26"/></radialGradient>
+<radialGradient id="heroDisc" cx="40%" cy="35%" r="75%"><stop offset="0" stop-color="#264CD7"/><stop offset=".6" stop-color="#22388C"/><stop offset="1" stop-color="#1C1B1B"/></radialGradient><radialGradient id="dialDisc" cx="50%" cy="38%" r="70%"><stop offset="0" stop-color="#1E3FAE" stop-opacity=".55"/><stop offset=".7" stop-color="#0A1744" stop-opacity=".85"/><stop offset="1" stop-color="#050B26"/></radialGradient>
 <radialGradient id="gGlow"><stop offset="0" stop-color="#FFF1C1" stop-opacity=".9"/><stop offset="1" stop-color="#FFF1C1" stop-opacity="0"/></radialGradient>
 <clipPath id="balloonClip"><path d="M50 4C24 4 6 24 6 48c0 22 18 36 30 50h28c12-14 30-28 30-50C94 24 76 4 50 4z"/></clipPath>
 </defs>

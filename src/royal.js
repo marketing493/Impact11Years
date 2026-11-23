@@ -20,7 +20,7 @@ function syncTone(){$$('[data-act="tone"]').forEach(b=>{const blue=S.tone==='blu
 const ROYAL_ACT={
  tone(){setTone(S.tone==='blue'?'midnight':'blue');return false},
  skin(){if(!ROYAL_ONLY)setSkin(S.skin==='royal'?'modern':'royal');return false},
- envelope(){const e=$('.env');if(!e)return false;const open=!e.classList.contains('open');e.classList.toggle('open',open);$('.inv-after')?.classList.toggle('show',open);if(open)toast('You are invited. See you on 17 December.');return false},
+ envelope(){const e=$('.env');if(!e)return false;const open=!e.classList.contains('open');e.classList.toggle('open',open);$('.inv-after')?.classList.toggle('show',open);if(open)toast('Boarding pass collected. See you on 17 December.');return false},
  tent(i){$$('.tent').forEach((t,k)=>{const on=k===+i&&!t.classList.contains('open');t.classList.toggle('open',on);t.setAttribute('aria-expanded',on)});return false},
  eventIcs(){const a={id:'event',title:'11 Years of Impact: Around the World in 11 Years',date:'2026-12-17',start:'10:00',end:'21:00',location:'Main hall',description:'The 11th anniversary celebration of Impact Analytics.'};S.acts.some(x=>x.id==='event')||S.acts.push(a);ics('event');S.acts=S.acts.filter(x=>x.id!=='event');return false},
  voyageGo(i){VOYAGE&&VOYAGE.goTo(+i);return false}};
@@ -36,12 +36,12 @@ function vRoyalHome(){const up=upcoming();
  ${skyline()}
 
  <section class="band r-invite" id="invite">${invDeco()}<div class="wrap inv-grid">
-  <div class="col" style="gap:18px" data-rv><p class="eyebrow gold-eb">Your invitation</p><h2 class="r-h2">A seat at the <em>celebration</em></h2><p class="muted" style="max-width:44ch;font-size:18px">Eleven years, one journey around the world. Break the seal to read your invitation.</p>
-   ${boardingPass()}
+  <div class="col" style="gap:18px" data-rv><p class="eyebrow gold-eb">Your invitation</p><h2 class="r-h2">A seat at the <em>celebration</em></h2><p class="muted" style="max-width:44ch;font-size:18px">Eleven years, one journey around the world. Break the seal to collect your boarding pass.</p>
+   <div class="inv-note" data-rv style="--i:2"><span class="in-k">You are cordially invited to</span><span class="in-t">11 Years of Impact</span><span class="in-d">${EVENT.dateLong}<i>◆</i>10:00 AM to 9:00 PM</span><span class="in-v">${EVENT.venue}, ${EVENT.area}</span></div>
    <div class="inv-after"><div class="ctas"><button class="btn" data-act="eventIcs">${ic('ics',18)} Add to calendar</button><a class="btn sec" href="${EVENT.maps}" target="_blank" rel="noopener">${ic('pin',18)} Directions</a></div></div></div>
-  <div class="env-wrap" data-rv style="--i:1"><button class="env" data-act="envelope" aria-label="Open the invitation">
+  <div class="env-wrap" data-rv style="--i:1"><button class="env" data-act="envelope" aria-label="Open the envelope and collect your boarding pass">
    <span class="env-back"></span><span class="env-air" aria-hidden="true"></span>
-   <span class="env-card"><span class="ec-in"><span class="ec-orn">✦ ✦ ✦</span><span class="ec-k">You are cordially invited to the</span><span class="ec-t">11 Years of Impact</span><span class="ec-s">Around the World in 11 Years</span><span class="ec-rule"></span><span class="ec-d">Thursday, 17 December 2026</span><span class="ec-d">10:00 AM to 9:00 PM</span><span class="ec-v">${EVENT.venue}<br>${EVENT.area}</span><span class="ec-orn">✦</span></span></span>
+   <span class="env-card">${boardingPass()}</span>
    <span class="env-front"></span><span class="env-flap"></span><span class="seal"><b>11</b></span></button><p class="env-hint">Tap the seal</p></div></div></section>
 
  ${marquee()}
@@ -90,16 +90,16 @@ function invDeco(){return `<div class="inv-deco" aria-hidden="true">
   <text class="pm-big" x="110" y="106" text-anchor="middle">BLR</text><text class="pm-sm" x="110" y="132" text-anchor="middle">17 · XII · 2026</text></svg>
  <svg class="inv-waves" viewBox="0 0 300 90" preserveAspectRatio="none"><path d="M0 15 q 18.75 -12 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0M0 45 q 18.75 -12 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0M0 75 q 18.75 -12 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0"/></svg>
  <span class="ifl k1">✦</span><span class="ifl k2">✦</span><span class="ifl k3">✦</span><span class="ifl k4">✦</span><span class="ifl d1"></span><span class="ifl d2"></span><span class="ifl d3"></span><span class="ifl d4"></span><span class="ifl c1"></span><span class="ifl c2"></span><span class="ifl p1">${PLANE_SVG(16)}</span><span class="ifl p2">${PLANE_SVG(12)}</span>
- ${invStamp('taj','India','11','s1')}${invStamp('bigben','London','11','s2')}${invStamp('eiffel','Paris','11','s3')}${invStamp('liberty','New York','11','s4')}
+ ${invStamp('taj','India','11','s1')}${invStamp('liberty','New York','11','s2')}${invStamp('opera','Sydney','11','s3')}${invStamp('bigben','London','11','s4')}
 </div>`}
-function boardingPass(){return `<div class="bpass" data-rv style="--i:2" aria-label="Boarding pass: Impact Analytics flight IA 011 for every IA employee, from 2015 to 2026, ${EVENT.dateLong}, boards 10:00 AM, ${EVENT.venue}">
- <div class="bp-main">
-  <div class="bp-top"><span class="bp-air">${PLANE_SVG(14)} Impact Analytics</span><span class="bp-cls">Flight IA 011</span></div>
-  <div class="bp-route"><div><b>2015</b><small>Where it began</small></div><span class="bp-line"><span>${PLANE_SVG(18)}</span></span><div class="r"><b>2026</b><small>Bangalore</small></div></div>
-  <div class="bp-grid"><div><small>Passenger</small><b>Every IA Employee</b></div><div><small>Date</small><b>17 Dec</b></div><div><small>Boards</small><b>10:00</b></div><div><small>Gate</small><b>Hilton ETV</b></div></div>
- </div>
- <div class="bp-stub"><small>Seat</small><b>11A</b><small>Class</small><b class="sm">Royal</b><span class="bp-bar"></span></div>
-</div>`}
+function boardingPass(){return `<span class="bpass" role="img" aria-label="Boarding pass: Impact Analytics flight IA 011, passenger Impacter, 2015 to 2026, ${EVENT.dateLong}, boards 10:00 AM, gate ${EVENT.venue}, seat 11A">
+ <span class="bp-main">
+  <span class="bp-top"><span class="bp-air">${PLANE_SVG(14)} Impact Analytics</span><span class="bp-cls">Flight IA 011</span></span>
+  <span class="bp-route"><span><b>2015</b><small>Where it began</small></span><span class="bp-line"><span>${PLANE_SVG(18)}</span></span><span class="r"><b>2026</b><small>Bangalore</small></span></span>
+  <span class="bp-grid"><span><small>Passenger</small><b>Impacter</b></span><span><small>Date</small><b>17 Dec</b></span><span><small>Boards</small><b>10:00</b></span><span><small>Gate</small><b>Hilton ETV</b></span></span>
+ </span>
+ <span class="bp-stub"><small>Seat</small><b>11A</b><small>Class</small><b class="sm">Royal</b><span class="bp-bar"></span></span>
+</span>`}
 
 /* the voyage map: a gold plane flies the route as you scroll, the camera follows it */
 class Voyage{

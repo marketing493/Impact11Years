@@ -27,7 +27,7 @@ function rHero(){return `<section class="r-hero" id="arch"><div class="rh-pin"><
     <circle cx="100" cy="100" r="96" fill="url(#gGold)"/><circle cx="100" cy="100" r="88" fill="#0A1744"/><circle cx="100" cy="100" r="86" fill="none" stroke="#D4AF61" stroke-width="1"/><circle cx="100" cy="100" r="60" fill="none" stroke="#D4AF61" stroke-width="1.2"/>
     <g class="medal-ring"><text font-family="Cinzel,Georgia,serif" font-size="12" font-weight="700" fill="#F3DFA2"><textPath href="#medalPath" textLength="458" lengthAdjust="spacing">IMPACT ANALYTICS ◆ MMXV TO MMXXVI ◆</textPath></text></g>
     <text x="100" y="122" text-anchor="middle" font-family="Cinzel,Georgia,serif" font-weight="700" font-size="62" fill="url(#gGold)">11</text></svg></div>
-   <p class="rh-drag">${ic('rotate',14)} Drag to spin the globe</p></div>
+</div>
  </div>
  <a class="rh-cue" href="#invite"><span></span>Scroll to begin</a></div></section>`}
 
@@ -67,8 +67,8 @@ class Hero{constructor(sec){this.sec=sec;this.pin=sec.querySelector('.rh-pin');t
 }
   /* the globe */
   const g=this.gc,GW=this.GW,GH=this.GH,cx=GW/2,cy=GH/2,R=Math.min(GW*.44,GH*.43);if(this.hit&&this.hitR!==R){this.hitR=R;/* on touch screens the outer ring of the globe still scrolls the page */const k=matchMedia('(pointer: coarse)').matches?1.5:2.1;this.hit.style.width=this.hit.style.height=(R*k)+'px'}g.clearRect(0,0,GW,GH);
-  /* soft halo, kept inside the canvas so it never shows a square edge */const HR=Math.min(R*1.55,cx,cy,this.GW-cx,this.GH-cy);const halo=g.createRadialGradient(cx,cy,R*.6,cx,cy,HR);halo.addColorStop(0,'rgba(243,223,162,.16)');halo.addColorStop(.45,'rgba(212,175,97,.07)');halo.addColorStop(1,'rgba(212,175,97,0)');g.fillStyle=halo;g.beginPath();g.arc(cx,cy,HR,0,6.283);g.fill();
-  const body=g.createRadialGradient(cx-R*.35,cy-R*.4,R*.1,cx,cy,R);if(document.documentElement.dataset.tone==='blue'){/* brand: Impact Blue body with a soft highlight, staying blue all the way to the rim */body.addColorStop(0,'#5A7BE6');body.addColorStop(.6,'#2E55DC');body.addColorStop(1,'#2445C4')}else{body.addColorStop(0,'#1E3FAE');body.addColorStop(.7,'#0B1A52');body.addColorStop(1,'#060D2C')}g.fillStyle=body;g.beginPath();g.arc(cx,cy,R,0,6.283);g.fill();
+  /* soft halo, kept inside the canvas so it never shows a square edge */const HR=Math.min(R*1.55,cx,cy,this.GW-cx,this.GH-cy);const halo=g.createRadialGradient(cx,cy,R*.6,cx,cy,HR);const blueTone=document.documentElement.dataset.tone==='blue';if(blueTone){halo.addColorStop(0,'rgba(38,76,215,.95)');halo.addColorStop(.5,'rgba(38,76,215,.45)');halo.addColorStop(1,'rgba(38,76,215,0)')}else{halo.addColorStop(0,'rgba(243,223,162,.16)');halo.addColorStop(.45,'rgba(212,175,97,.07)');halo.addColorStop(1,'rgba(212,175,97,0)')}g.fillStyle=halo;g.beginPath();g.arc(cx,cy,HR,0,6.283);g.fill();
+  const body=g.createRadialGradient(cx-R*.35,cy-R*.4,R*.1,cx,cy,R);if(document.documentElement.dataset.tone==='blue'){/* solid #22388C body */body.addColorStop(0,'#22388C');body.addColorStop(1,'#22388C')}else{body.addColorStop(0,'#1E3FAE');body.addColorStop(.7,'#0B1A52');body.addColorStop(1,'#060D2C')}g.fillStyle=body;g.beginPath();g.arc(cx,cy,R,0,6.283);g.fill();
   /* graticule */
   g.lineWidth=.8;
   for(let lo=0;lo<180;lo+=30){g.beginPath();let pen=false;for(let la=-90;la<=90;la+=6){const q=this.proj(lo*Math.PI/180,la*Math.PI/180,R,cx,cy);if(q[2]>0){pen?g.lineTo(q[0],q[1]):g.moveTo(q[0],q[1]);pen=true}else pen=false}g.strokeStyle='rgba(212,175,97,.22)';g.stroke();
@@ -85,7 +85,7 @@ class Hero{constructor(sec){this.sec=sec;this.pin=sec.querySelector('.rh-pin');t
   for(const [lo,la] of this.stops){const q=this.proj(lo,la,R,cx,cy);if(q[2]<=0)continue;const pulse=still?0:(t/1600)%1;g.fillStyle='#FFF1C1';g.beginPath();g.arc(q[0],q[1],2.6,0,6.283);g.fill();
    g.strokeStyle=`rgba(255,241,193,${(1-pulse)*.8})`;g.lineWidth=1;g.beginPath();g.arc(q[0],q[1],3+pulse*10,0,6.283);g.stroke()}
   /* rim light */
-  const rim=g.createRadialGradient(cx,cy,R*.86,cx,cy,R*1.02);rim.addColorStop(0,'rgba(243,223,162,0)');rim.addColorStop(1,'rgba(243,223,162,.45)');g.fillStyle=rim;g.beginPath();g.arc(cx,cy,R*1.02,0,6.283);g.fill();
+  if(document.documentElement.dataset.tone!=='blue'){const rim=g.createRadialGradient(cx,cy,R*.86,cx,cy,R*1.02);rim.addColorStop(0,'rgba(243,223,162,0)');rim.addColorStop(1,'rgba(243,223,162,.45)');g.fillStyle=rim;g.beginPath();g.arc(cx,cy,R*1.02,0,6.283);g.fill();}
   g.strokeStyle='rgba(212,175,97,.75)';g.lineWidth=1.2;g.beginPath();g.arc(cx,cy,R*1.1,0,6.283);g.stroke();
   g.setLineDash([2,6]);g.strokeStyle='rgba(212,175,97,.45)';g.beginPath();g.arc(cx,cy,R*1.18,0,6.283);g.stroke();g.setLineDash([]);
   /* orbit ring and the gold plane */
