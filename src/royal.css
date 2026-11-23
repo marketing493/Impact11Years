@@ -1113,6 +1113,33 @@ html,body{max-width:100%;overflow-x:clip}
 @keyframes passOutM{0%{transform:translateY(105%)}60%{transform:translateY(-96%)}100%{transform:translateY(-62%) rotate(-2deg)}}
 @media (max-width:900px){:root[data-tone="blue"] .env.open .env-card{animation-name:passOutM}:root[data-tone="blue"] .env-wrap{padding-top:clamp(150px,40vw,200px)}}
 
+/* =====================================================================
+   Page gradients by section, blended where they change
+   hero gradient (about 30% dark at the right): header, hero, voyage, venue
+   blue gradient (about 10% dark at the right): skyline strip, invitation
+   mid gradient (about 12-15% dark at the right): departures, fair, reminders, footer
+   ===================================================================== */
+:root[data-tone="blue"]{
+ --g-hero:linear-gradient(90deg,#264CD7 0%,#22388C 60%,#1C1B1B 100%);
+ --g-blue:linear-gradient(90deg,#264CD7 0%,#264CD7 32%,#22388C 90%,#1C1B1B 100%);
+ --g-mid:linear-gradient(90deg,#264CD7 0%,#264CD7 22%,#22388C 86%,#1C1B1B 100%)}
+:root[data-tone="blue"] :is(.r-sky,.r-invite){background:var(--g-blue)!important}
+:root[data-tone="blue"] :is(.r-dep,.r-fair,#reminders){background:var(--g-mid)!important}
+:root[data-tone="blue"] footer{background:var(--g-mid)!important}
+/* soft vertical blends where one gradient hands over to the next */
+:root[data-tone="blue"] :is(.r-sky,.r-dep,.r-fair,#reminders){position:relative;isolation:isolate}
+:root[data-tone="blue"] :is(.r-sky,.r-dep,#reminders)::before{content:"";position:absolute;left:0;right:0;top:0;height:min(100%,220px);z-index:-1;pointer-events:none;background:var(--g-hero);-webkit-mask:linear-gradient(#000,transparent);mask:linear-gradient(#000,transparent)}
+:root[data-tone="blue"] .r-fair::after{content:"";position:absolute;left:0;right:0;bottom:0;height:min(100%,220px);z-index:-1;pointer-events:none;background:var(--g-hero);-webkit-mask:linear-gradient(transparent,#000);mask:linear-gradient(transparent,#000)}
+/* marquee: the black bar sits inside the page gradient (invitation colours above it, voyage colours below) */
+:root[data-tone="blue"] .marquee{--mq:56px;margin-block:0;padding-block:calc(var(--mq) + 16px);border:0;
+ background:
+  linear-gradient(rgba(212,175,97,.4),rgba(212,175,97,.4)) 0 var(--mq)/100% 1px no-repeat,
+  linear-gradient(rgba(212,175,97,.4),rgba(212,175,97,.4)) 0 calc(100% - var(--mq))/100% 1px no-repeat,
+  linear-gradient(#1C1B1B,#1C1B1B) 0 var(--mq)/100% calc(100% - var(--mq) * 2) no-repeat,
+  var(--g-blue) 0 0/100% 50% no-repeat,
+  var(--g-hero) 0 100%/100% 50% no-repeat}
+@media (max-width:900px){:root[data-tone="blue"] .marquee{--mq:36px;padding-block:calc(var(--mq) + 12px)}}
+
 /* ---------- logos: 15% smaller, with breathing room ---------- */
 .top .logo11{width:clamp(124px,10.8vw,152px)}
 .top .wrap>a:first-child{padding:10px 6px 10px 0}
