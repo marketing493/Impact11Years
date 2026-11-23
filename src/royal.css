@@ -809,7 +809,7 @@ html,body{max-width:100%;overflow-x:clip}
 @keyframes envShimmer{to{transform:translate(-50%,-50%) rotate(360deg)}}
 :root[data-tone="blue"] .env-back{border:0;box-shadow:0 0 0 1px rgba(247,227,161,.5),0 0 22px rgba(247,227,161,.35),0 40px 70px -30px rgba(0,0,0,.9)}
 /* once opened, the top edge steps aside so the card slides out cleanly */
-.env.open .env-air{-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);clip-path:inset(3px 0 0 0)}
+.env.open .env-air{clip-path:inset(3px 0 0 0)}
 @media (prefers-reduced-motion:reduce){.env-air::before{animation:none;opacity:0}}
 /* boarding pass */
 .bpass{display:flex;margin-top:10px;max-width:460px;transform:rotate(-1.6deg);filter:drop-shadow(0 22px 30px rgba(10,16,60,.45));transition:transform .5s var(--ease)}
