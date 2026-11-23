@@ -799,11 +799,18 @@ html,body{max-width:100%;overflow-x:clip}
 .istamp.s3{--r:-5deg;left:45%;bottom:9%}
 .istamp.s4{--r:11deg;right:5%;bottom:12%}
 .istamp.s3 .is-in,.istamp.s4 .is-in{width:70px}
-/* airmail chevron border on the envelope */
-.env-air{position:absolute;inset:0;z-index:4;border-radius:10px;padding:9px;pointer-events:none;
- background:repeating-linear-gradient(-45deg,#264CD7 0 14px,#F7F1E3 14px 28px,#C9A24A 28px 42px,#F7F1E3 42px 56px);
- -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);
- clip-path:polygon(0 0,50% 54%,100% 0,100% 100%,0 100%);opacity:.95}
+/* envelope outline: a thin glowing gold edge with a light that travels around it */
+.env-air{position:absolute;inset:0;z-index:4;border-radius:10px;padding:2px;pointer-events:none;overflow:hidden;
+ background:linear-gradient(135deg,#B8913F,#F7E3A1 25%,#C9A24A 50%,#F7E3A1 75%,#B8913F);
+ -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+.env-air::before{content:"";position:absolute;left:50%;top:50%;width:160%;aspect-ratio:1;
+ background:conic-gradient(from 0deg,transparent 0deg 290deg,rgba(255,251,234,0) 290deg,rgba(255,251,234,.95) 335deg,#FFFFFF 345deg,rgba(255,251,234,0) 360deg);
+ transform:translate(-50%,-50%) rotate(0deg);animation:envShimmer 4.5s linear infinite}
+@keyframes envShimmer{to{transform:translate(-50%,-50%) rotate(360deg)}}
+:root[data-tone="blue"] .env-back{border:0;box-shadow:0 0 0 1px rgba(247,227,161,.5),0 0 22px rgba(247,227,161,.35),0 40px 70px -30px rgba(0,0,0,.9)}
+/* once opened, the top edge steps aside so the card slides out cleanly */
+.env.open .env-air{-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);clip-path:inset(3px 0 0 0)}
+@media (prefers-reduced-motion:reduce){.env-air::before{animation:none;opacity:0}}
 /* boarding pass */
 .bpass{display:flex;margin-top:10px;max-width:460px;transform:rotate(-1.6deg);filter:drop-shadow(0 22px 30px rgba(10,16,60,.45));transition:transform .5s var(--ease)}
 .bpass:hover{transform:rotate(0) translateY(-3px)}
