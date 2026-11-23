@@ -16,7 +16,7 @@ function rHero(){return `<section class="r-hero" id="arch"><div class="rh-pin"><
  ${flourish('tl')}${flourish('tr')}${flourish('bl')}${flourish('br')}
  <div class="rh-grid">
   <div class="rh-copy">
-   <p class="rh-eb"><i></i><span>The 11<sup>th</sup> Anniversary Celebration</span><i></i></p>
+   <p class="rh-eb"><i></i><span>11 Years of Impact</span><i></i></p>
    <h1 class="rh-title" aria-label="Around the World in 11 Years"><span class="t1">Around the</span><span class="t2">World</span><span class="t3">in <em>11</em> Years</span></h1>
    <p class="rh-sub">Thursday, 17 December 2026<span>◆</span>Hilton Embassy Tech Village, Bangalore</p>
    <div class="rh-count" role="timer" aria-label="Countdown to the celebration"><svg class="constel" viewBox="0 0 100 20" preserveAspectRatio="none" aria-hidden="true"><path d="M12.5 10 Q25 2 37.5 10 T62.5 10 T87.5 10"/></svg>${rhUnit('d','Days')}${rhUnit('h','Hours')}${rhUnit('m','Minutes')}${rhUnit('s','Seconds')}</div>

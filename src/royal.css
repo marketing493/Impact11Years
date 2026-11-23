@@ -713,6 +713,42 @@ html,body{max-width:100%;overflow-x:clip}
 @media (hover:none){:root[data-tone="blue"] .tent:hover:not(.open) .t-cl,:root[data-tone="blue"] .tent:hover:not(.open) .t-cr{transform:none}
  :root[data-tone="blue"] .tent:hover:not(.open) .t-count{opacity:1}}
 
+/* =====================================================================
+   Hero title: larger, with richer gold on "World" and "11"
+   ===================================================================== */
+:root[data-tone="blue"] .rh-eb{font-size:clamp(12px,1.1vw,15px);letter-spacing:.26em;font-weight:600}
+:root[data-tone="blue"] .rh-eb span{background:linear-gradient(180deg,#FFF1C1,#E9CD86 55%,#D4AF61);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 1px 0 rgba(90,64,20,.35))}
+:root[data-tone="blue"] .rh-eb i{width:64px;height:1px;position:relative;background:linear-gradient(90deg,transparent,#E9CD86)}
+:root[data-tone="blue"] .rh-eb i:last-child{background:linear-gradient(90deg,#E9CD86,transparent)}
+:root[data-tone="blue"] .rh-eb i::after{content:"";position:absolute;top:50%;width:5px;height:5px;margin-top:-2.5px;background:#F3DFA2;transform:rotate(45deg)}
+:root[data-tone="blue"] .rh-eb i:first-child::after{right:-2px}
+:root[data-tone="blue"] .rh-eb i:last-child::after{left:-2px}
+:root[data-tone="blue"] .rh-title .t1{font-size:min(6.3cqw,50px)}
+:root[data-tone="blue"] .rh-title .t3{font-size:min(7.6cqw,60px)}
+:root[data-tone="blue"] .rh-title .t2{position:relative;font-size:min(20.5cqw,194px);font-weight:400;margin-bottom:.26em;
+ background:linear-gradient(180deg,#FFF6D6 0%,#F3DFA2 24%,#E2C178 44%,#B8913F 62%,#D9B865 80%,#F7E6B0 100%);background-size:100% 100%;
+ -webkit-background-clip:text;background-clip:text;color:transparent;
+ filter:drop-shadow(0 2px 0 rgba(110,80,26,.55)) drop-shadow(0 16px 34px rgba(243,223,162,.3))}
+/* a gold rule with a diamond under "World", and a star glinting off its last letter */
+:root[data-tone="blue"] .rh-title .t2::after{content:"";position:absolute;left:6%;right:8%;bottom:-.12em;height:2px;background:linear-gradient(90deg,rgba(233,205,134,0),#F3DFA2 30%,#F3DFA2 44%,rgba(233,205,134,0) 46%,rgba(233,205,134,0) 54%,#F3DFA2 56%,#F3DFA2 70%,rgba(233,205,134,0))}
+:root[data-tone="blue"] .rh-title .t2::before{content:"";position:absolute;left:calc(50% - 1%);bottom:calc(-.12em - 4px);width:10px;height:10px;margin-left:-5px;background:linear-gradient(135deg,#FFF1C1,#D4AF61);transform:rotate(45deg);box-shadow:0 0 12px rgba(255,241,193,.7)}
+:root[data-tone="blue"] .rh-title .t3 em{position:relative;display:inline-block;font-size:1.42em;font-weight:400;padding:0 .08em;line-height:.9;
+ background:linear-gradient(180deg,#FFF6D6 0%,#F3DFA2 28%,#D4AF61 58%,#B8913F 78%,#E9CD86 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
+ filter:drop-shadow(0 1px 0 rgba(110,80,26,.5)) drop-shadow(0 8px 18px rgba(243,223,162,.3))}
+:root[data-tone="blue"] .rh-title .t3 em::after{content:"\2726";position:absolute;top:-.05em;right:-.22em;font-family:var(--f-body);font-style:normal;font-size:.26em;color:#FFF1C1;-webkit-text-fill-color:#FFF1C1;text-shadow:0 0 8px rgba(255,241,193,.9)}
+@media (max-width:1100px){
+ :root[data-tone="blue"] .rh-title .t1{font-size:min(7.1cqw,45px)}
+ :root[data-tone="blue"] .rh-title .t2{font-size:min(23cqw,168px)}
+ :root[data-tone="blue"] .rh-title .t3{font-size:min(8.7cqw,54px)}}
+@media (max-width:900px){:root[data-tone="blue"] .rh-eb{letter-spacing:.2em}:root[data-tone="blue"] .rh-eb i{width:32px}}
+
+/* ---------- logos: 15% smaller, with breathing room ---------- */
+.top .logo11{width:clamp(145px,12.75vw,179px)}
+.top .wrap>a:first-child{padding:10px 6px 10px 0}
+footer .logo11{width:170px}
+footer .wrap>.logo11,footer .wrap>a:has(.logo11){margin:12px 0}
+@media (max-width:380px){.top .logo11{width:clamp(112px,34vw,136px)}}
+
 /* ---------- performance ---------- */
 [data-off],[data-off] *,[data-off] *::before,[data-off] *::after{animation-play-state:paused!important}
 /* decorative loops that repaint large areas: calm on phones, still everywhere else */
