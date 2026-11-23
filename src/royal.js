@@ -99,9 +99,14 @@ class Curtain{
    c.fillStyle=g;c.fill()}
   c.globalCompositeOperation='source-atop';const e=c.createLinearGradient(this.right?W:0,0,this.right?0:W,0);e.addColorStop(0,'rgba(0,0,0,0)');e.addColorStop(.55,'rgba(0,0,0,0)');e.addColorStop(1,'rgba(4,8,34,.35)');c.fillStyle=e;c.fillRect(0,0,W,H);c.globalCompositeOperation='source-over'}
 }
+
+/* each section fades to the shared horizontal gradient at its edges, so angled gradients meet seamlessly */
+const EDGES=[['.r-sky','hero','blue'],['#invite','blue','blue'],['#voyage .vy-pin','hero','hero'],['#departures','hero','mid'],['#fair','mid','mid'],['#venue','mid','hero'],['#reminders','hero','mid']];
+function mountEdges(){if(document.documentElement.dataset.tone!=='blue')return;for(const [sel,top,bot] of EDGES){const el=$(sel);if(!el||el.querySelector(':scope>.bg-edge'))continue;
+ el.insertAdjacentHTML('afterbegin',`<i class="bg-edge t" aria-hidden="true" style="--g:var(--e-${top})"></i><i class="bg-edge b" aria-hidden="true" style="--g:var(--e-${bot})"></i>`)}}
 let HERO=null,VOYAGE=null,BOARD=null,CURTAINS=[];
 function mountRoyal(){syncTone();mountSkyline();HERO&&HERO.stop();HERO=null;VOYAGE&&VOYAGE.stop();VOYAGE=null;BOARD&&BOARD.stop();BOARD=null;CURTAINS.forEach(c=>c.stop());CURTAINS=[];
- if(S.skin!=='royal')return;const a=$('#arch');if(a)HERO=new Hero(a);const v=$('#voyage');if(v)VOYAGE=new Voyage(v);const b=$('[data-board]');if(b)BOARD=new Board(b);CURTAINS=$$('.venue .drape').map(e=>new Curtain(e));tickRoyal()}
+ if(S.skin!=='royal')return;const a=$('#arch');if(a)HERO=new Hero(a);const v=$('#voyage');if(v)VOYAGE=new Voyage(v);const b=$('[data-board]');if(b)BOARD=new Board(b);CURTAINS=$$('.venue .drape').map(e=>new Curtain(e));mountEdges();tickRoyal()}
 function tickRoyal(){const d=Math.max(0,TARGET_MS()-Date.now()),v={d:Math.floor(d/864e5),h:Math.floor(d%864e5/36e5),m:Math.floor(d%36e5/6e4),s:Math.floor(d%6e4/1e3)};
  if(typeof DIAL_C!=='undefined'){const frac={d:Math.min(1,v.d/30),h:v.h/24,m:v.m/60,s:v.s/60};
   $$('[data-rdial]').forEach(el=>{const k=el.dataset.rdial,f=frac[k],arc=el.querySelector('.d-arc'),orb=el.querySelector('.d-orb'),prev=+el.dataset.f;

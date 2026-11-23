@@ -1140,6 +1140,39 @@ html,body{max-width:100%;overflow-x:clip}
   var(--g-hero) 0 100%/100% 50% no-repeat}
 @media (max-width:900px){:root[data-tone="blue"] .marquee{--mq:36px;padding-block:calc(var(--mq) + 12px)}}
 
+/* =====================================================================
+   Angled section gradients. Each section's gradient runs at its own angle; its colour stops are placed so
+   the share of Impact Blue, navy and black in the section is the same as with the horizontal gradient.
+   At every top and bottom edge the section fades back to the shared horizontal gradient, so neighbours
+   meet exactly. Phones use gentler angles.
+   ===================================================================== */
+:root[data-tone="blue"]{--e-hero:linear-gradient(90deg,#264CD7 0%,#22388C 60%,#1C1B1B 100%);--e-blue:linear-gradient(90deg,#264CD7 0%,#264CD7 32%,#22388C 90%,#1C1B1B 100%);--e-mid:linear-gradient(90deg,#264CD7 0%,#264CD7 22%,#22388C 86%,#1C1B1B 100%)}
+:root[data-tone="blue"] .rh-pin{background:var(--rad),linear-gradient(100deg,#264CD7 0.0%,#22388C 59.1%,#1C1B1B 100.0%)!important}
+:root[data-tone="blue"] .r-sky{background:linear-gradient(84deg,#264CD7 0.0%,#264CD7 32.5%,#22388C 89.0%,#1C1B1B 100.0%)!important}
+:root[data-tone="blue"] .r-invite{background:linear-gradient(76deg,#264CD7 0.0%,#264CD7 34.1%,#22388C 85.3%,#1C1B1B 100.0%)!important}
+:root[data-tone="blue"] .vy-pin{background:var(--rad),linear-gradient(104deg,#264CD7 0.0%,#22388C 58.8%,#1C1B1B 100.0%)!important}
+:root[data-tone="blue"] .r-dep{background:linear-gradient(78deg,#264CD7 0.0%,#264CD7 25.1%,#22388C 82.1%,#1C1B1B 100.0%)!important}
+:root[data-tone="blue"] .r-fair{background:linear-gradient(101deg,#264CD7 0.0%,#264CD7 24.7%,#22388C 82.6%,#1C1B1B 100.0%)!important}
+:root[data-tone="blue"] .venue{background:linear-gradient(80deg,#264CD7 0.0%,#22388C 59.2%,#1C1B1B 100.0%)!important}
+:root[data-tone="blue"] #reminders{background:linear-gradient(99deg,#264CD7 0.0%,#264CD7 24.2%,#22388C 83.2%,#1C1B1B 100.0%)!important}
+@media (max-width:900px){
+ :root[data-tone="blue"] .rh-pin{background:var(--rad),linear-gradient(94deg,#264CD7 0.0%,#22388C 58.3%,#1C1B1B 100.0%)!important}
+ :root[data-tone="blue"] .r-sky{background:linear-gradient(88deg,#264CD7 0.0%,#264CD7 32.3%,#22388C 89.3%,#1C1B1B 100.0%)!important}
+ :root[data-tone="blue"] .r-invite{background:linear-gradient(86deg,#264CD7 0.0%,#264CD7 35.7%,#22388C 82.0%,#1C1B1B 100.0%)!important}
+ :root[data-tone="blue"] .vy-pin{background:var(--rad),linear-gradient(95deg,#264CD7 0.0%,#22388C 58.5%,#1C1B1B 100.0%)!important}
+ :root[data-tone="blue"] .r-dep{background:linear-gradient(86deg,#264CD7 0.0%,#264CD7 26.4%,#22388C 80.3%,#1C1B1B 100.0%)!important}
+ :root[data-tone="blue"] .r-fair{background:linear-gradient(94deg,#264CD7 0.0%,#264CD7 25.7%,#22388C 81.2%,#1C1B1B 100.0%)!important}
+ :root[data-tone="blue"] .venue{background:linear-gradient(86deg,#264CD7 0.0%,#22388C 58.0%,#1C1B1B 100.0%)!important}
+ :root[data-tone="blue"] #reminders{background:linear-gradient(94deg,#264CD7 0.0%,#264CD7 27.1%,#22388C 79.5%,#1C1B1B 100.0%)!important}}
+
+/* the old one-sided blends are replaced by edge bands on every section */
+:root[data-tone="blue"] :is(.r-sky,.r-dep,#reminders)::before,:root[data-tone="blue"] .r-fair::after{content:none}
+:root[data-tone="blue"] :is(.r-sky,.r-invite,.r-dep,.r-fair,.venue,#reminders,.vy-pin){position:relative;isolation:isolate}
+:root[data-tone="blue"] .vy-pin{position:sticky}
+.bg-edge{position:absolute;left:0;right:0;height:min(32%,220px);z-index:-1;pointer-events:none;background:var(--g);display:block}
+.bg-edge.t{top:0;-webkit-mask:linear-gradient(#000,transparent);mask:linear-gradient(#000,transparent)}
+.bg-edge.b{bottom:0;-webkit-mask:linear-gradient(transparent,#000);mask:linear-gradient(transparent,#000)}
+
 /* ---------- logos: 15% smaller, with breathing room ---------- */
 .top .logo11{width:clamp(124px,10.8vw,152px)}
 .top .wrap>a:first-child{padding:10px 6px 10px 0}
