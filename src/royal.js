@@ -174,7 +174,7 @@ class Board{constructor(el){this.el=el;this.rows=el.querySelector('.brows');this
   this.io=new IntersectionObserver(es=>{if(es[0].isIntersecting&&!this.played){this.played=true;this.flipAll()}},{threshold:.3});this.io.observe(el);
   this.iv=setInterval(()=>{if(!document.hidden)this.build(false)},30000)}
  stop(){this.alive=false;this.io.disconnect();clearInterval(this.iv);this.timers.forEach(clearTimeout);this.raf&&cancelAnimationFrame(this.raf)}
- cols(){const narrow=innerWidth<700;return {dest:narrow?14:26,gate:narrow?0:10,rem:narrow?8:9}}
+ cols(){const narrow=innerWidth<700;return {dest:innerWidth<400?12:narrow?14:26,gate:narrow?0:10,rem:narrow?8:9}}
  status(a){const n=Date.now(),s=startMs(a),e=endMs(a);if(n>=e)return ['DEPARTED','gone'];if(n>=s)return ['NOW','now'];if(s-n<=10*6e4)return ['BOARDING','board'];return ['ON TIME','ok']}
  build(first){const C=this.cols(),list=S.acts.filter(a=>endMs(a)>Date.now()-30*6e4);
   const cell=(txt,w)=>{const t=txt.toUpperCase().replace(/[^A-Z0-9:\-.& ]/g,' ').padEnd(w).slice(0,w);return [...t].map(ch=>`<span class="fc" data-c="${ch}">${first&&!this.played?' ':ch}</span>`).join('')};
