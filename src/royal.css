@@ -878,6 +878,12 @@ html,body{max-width:100%;overflow-x:clip}
 .env:not(.open) .seal b{text-shadow:0 0 12px rgba(255,241,193,.7)}
 @media (prefers-reduced-motion:reduce){.env::before{animation:none;opacity:.55}}
 
+/* hero: the text stays fully visible while scrolling (no fade-out), and the section scrolls
+   away normally now that the globe no longer zooms (no long pinned stretch) */
+.rh-copy{opacity:1!important;transform:none!important;will-change:auto}
+.r-hero{height:auto}
+.rh-pin{position:relative}
+
 /* ---------- logos: 15% smaller, with breathing room ---------- */
 .top .logo11{width:clamp(145px,12.75vw,179px)}
 .top .wrap>a:first-child{padding:10px 6px 10px 0}
