@@ -35,7 +35,7 @@ class Hero{constructor(sec){this.sec=sec;this.pin=sec.querySelector('.rh-pin');t
   /* land points as lon/lat, sampled from the dot mask */
   this.land=[];WORLD.rows.forEach((row,y)=>{for(let i=0;i<row.length;i++){const v=parseInt(row[i],16);for(let b=0;b<4;b++)if(v&(8>>b)){const gx=i*4+b;this.land.push([(-180+(gx+.5)*360/WORLD.W)*Math.PI/180,(WORLD.lat0-(y+.5)*(WORLD.lat0-WORLD.lat1)/WORLD.H)*Math.PI/180])}}});
   this.stops=STOPS.map(s=>[s.lon*Math.PI/180,s.lat*Math.PI/180]);
-  this.rot=-1.25;this.vel=0;this.tvel=0;this.drag=null;this.tilt=-.38;this.idle=0;this.hit=sec.querySelector('.globe-hit');
+  this.rot=-1.25;this.vel=0;this.tvel=0;this.drag=null;this.tilt=.12;this.idle=0;this.hit=sec.querySelector('.globe-hit');
   this.resize();this.onResize=()=>{if(this.pin.clientWidth===this.W&&Math.abs(this.pin.clientHeight-this.H)<180)return;this.resize()};addEventListener('resize',this.onResize);this.onScroll=()=>this.update();addEventListener('scroll',this.onScroll,{passive:true});
   /* drag in any direction: sideways spins the globe, up and down tips it over the poles */
   const H_=this.hit;
@@ -56,7 +56,7 @@ class Hero{constructor(sec){this.sec=sec;this.pin=sec.querySelector('.rh-pin');t
  loop(t){this.raf=0;if(!this.alive||!this.vis||document.hidden)return;this.lastT=t;this.kick(HERO_MS-16);const still=RMQ.matches;
   if(!this.drag){this.vel*=.94;this.tvel*=.92;this.rot+=still?0:.0016+this.vel;this.tilt+=this.tvel;
    /* after a few seconds of rest the globe settles back to its usual angle */
-   if(!still&&performance.now()-this.idle>2500)this.tilt+=((-.38)-this.tilt)*.015}
+   if(!still&&performance.now()-this.idle>2500)this.tilt+=((.12)-this.tilt)*.015}
   /* gold dust and bokeh */
   if(!(LITE&&this.dustDone)){this.dustDone=true;const c=this.dc,W=this.W,H=this.H;c.clearRect(0,0,W,H);
   for(const m of this.motes){const y=still?m.y:((m.y-t*.012*m.v*m.z)%H+H)%H,x=m.x+(still?0:Math.sin(t/2600*m.v+m.ph)*14*m.z),tw=.35+.65*Math.abs(Math.sin(t/1400*m.v+m.ph));
