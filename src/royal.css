@@ -1035,7 +1035,7 @@ html,body{max-width:100%;overflow-x:clip}
 /* map heading: gold again, on a dark translucent plaque so it never merges with the gold map */
 :root[data-tone="blue"] .vy-head .r-h2,:root[data-tone="blue"] .vy-head .r-h2 em{background:var(--goldtext);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
 :root[data-tone="blue"] .vy-head .r-h2{filter:none;font-weight:400}
-:root[data-tone="blue"] .vy-head{background:rgba(18,18,26,.62);border:1px solid rgba(235,201,107,.45);border-radius:14px;padding:14px 22px 16px;box-shadow:0 18px 40px -18px rgba(0,0,0,.6);width:max-content;max-width:calc(100vw - 32px)}
+:root[data-tone="blue"] .vy-head{background:rgba(18,18,26,.34);border:1px solid rgba(235,201,107,.45);border-radius:14px;padding:14px 22px 16px;box-shadow:0 18px 40px -18px rgba(0,0,0,.6);width:max-content;max-width:calc(100vw - 32px)}
 
 /* venue: one continuous gold line across the top, smooth curved curtains in velvet folds */
 :root[data-tone="blue"] .drape::before{display:none}
