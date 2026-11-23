@@ -121,9 +121,8 @@ class Voyage{
   for(let lon=-180;lon<=180;lon+=15){const x=(lon+180)/360*this.mapW-cx;if(x<-2||x>W+2)continue;c.moveTo(x,0);c.lineTo(x,H)}
   for(let lat=-60;lat<=75;lat+=15){const y=(G.lat0-lat)/(G.lat0-G.lat1)*this.mapH-cy;if(y<-2||y>H+2)continue;c.moveTo(0,y);c.lineTo(W,y)}c.stroke();c.setLineDash([]);
   const eq=(G.lat0)/(G.lat0-G.lat1)*this.mapH-cy;c.strokeStyle=blue?'rgba(243,223,162,.28)':'rgba(212,175,97,.22)';c.beginPath();c.moveTo(0,eq);c.lineTo(W,eq);c.stroke();
-  /* land, evenly lit (no spotlight around the plane), and on larger screens a slow shimmer across the continents */
+  /* land, evenly lit: no spotlight and no shimmer */
   c.drawImage(this.layer,-cx,-cy,this.mapW,this.mapH);
-  if(!still){const band=((time/9000)%1)*(W+H*.8)-H*.4;c.save();c.globalCompositeOperation='lighter';c.beginPath();c.moveTo(band,0);c.lineTo(band+90,0);c.lineTo(band+90-H*.4,H);c.lineTo(band-H*.4,H);c.closePath();c.clip();c.globalAlpha=.35;c.drawImage(this.layer,-cx,-cy,this.mapW,this.mapH);c.restore()}
   /* route: the whole voyage as marching gold dashes */
   c.setLineDash([2,7]);c.lineDashOffset=still?0:-(time/60)%9;c.lineCap='round';c.strokeStyle=blue?'rgba(255,241,193,.55)':'rgba(212,175,97,.5)';c.lineWidth=1.6;c.beginPath();for(const L of this.legs){c.moveTo(L.a[0]-cx,L.a[1]-cy);c.quadraticCurveTo(L.c[0]-cx,L.c[1]-cy,L.b[0]-cx,L.b[1]-cy)}c.stroke();c.setLineDash([]);
   /* travelled path: a wide soft glow under a crisp gold line */
