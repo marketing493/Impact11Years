@@ -1214,6 +1214,9 @@ html,body{max-width:100%;overflow-x:clip}
 @media (max-width:900px){.how-w{align-items:flex-end;padding:0}.how{max-width:none;border-radius:20px 20px 0 0;padding:22px 18px calc(22px + env(safe-area-inset-bottom,0px));animation:howUp .3s var(--ease)}}
 @keyframes howUp{from{transform:translateY(40px);opacity:0}}
 
+/* phones: the India stamp sits in the open space under the text, on the left, held still so it never touches the text */
+@media (max-width:900px){.istamp.s1{left:6%;right:auto;top:calc(100% * 0 + 222px);animation:none!important;transform:rotate(var(--r))}}
+
 /* ---------- logos: 15% smaller, with breathing room ---------- */
 .top .logo11{width:clamp(124px,10.8vw,152px)}
 .top .wrap>a:first-child{padding:10px 6px 10px 0}
