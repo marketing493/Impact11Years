@@ -1332,6 +1332,14 @@ html,body{max-width:100%;overflow-x:clip}
 @media (max-width:820px){.top .gsignin{gap:8px}.top .gsignin .gs-hi b{display:none}.top .gsignin .gs-out{padding:0 12px;font-size:13px}.top .gsignin+.bell{margin-left:8px}}
 @media (max-width:380px){.top .gsignin .gs-av{display:none}}
 
+/* Google's sign-in button: its frame uses the light colour scheme like Google's own page, so the browser
+   draws no white backdrop box around it on our dark page; only the white pill button shows */
+:is(.gt-btn,.gsignin .gs-btn) iframe{color-scheme:light;background:transparent!important}
+:is(.gt-btn,.gsignin .gs-btn)>div{background:transparent!important}
+/* whatever Google paints inside its frame, only a clean pill shape shows */
+.gt-btn iframe,.gsignin .gs-btn iframe{border-radius:999px!important;clip-path:inset(1px round 999px)}
+.gt-btn>div,.gsignin .gs-btn>div{border-radius:999px;overflow:hidden}
+
 /* ---------- logos: 15% smaller, with breathing room ---------- */
 .top .logo11{width:clamp(124px,10.8vw,152px)}
 .top .wrap>a:first-child{padding:10px 6px 10px 0}

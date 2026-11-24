@@ -24,7 +24,7 @@ _GATE_JS = r"""(async()=>{const box=document.getElementById('gt-btn'),msg=docume
  const s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';s.async=true;
  s.onerror=()=>say('Google sign-in could not load. Check your connection and refresh the page.');
  s.onload=()=>{google.accounts.id.initialize(app?{client_id:cfg.googleClientId,hd:cfg.googleDomain,ux_mode:'redirect',login_uri:location.origin+'/api/auth',auto_select:true}:{client_id:cfg.googleClientId,hd:cfg.googleDomain,callback:go,ux_mode:'popup',auto_select:true,itp_support:true,use_fedcm_for_prompt:true});
-  google.accounts.id.renderButton(box,{theme:'filled_black',size:'large',shape:'pill',text:'signin_with',logo_alignment:'left',width:Math.min(300,box.clientWidth||300)})};
+  google.accounts.id.renderButton(box,{theme:'outline',size:'large',shape:'pill',text:'signin_with',logo_alignment:'left',width:Math.min(300,box.clientWidth||300)})};
  document.head.append(s)})();"""
 
 _gate_body = (

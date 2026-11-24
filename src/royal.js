@@ -145,7 +145,7 @@ async function mountSignin(){const box=$('#gsignin');if(!box)return;
  const slot=box.querySelector('.gs-btn');if(!slot||!window.google||!google.accounts)return;
  google.accounts.id.initialize({client_id:id,hd:GDOMAIN(),callback:onGoogle,ux_mode:'popup',auto_select:false,itp_support:true,use_fedcm_for_prompt:true});
  const phone=matchMedia('(max-width:820px)').matches;
- google.accounts.id.renderButton(slot,phone?{type:'icon',theme:'filled_black',size:'medium',shape:'circle'}:{theme:'filled_black',size:'medium',shape:'pill',text:'signin',logo_alignment:'left'})}
+ google.accounts.id.renderButton(slot,phone?{type:'icon',theme:'outline',size:'medium',shape:'circle'}:{theme:'outline',size:'medium',shape:'pill',text:'signin',logo_alignment:'left'})}
 async function onGoogle(r){try{const res=await fetch('/api/auth',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({credential:r.credential})});const j=await res.json().catch(()=>({}));
   if(!res.ok){toast(j.error||'Sign-in failed. Please try again.');return}
   S.user={name:j.name,given:j.given,email:j.email};store.set('ia11-user',S.user);if(j.pass){S.pass=j.pass;store.set('ia11-pass',j.pass)}applyPassenger();mountSignin();loadPass();toast(`Welcome, ${j.given||j.name}. Your boarding pass is ready.`)}
