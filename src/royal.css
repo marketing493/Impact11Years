@@ -1023,7 +1023,7 @@ html,body{max-width:100%;overflow-x:clip}
 :root[data-tone="blue"] .env-flap{transition:transform 1.3s cubic-bezier(.45,.05,.25,1),z-index 0s .65s}
 /* the pass waits deep inside the envelope (a pocket clips anything below the envelope's bottom edge),
    then rises out of the top once the flap is open, and settles in front of it */
-.env-pocket{position:absolute;inset:0;z-index:1;pointer-events:none;clip-path:inset(-300% -60% 0 -60%)}
+.env-pocket{position:absolute;inset:0;z-index:1;pointer-events:none;clip-path:inset(-300% 0 0 0)}
 :root[data-tone="blue"] .env-card{top:10%;transform:translateY(105%)}
 :root[data-tone="blue"] .env.open .env-card{animation:passOut 2s cubic-bezier(.3,.7,.2,1) 1.2s both}
 :root[data-tone="blue"] .env.open .env-pocket{animation:pocketUp 2s linear 1.2s both}
@@ -1218,19 +1218,36 @@ html,body{max-width:100%;overflow-x:clip}
 @keyframes howUp{from{transform:translateY(40px);opacity:0}}
 
 /* phones: the India stamp sits in the open space under the text, on the left, held still so it never touches the text */
-@media (max-width:900px){.istamp.s1{left:6%;right:auto;top:calc(100% * 0 + 222px);animation:none!important;transform:rotate(var(--r))}}
+/* phones: the India stamp sits just above the envelope's left corner, clear of the text and the sign-in */
+@media (max-width:900px){.istamp.s1{left:5%;right:auto;top:auto;bottom:calc((100vw - 32px) / 1.5 + 118px);animation:none!important;transform:rotate(var(--r))}}
 
 /* departures: the hovered row is marked with a gold edge while its letters flip */
 @media (hover:hover) and (pointer:fine){:root[data-tone="blue"] .brows .brow{cursor:default}:root[data-tone="blue"] .brows .brow:hover{background:rgba(247,227,161,.07);box-shadow:inset 3px 0 0 #EBC96B}}
 
 
 /* boarding pass: a longer ticket on desktop, with a wide passenger box for full first and last names */
+/* the pass is enclosed by the envelope: on desktop the envelope is larger, so the pass inside is long enough for full names */
 @media (min-width:901px){
- :root[data-tone="blue"] .env-card{left:-26%;right:-8%}
+ :root[data-tone="blue"] .env{width:min(100%,640px)}
+ :root[data-tone="blue"] .env-card{left:2.5%;right:2.5%}
  .env-card .bp-grid{grid-template-columns:2.6fr 1fr 1fr 1.3fr}}
-@media (min-width:901px) and (max-width:1250px){:root[data-tone="blue"] .env-card{left:-34%;right:0}}
 .env-card .bp-pax b{letter-spacing:.02em}
 @media (max-width:900px){.env-card .bp-grid>.bp-pax{grid-column:1/-1}}
+
+/* Google sign-in box in the invitation */
+.gsignin{display:grid;gap:10px;margin-top:6px;max-width:44ch}
+.gsignin .gs-k{font-size:14px;line-height:1.45;color:rgba(244,244,246,.8);margin:0}
+.gsignin .gs-k b{color:#F7E3A1;font-weight:600}
+.gsignin .gs-btn{min-height:44px}
+.gsignin .gs-hi{display:inline-flex;align-items:center;gap:8px;font-size:14.5px;color:#F4F4F6}
+.gsignin .gs-hi svg{color:#F7E3A1}
+.gsignin .gs-hi b{color:#F7E3A1;font-weight:600}
+.gsignin .gs-out{justify-self:start;background:none;border:0;padding:6px 0;min-height:32px;color:rgba(244,244,246,.7);font-size:13.5px;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.gsignin .gs-out:hover{color:#F7E3A1}
+.env-card .bp-pax b{text-transform:uppercase}
+
+/* phones: Sydney sits in the bottom-left corner, opposite Paris */
+@media (max-width:900px){.istamp.s3{left:5%;right:auto;top:auto;bottom:2%}}
 
 /* ---------- logos: 15% smaller, with breathing room ---------- */
 .top .logo11{width:clamp(124px,10.8vw,152px)}

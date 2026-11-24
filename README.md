@@ -45,6 +45,17 @@ Under **Settings > Environment Variables** add:
 | `VAPID_PRIVATE_KEY` | From the command below. Keep it secret. |
 | `VAPID_SUBJECT` | `mailto:` followed by an organizer email address |
 | `CRON_SECRET` | Any long random string |
+| `GOOGLE_CLIENT_ID` | OAuth client ID for "Sign in with Google" (see below). Leave unset to hide sign-in. |
+| `GOOGLE_ALLOWED_DOMAIN` | Optional. Google Workspace domain allowed to sign in. Default `impactanalytics.co`. |
+
+**Google sign-in** puts each person's name on their boarding pass. Only verified accounts on the allowed
+domain are accepted (checked on the server in `api/auth.js`). To get the client ID:
+1. In Google Cloud Console, open **APIs & Services > OAuth consent screen**, choose **Internal** (only your
+   Workspace users), and fill in the app name and support email.
+2. Open **Credentials > Create credentials > OAuth client ID**, type **Web application**.
+3. Under **Authorized JavaScript origins** add the site's address, for example `https://11yearsofimpact.vercel.app`.
+   No redirect URI is needed.
+4. Copy the client ID into `GOOGLE_CLIENT_ID` and redeploy.
 
 Generate the push keys once on your computer:
 

@@ -36,6 +36,7 @@ function vRoyalHome(){const up=upcoming();
 
  <section class="band r-invite" id="invite">${invDeco()}<div class="wrap inv-grid">
   <div class="col" style="gap:18px" data-rv><p class="eyebrow gold-eb">Your invitation</p><h2 class="r-h2">A seat at the <em>celebration</em></h2><p class="muted" style="max-width:44ch;font-size:18px">Eleven years, one journey around the world. Tap the seal to view the invite.</p>
+   <div id="gsignin" class="gsignin" hidden></div>
    <div class="inv-after"><div class="ctas"><button class="btn" data-act="eventIcs">${ic('ics',18)} Add to calendar</button><a class="btn sec" href="${EVENT.maps}" target="_blank" rel="noopener">${ic('pin',18)} Directions</a></div></div></div>
   <div class="env-wrap" data-rv style="--i:1"><button class="env" data-act="envelope" aria-label="Tap the seal to view the invite">
    <span class="env-back"></span><span class="env-air" aria-hidden="true"></span>
@@ -105,7 +106,7 @@ function mountEdges(){if(document.documentElement.dataset.tone!=='blue')return;f
  el.insertAdjacentHTML('afterbegin',`<i class="bg-edge t" aria-hidden="true" style="--g:var(--e-${top})"></i><i class="bg-edge b" aria-hidden="true" style="--g:var(--e-${bot})"></i>`)}}
 let HERO=null,VOYAGE=null,BOARD=null,CURTAINS=[];
 function mountRoyal(){syncTone();mountSkyline();HERO&&HERO.stop();HERO=null;VOYAGE&&VOYAGE.stop();VOYAGE=null;BOARD&&BOARD.stop();BOARD=null;CURTAINS.forEach(c=>c.stop());CURTAINS=[];
- if(S.skin!=='royal')return;const a=$('#arch');if(a)HERO=new Hero(a);const v=$('#voyage');if(v)VOYAGE=new Voyage(v);const b=$('[data-board]');if(b)BOARD=new Board(b);CURTAINS=$$('.venue .drape').map(e=>new Curtain(e));mountEdges();tickRoyal()}
+ if(S.skin!=='royal')return;const a=$('#arch');if(a)HERO=new Hero(a);const v=$('#voyage');if(v)VOYAGE=new Voyage(v);const b=$('[data-board]');if(b)BOARD=new Board(b);CURTAINS=$$('.venue .drape').map(e=>new Curtain(e));mountEdges();mountSignin();tickRoyal()}
 function tickRoyal(){const d=Math.max(0,TARGET_MS()-Date.now()),v={d:Math.floor(d/864e5),h:Math.floor(d%864e5/36e5),m:Math.floor(d%36e5/6e4),s:Math.floor(d%6e4/1e3)};
  if(typeof DIAL_C!=='undefined'){const frac={d:Math.min(1,v.d/30),h:v.h/24,m:v.m/60,s:v.s/60};
   $$('[data-rdial]').forEach(el=>{const k=el.dataset.rdial,f=frac[k],arc=el.querySelector('.d-arc'),orb=el.querySelector('.d-orb'),prev=+el.dataset.f;
@@ -130,13 +131,31 @@ function invDeco(){return `<div class="inv-deco" aria-hidden="true">
  <span class="ifl k1">✦</span><span class="ifl k2">✦</span><span class="ifl k3">✦</span><span class="ifl k4">✦</span><span class="ifl d1"></span><span class="ifl d2"></span><span class="ifl d3"></span><span class="ifl d4"></span><span class="ifl c1"></span><span class="ifl c2"></span><span class="ifl p1">${PLANE_SVG(16)}</span><span class="ifl p2">${PLANE_SVG(12)}</span>
  ${invStamp('taj','India','11','s1')}${invStamp('liberty','New York','11','s2')}${invStamp('opera','Sydney','11','s3')}${invStamp('bigben','London','11','s4')}${invStamp('eiffel','Paris','11','s5')}
 </div>`}
-/* the passenger name printed on the boarding pass */
-const PASSENGER='GARVIT SINDHWANI';
-function boardingPass(){return `<span class="bpass" role="img" aria-label="Boarding pass: Impact Analytics flight IA 011, passenger ${PASSENGER}, from Work, 11 Years of Hustle, to Gala, 11 Years of Impact, ${EVENT.dateLong}, boards 10:00 AM, gate ${EVENT.venue}, seat 11A">
+/* ---------- Google sign-in, Impact Analytics accounts only: puts the person's name on their boarding pass ---------- */
+S.user=store.get('ia11-user',null);
+const passengerName=()=>S.user&&S.user.name?S.user.name:'Impacter';
+const GDOMAIN=()=>(S.cfg&&S.cfg.googleDomain)||'impactanalytics.co';
+let GIS_P=null;
+function loadGis(){return GIS_P||(GIS_P=new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';s.async=true;s.onload=ok;s.onerror=()=>{GIS_P=null;no()};document.head.append(s)}))}
+async function mountSignin(){const box=$('#gsignin');if(!box)return;
+ if(S.user){box.hidden=false;box.innerHTML=`<span class="gs-hi">${ic('check',16,2)} Signed in as <b>${esc(S.user.name||S.user.email)}</b></span><button class="gs-out" data-act="signout">Sign out</button>`;return}
+ const id=S.cfg&&S.cfg.googleClientId;if(!id){box.hidden=true;return}
+ box.hidden=false;box.innerHTML=`<p class="gs-k">Sign in with your <b>@${esc(GDOMAIN())}</b> Google account to put your name on your boarding pass.</p><div class="gs-btn"></div>`;
+ try{await loadGis()}catch(e){const b=box.querySelector('.gs-btn');if(b)b.textContent='Google sign-in could not load. Check your connection and refresh the page.';return}
+ const slot=box.querySelector('.gs-btn');if(!slot||!window.google||!google.accounts)return;
+ google.accounts.id.initialize({client_id:id,hd:GDOMAIN(),callback:onGoogle,ux_mode:'popup',auto_select:false,itp_support:true,use_fedcm_for_prompt:true});
+ google.accounts.id.renderButton(slot,{theme:'filled_black',size:'large',shape:'pill',text:'signin_with',logo_alignment:'left'})}
+async function onGoogle(r){try{const res=await fetch('/api/auth',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({credential:r.credential})});const j=await res.json().catch(()=>({}));
+  if(!res.ok){toast(j.error||'Sign-in failed. Please try again.');return}
+  S.user={name:j.name,given:j.given,email:j.email};store.set('ia11-user',S.user);applyPassenger();mountSignin();toast(`Welcome, ${j.given||j.name}. Your boarding pass is ready.`)}
+ catch(e){toast('Sign-in failed. Please try again.')}}
+function signOut(){S.user=null;try{localStorage.removeItem('ia11-user')}catch(e){}try{window.google&&google.accounts&&google.accounts.id.disableAutoSelect()}catch(e){}applyPassenger();mountSignin();toast('Signed out.')}
+function applyPassenger(){const c=$('.env-card');if(c)c.innerHTML=boardingPass()}
+function boardingPass(){return `<span class="bpass" role="img" aria-label="Boarding pass: Impact Analytics flight IA 011, passenger ${esc(passengerName())}, from Work, 11 Years of Hustle, to Gala, 11 Years of Impact, ${EVENT.dateLong}, boards 10:00 AM, gate ${EVENT.venue}, seat 11A">
  <span class="bp-main">
   <span class="bp-top"><span class="bp-air">${PLANE_SVG(14)} Impact Analytics</span><span class="bp-cls">Flight IA 011</span></span>
   <span class="bp-route"><span><b>WORK</b><small>11 Years of Hustle</small></span><span class="bp-line"><span>${PLANE_SVG(18)}</span></span><span class="r"><b>GALA</b><small>11 Years of Impact</small></span></span>
-  <span class="bp-grid"><span class="bp-pax"><small>Passenger</small><b>${PASSENGER}</b></span><span><small>Date</small><b>17 Dec</b></span><span><small>Boards</small><b>10:00</b></span><span><small>Gate</small><b>Hilton ETV</b></span></span>
+  <span class="bp-grid"><span class="bp-pax"><small>Passenger</small><b>${esc(passengerName())}</b></span><span><small>Date</small><b>17 Dec</b></span><span><small>Boards</small><b>10:00</b></span><span><small>Gate</small><b>Hilton ETV</b></span></span>
  </span>
  <span class="bp-stub"><small>Seat</small><b>11A</b><small>Class</small><b class="sm">Royal</b><span class="bp-bar"></span></span>
 </span>`}
