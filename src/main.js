@@ -73,7 +73,7 @@ const ACT={
  aDelAsk(id){A_.del=id;clearTimeout(ACT.delT);ACT.delT=setTimeout(()=>{if(A_.del===id){A_.del=null;render()}},4000)},
  async aDel(id){const a=S.acts.find(x=>x.id===id);A_.del=null;await saveActs(S.acts.filter(x=>x.id!==id),`Deleted ${a?a.title:'the activity'}.`);return false},
  async aReset(){await saveActs(DEFAULT_ACTIVITIES.map(a=>({...a})),'Default schedule restored.');return false},
- aTest(){adminTest();return false},
+ aTest(){adminTest();return false},ckOpen(){openCheckin();return false},
  aOut(){A_.authed=false;A_.key='';try{sessionStorage.removeItem('ia11-admin')}catch(e){}toast('Signed out.')}};
 Object.assign(ACT,ROYAL_ACT);
 document.addEventListener('click',e=>{const el=e.target.closest('[data-act]');if(!el||el.disabled)return;const f=ACT[el.dataset.act];if(!f)return;const r=f(el.dataset.arg,el,e);if(r===false||r instanceof Promise)return;render()});

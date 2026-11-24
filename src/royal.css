@@ -1280,6 +1280,46 @@ html,body{max-width:100%;overflow-x:clip}
 @media (prefers-reduced-motion:reduce){.gt-st,.gt-sp{animation:none}}
 @media (max-height:700px){.gt-frame{padding-block:44px}.gt-card{gap:9px}.gt-title b{font-size:clamp(64px,10vw,120px)}.gt-title span{font-size:clamp(24px,3.4vw,40px)}}
 
+/* =====================================================================
+   Entry pass QR on the boarding pass stub, the enlarged pass, and the organiser scanner
+   ===================================================================== */
+.env-card .bp-qrstub{justify-content:center;align-items:center;padding:12px 10px;cursor:zoom-in}
+/* once open, the flipped flap and the envelope front never take taps meant for the pass */
+.env.open :is(.env-flap,.env-front,.seal){pointer-events:none}
+.env.open .env-pocket,.env.open .env-card{pointer-events:auto}
+.env-card .bp-qrstub .qr{display:block;width:100%;height:auto;border-radius:4px}
+.env-card .bp-qrstub .qr-ph{display:block;width:100%;opacity:.22;filter:blur(1.2px)}
+@media (min-width:901px){.env-card .bp-stub.bp-qrstub{width:150px;padding:14px 12px}}
+@media (max-width:900px){.env-card .bp-stub.bp-qrstub{width:96px;padding:10px 8px}}
+.pass-big{max-width:420px;align-items:stretch;text-align:center}
+.pass-big .pb-qr{background:#fff;border-radius:16px;padding:10px;box-shadow:0 0 0 1px rgba(235,201,107,.5)}
+.pass-big .pb-qr .qr{display:block;width:100%;height:auto}
+.pass-big .pb-who b{display:block;font-family:'Spectral',Georgia,serif;font-weight:400;font-size:26px;color:#FFFFFF}
+.pass-big .pb-who span{display:block;font-size:14px;color:rgba(244,244,246,.7);margin-top:2px;word-break:break-all}
+.pass-big .pb-pin{display:flex;align-items:baseline;justify-content:center;gap:12px}
+.pass-big .pb-pin small{font-size:12px;letter-spacing:.18em;color:rgba(244,244,246,.65)}
+.pass-big .pb-pin b{font-size:34px;letter-spacing:.12em;background:var(--goldtext);-webkit-background-clip:text;background-clip:text;color:transparent}
+.pass-big .pb-note{margin:0;font-size:13.5px;color:rgba(244,244,246,.72)}
+.ck-card{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.ck-w{position:fixed;inset:0;z-index:60;background:rgba(10,12,30,.86);display:flex;align-items:center;justify-content:center;padding:max(12px,env(safe-area-inset-top,0px)) 12px max(12px,env(safe-area-inset-bottom,0px))}
+.ck{width:100%;max-width:520px;max-height:100%;overflow:auto;background:#1C1B1B;border:1px solid rgba(235,201,107,.45);border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:14px;color:#F4F4F6}
+.ck-h{display:flex;align-items:center;gap:12px}
+.ck-h h3{flex:1;font-family:'Spectral',Georgia,serif;font-weight:400;font-size:26px;background:var(--goldtext);-webkit-background-clip:text;background-clip:text;color:transparent}
+.ck-count{font-size:13px;color:rgba(244,244,246,.75)}
+.ck-x{width:44px;height:44px;border-radius:50%;border:0;display:flex;align-items:center;justify-content:center;background:rgba(244,244,246,.08)!important;color:#F4F4F6}
+.ck-cam{position:relative;aspect-ratio:1;border-radius:14px;overflow:hidden;background:#000}
+.ck-cam video{width:100%;height:100%;object-fit:cover;display:block}
+.ck-aim{position:absolute;inset:16%;border:3px solid rgba(247,227,161,.85);border-radius:18px;box-shadow:0 0 0 2000px rgba(0,0,0,.28)}
+.ck-msg{position:absolute;left:0;right:0;bottom:10px;margin:0;text-align:center;font-size:14px;color:#FFF6D6;text-shadow:0 1px 4px #000}
+.ck-res{min-height:64px;border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;justify-content:center;gap:2px;background:rgba(244,244,246,.06)}
+.ck-res b{font-size:18px}.ck-res span{font-size:14px;opacity:.85}
+.ck-res.ok{background:#14532D;box-shadow:inset 0 0 0 2px #22C55E}
+.ck-res.warn{background:#5B4310;box-shadow:inset 0 0 0 2px #EBC96B}
+.ck-res.bad{background:#5F1717;box-shadow:inset 0 0 0 2px #F87171}
+.ck-pin label{display:block;font-size:13.5px;color:rgba(244,244,246,.75);margin-bottom:6px}
+.ck-pin .row{display:flex;gap:10px}
+.ck-pin input{flex:1;min-width:0;min-height:48px;border-radius:10px;border:1px solid rgba(244,244,246,.25);background:#111;color:#fff;font-size:22px;letter-spacing:.15em;padding:0 14px;text-align:center}
+
 /* ---------- logos: 15% smaller, with breathing room ---------- */
 .top .logo11{width:clamp(124px,10.8vw,152px)}
 .top .wrap>a:first-child{padding:10px 6px 10px 0}

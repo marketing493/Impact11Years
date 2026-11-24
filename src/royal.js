@@ -147,19 +147,19 @@ async function mountSignin(){const box=$('#gsignin');if(!box)return;
  google.accounts.id.renderButton(slot,{theme:'filled_black',size:'large',shape:'pill',text:'signin_with',logo_alignment:'left'})}
 async function onGoogle(r){try{const res=await fetch('/api/auth',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({credential:r.credential})});const j=await res.json().catch(()=>({}));
   if(!res.ok){toast(j.error||'Sign-in failed. Please try again.');return}
-  S.user={name:j.name,given:j.given,email:j.email};store.set('ia11-user',S.user);applyPassenger();mountSignin();toast(`Welcome, ${j.given||j.name}. Your boarding pass is ready.`)}
+  S.user={name:j.name,given:j.given,email:j.email};store.set('ia11-user',S.user);applyPassenger();mountSignin();loadPass();toast(`Welcome, ${j.given||j.name}. Your boarding pass is ready.`)}
  catch(e){toast('Sign-in failed. Please try again.')}}
-async function signOut(){S.user=null;try{localStorage.removeItem('ia11-user')}catch(e){}try{window.google&&google.accounts&&google.accounts.id.disableAutoSelect()}catch(e){}
+async function signOut(){S.user=null;S.pass=null;try{localStorage.removeItem('ia11-user');localStorage.removeItem('ia11-pass')}catch(e){}try{window.google&&google.accounts&&google.accounts.id.disableAutoSelect()}catch(e){}
  try{await fetch('/api/auth',{method:'DELETE',credentials:'same-origin'})}catch(e){}
  if(S.cfg&&S.cfg.locked){location.replace('/');return}applyPassenger();mountSignin();toast('Signed out.')}
 function applyPassenger(){const c=$('.env-card');if(c)c.innerHTML=boardingPass()}
-function boardingPass(){return `<span class="bpass" role="img" aria-label="Boarding pass: Impact Analytics flight IA 011, passenger ${esc(passengerName())}, from Work, 11 Years of Hustle, to Gala, 11 Years of Impact, ${EVENT.dateLong}, boards 10:00 AM, gate ${EVENT.venue}, seat 11A">
+function boardingPass(){return `<span class="bpass" role="img" aria-label="Boarding pass: Impact Analytics flight IA 011, passenger ${esc(passengerName())}, from Work, 11 Years of Hustle, to Gala, 11 Years of Impact, ${EVENT.dateLong}, boards 10:00 AM, gate ${EVENT.venue}. Tap the QR code to enlarge your entry pass.">
  <span class="bp-main">
   <span class="bp-top"><span class="bp-air">${PLANE_SVG(14)} Impact Analytics</span><span class="bp-cls">Flight IA 011</span></span>
   <span class="bp-route"><span><b>WORK</b><small>11 Years of Hustle</small></span><span class="bp-line"><span>${PLANE_SVG(18)}</span></span><span class="r"><b>GALA</b><small>11 Years of Impact</small></span></span>
   <span class="bp-grid"><span class="bp-pax"><small>Passenger</small><b>${esc(passengerName())}</b></span><span><small>Date</small><b>17 Dec</b></span><span><small>Boards</small><b>10:00</b></span><span><small>Gate</small><b>Hilton ETV</b></span></span>
  </span>
- <span class="bp-stub"><small>Seat</small><b>11A</b><small>Class</small><b class="sm">Royal</b><span class="bp-bar"></span></span>
+ <span class="bp-stub bp-qrstub" title="Tap to enlarge your entry pass">${passQr()}</span>
 </span>`}
 
 

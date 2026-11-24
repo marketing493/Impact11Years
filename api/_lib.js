@@ -35,6 +35,7 @@ function schema() {
     await sql`CREATE TABLE IF NOT EXISTS ia_settings (key text PRIMARY KEY, value jsonb NOT NULL, updated_at timestamptz NOT NULL DEFAULT now())`;
     await sql`CREATE TABLE IF NOT EXISTS ia_push_subs (id text PRIMARY KEY, subscription jsonb NOT NULL, created_at timestamptz NOT NULL DEFAULT now())`;
     await sql`CREATE TABLE IF NOT EXISTS ia_sent_reminders (key text PRIMARY KEY, sent_at timestamptz NOT NULL DEFAULT now())`;
+    await sql`CREATE TABLE IF NOT EXISTS ia_passes (email text PRIMARY KEY, name text NOT NULL, pin char(6) NOT NULL UNIQUE, created_at timestamptz NOT NULL DEFAULT now(), checked_in_at timestamptz)`;
   })().catch(e => { ready = null; throw e; });
   return ready;
 }
@@ -84,6 +85,73 @@ export const db = {
     if (sql) { await schema(); return Number((await sql`SELECT count(*)::int AS n FROM ia_push_subs`)[0].n); }
     return hasStore() ? redis('HLEN', 'subs') : 0;
   },
+  /* ---------- entry passes: one fixed, unique 6-digit PIN per person, and their check-in time ---------- */
+  async getOrCreatePass(email, name) {
+    email = String(email).toLowerCase();
+    if (sql) {
+      await schema();
+      const have = await sql`SELECT email, name, pin, checked_in_at FROM ia_passes WHERE email = ${email}`;
+      if (have.length) {
+        if (name && have[0].name !== name) await sql`UPDATE ia_passes SET name = ${name} WHERE email = ${email}`;
+        return toPass({ ...have[0], name: name || have[0].name });
+      }
+      for (let i = 0; i < 20; i++) { // the PIN is unique across everyone, so it also works on its own at the door
+        const pin = newPin();
+        const rows = await sql`INSERT INTO ia_passes (email, name, pin) VALUES (${email}, ${name || email}, ${pin})
+                               ON CONFLICT DO NOTHING RETURNING email, name, pin, checked_in_at`;
+        if (rows.length) return toPass(rows[0]);
+        const again = await sql`SELECT email, name, pin, checked_in_at FROM ia_passes WHERE email = ${email}`;
+        if (again.length) return toPass(again[0]); // created at the same moment on another device
+      }
+      throw new Error('Could not create a unique PIN.');
+    }
+    const raw = await redis('HGET', 'passes', email);
+    if (raw) { const p = JSON.parse(raw); if (name && p.name !== name) { p.name = name; await redis('HSET', 'passes', email, JSON.stringify(p)); } return p; }
+    for (let i = 0; i < 20; i++) {
+      const pin = newPin();
+      if (await redis('HSETNX', 'pins', pin, email)) {
+        const p = { email, name: name || email, pin, checkedInAt: null };
+        if (await redis('HSETNX', 'passes', email, JSON.stringify(p))) return p;
+        await redis('HDEL', 'pins', pin);
+        return JSON.parse(await redis('HGET', 'passes', email));
+      }
+    }
+    throw new Error('Could not create a unique PIN.');
+  },
+  async findPass({ email, pin }) {
+    if (sql) {
+      await schema();
+      const rows = email ? await sql`SELECT email, name, pin, checked_in_at FROM ia_passes WHERE email = ${String(email).toLowerCase()}`
+                         : await sql`SELECT email, name, pin, checked_in_at FROM ia_passes WHERE pin = ${pin}`;
+      return rows.length ? toPass(rows[0]) : null;
+    }
+    const e = email ? String(email).toLowerCase() : await redis('HGET', 'pins', pin);
+    const raw = e && await redis('HGET', 'passes', e);
+    return raw ? JSON.parse(raw) : null;
+  },
+  /** Marks a pass as checked in; returns the time of the first check-in (unchanged on repeat scans). */
+  async checkIn(email) {
+    if (sql) {
+      await schema();
+      const rows = await sql`UPDATE ia_passes SET checked_in_at = COALESCE(checked_in_at, now()) WHERE email = ${email} RETURNING checked_in_at`;
+      return rows.length ? new Date(rows[0].checked_in_at).toISOString() : null;
+    }
+    const p = JSON.parse(await redis('HGET', 'passes', email));
+    p.checkedInAt ||= new Date().toISOString();
+    await redis('HSET', 'passes', email, JSON.stringify(p));
+    return p.checkedInAt;
+  },
+  async passStats() {
+    if (sql) {
+      await schema();
+      const r = (await sql`SELECT count(*)::int AS passes, count(checked_in_at)::int AS checked FROM ia_passes`)[0];
+      return { passes: r.passes, checkedIn: r.checked };
+    }
+    if (!hasStore()) return { passes: 0, checkedIn: 0 };
+    const all = Object.values(Object.fromEntries(chunk((await redis('HGETALL', 'passes')) || []))).map(v => JSON.parse(v));
+    return { passes: all.length, checkedIn: all.filter(p => p.checkedInAt).length };
+  },
+
   /** True only for the first caller, so each reminder goes out once. */
   async claimReminder(key) {
     if (sql) {
@@ -94,6 +162,17 @@ export const db = {
     return Boolean(await redis('SET', 'sent:' + key, '1', 'NX', 'EX', 60 * 60 * 24 * 30));
   },
 };
+
+const newPin = () => String(crypto.randomInt(0, 1000000)).padStart(6, '0');
+const toPass = r => ({ email: r.email, name: r.name, pin: String(r.pin), checkedInAt: r.checked_in_at ? new Date(r.checked_in_at).toISOString() : null });
+const chunk = flat => { const out = []; for (let i = 0; i < flat.length; i += 2) out.push([flat[i], flat[i + 1]]); return out; };
+
+/** What the entry QR code contains: readable by any phone camera, parsed by the organiser scanner. */
+export const passCode = p => `IA11|${p.pin}|${p.email}|${p.name}`;
+export function parsePassCode(text) {
+  const m = /^IA11\|(\d{6})\|([^|]+)\|(.*)$/s.exec(String(text || '').trim());
+  return m ? { pin: m[1], email: m[2].toLowerCase(), name: m[3] } : null;
+}
 
 export function pushReady() {
   const { VAPID_PUBLIC_KEY: pub, VAPID_PRIVATE_KEY: priv, VAPID_SUBJECT: subject } = process.env;

@@ -56,6 +56,15 @@ sign-in page (`login.html`, which contains no event details) to everyone else, a
 The lock only turns on when both `GOOGLE_CLIENT_ID` and `SESSION_SECRET` are set, so the site cannot lock
 everyone out before sign-in is set up. The reminders cron (`/api/notify`) is not affected.
 
+**Entry passes and check-in.** Each signed-in person gets a fixed, unique 6-digit PIN (created on first
+sign-in, stored in the `ia_passes` table). Their boarding pass shows a QR code containing
+`IA11|PIN|email|name`; tapping it shows it large with the name and PIN. At the entrance, organisers open
+**Organizer login > Entrance check-in > Open scanner** on a phone: it scans the QR with the camera (or takes
+the typed PIN), checks it against the database, shows the person's name and marks them checked in, with a
+live count. A second scan shows "Already checked in" with the time. `static/jsqr.js` (jsQR, Apache-2.0) is the
+fallback decoder for browsers without a built-in one; `src/vendor-qrcode.js` (qrcode-generator, MIT) draws
+the codes.
+
 To get the client ID:
 1. In Google Cloud Console, open **APIs & Services > OAuth consent screen**, choose **Internal** (only your
    Workspace users), and fill in the app name and support email.

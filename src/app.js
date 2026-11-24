@@ -35,6 +35,7 @@ async function loadData(){
  try{const c=await fetch('/api/config',{cache:'no-store'});if(!c.ok)throw 0;S.cfg=await c.json();S.server=true}catch(e){S.server=false;S.cfg={}}
  /* the page may already be on screen: show Google sign-in now that we know whether it is set up */
  if(S.cfg.locked&&!S.user){try{const a=await fetch('/api/auth',{cache:'no-store',credentials:'same-origin'});if(a.ok){const u=await a.json();S.user={name:u.name,email:u.email};store.set('ia11-user',S.user);if(typeof applyPassenger==='function')applyPassenger()}}catch(e){}}
+ if(S.user&&typeof loadPass==='function')loadPass();
  if(typeof mountSignin==='function'&&document.getElementById('gsignin'))mountSignin();
  if(S.server){try{const r=await fetch('/api/activities',{cache:'no-store'});const j=await r.json();S.acts=sortActs(j.activities||[])}catch(e){S.acts=sortActs(DEFAULT_ACTIVITIES)}}
  else S.acts=sortActs(store.get('ia11-acts',DEFAULT_ACTIVITIES))}

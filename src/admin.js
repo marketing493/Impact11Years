@@ -24,6 +24,7 @@ function vAdmin(){
  <div class="card kpi"><span class="s">Next up</span><b class="tn">${nx?nx.start:'None'}</b><span class="s">${nx?esc(nx.title):'All sessions ended'}</span></div>
  <div class="card kpi"><span class="s">Reminder subscribers</span><b class="tn">${S.server?(st?.subscribers??0):'Demo'}</b><span class="s">Phones with push turned on</span></div>
  <div class="card kpi"><span class="s">Reminder lead time</span><b>10 min</b><span class="s">Before every session</span></div></div>
+ <div class="card ck-card"><div class="grow"><h3 style="font-size:26px">Entrance check-in</h3><p class="sm muted" style="margin-top:4px">Scan each person's entry QR, or type their 6-digit PIN. ${S.server?`<b class="tn">${st?.checkedIn??0}</b> of <b class="tn">${st?.passes??0}</b> passes checked in.`:'Needs the live site.'}</p></div><button class="btn" data-act="ckOpen">${ic('star',18)} Open scanner</button></div>
  ${setup}
  <div class="card" style="padding:0"><div class="row wrapx" style="padding:18px 20px;border-bottom:1px solid var(--line)"><h3 class="grow" style="font-size:28px">Activities and timings</h3>${!S.server?`<button class="btn ghost sm" data-act="aReset">Restore default schedule</button>`:''}<button class="btn sm" data-act="aNew" ${canEdit?'':'disabled'}>${ic('plus',16)} Add activity</button></div>
  <div class="scroll"><table class="tbl"><thead><tr><th>Date</th><th>Time</th><th>Activity</th><th>Location</th><th>Category</th><th></th></tr></thead><tbody>
