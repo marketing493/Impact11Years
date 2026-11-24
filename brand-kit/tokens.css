@@ -1,0 +1,103 @@
+/* =====================================================================
+   11 Years of Impact · "Around the World in 11 Years"
+   Design tokens, copied exactly from the live event website.
+   Load the fonts first:
+   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter+Tight:wght@400;500;600&family=Spectral:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+   ===================================================================== */
+:root{
+  /* ---------- colour ---------- */
+  --impact-blue:#264CD7;      /* the brand blue, always the bright end of a gradient */
+  --deep-blue:#22388C;        /* the middle of every background gradient */
+  --ink:#1C1B1B;              /* near-black: the dark end of gradients, envelope, board */
+  --navy:#0A1744;             /* text on gold buttons */
+  --ivory:#F7F1E3;            /* paper: stamps, boarding pass */
+  --paper-light:#FFFDF5;      /* boarding pass highlight */
+  --paper-shade:#EFE5CC;      /* boarding pass shadow side */
+  --white-soft:#F4F4F6;       /* body text on blue (use at 86% opacity) */
+
+  /* gold family (lightest to deepest) */
+  --gold-1:#FFFBEA;
+  --gold-2:#FFF6D6;
+  --gold-3:#F7E3A1;           /* gold line art, icons, small gold text */
+  --gold-4:#F3DFA2;           /* "gold-hi": dial numbers, marquee words */
+  --gold-5:#EBC96B;
+  --gold-6:#D4AF61;           /* "gold": borders, hairlines, labels */
+  --gold-7:#C9A24A;           /* dotted route lines on paper */
+  --gold-8:#9C7A36;           /* "gold-lo": gold text on ivory paper */
+  --bronze:#6B4E1A;           /* engraved "11" on the wax seal */
+
+  /* ---------- the one gold: brushed metal ----------
+     fine vertical streaks over a 170deg gold fade. Used for EVERY gold fill:
+     buttons, seal, logo, gold heading words, badges, bars, flags. */
+  --gold-brushed:repeating-linear-gradient(90deg,rgba(255,255,255,.12) 0 1px,transparent 1px 3px),
+                 linear-gradient(170deg,#FFFBEA 0%,#F7E3A1 40%,#EBC96B 75%,#F7E3A1 100%);
+  --gold-plain:linear-gradient(170deg,#FFFBEA 0%,#F7E3A1 40%,#EBC96B 75%,#F7E3A1 100%); /* SVG/canvas, where streaks cannot be layered */
+
+  /* ---------- backgrounds: Impact Blue -> deep blue -> ink ----------
+     Every surface is this left-to-right fade. Sections vary only the angle and stop positions. */
+  --bg-hero:radial-gradient(60% 80% at 28% 45%,#264CD7 0%,rgba(38,76,215,.7) 35%,transparent 75%),
+            linear-gradient(100deg,#264CD7 0%,#22388C 59%,#1C1B1B 100%);
+  --bg-header:linear-gradient(90deg,#264CD7 0%,#22388C 60%,#1C1B1B 100%);
+  --bg-invite:linear-gradient(76deg,#264CD7 0%,#264CD7 34%,#22388C 85%,#1C1B1B 100%);
+  --bg-schedule:linear-gradient(90deg,#264CD7 0%,#264CD7 22%,#22388C 86%,#1C1B1B 100%);
+  --bg-venue:linear-gradient(80deg,#264CD7 0%,#22388C 59%,#1C1B1B 100%);
+  --bg-reminders:linear-gradient(99deg,#264CD7 0%,#264CD7 24%,#22388C 83%,#1C1B1B 100%);
+  --bg-blue-strip:linear-gradient(90deg,#264CD7 0%,#264CD7 32%,#22388C 90%,#1C1B1B 100%);
+  --bg-paper:radial-gradient(120% 90% at 0 0,#FFFDF5,#F7F1E3 60%,#EFE5CC);   /* boarding pass, tickets */
+
+  /* gold hairline rule (header bottom, footer top, section dividers): 1px, fades out at both ends */
+  --gold-hairline:linear-gradient(90deg,rgba(235,201,107,0),#EBC96B 18%,#FFF6D6 50%,#EBC96B 82%,rgba(235,201,107,0));
+
+  /* ---------- type ---------- */
+  --f-display:'Spectral',Georgia,serif;              /* headings, big numbers, marquee: weight 300 (400 for the hero word) */
+  --f-body:'Inter Tight',system-ui,-apple-system,'Segoe UI',sans-serif; /* body, labels, buttons, board letters */
+  --f-ceremonial:'Cinzel','Spectral',Georgia,serif;  /* rare: engraved/ceremonial text only */
+
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+
+/* ---------- ready-made pieces ---------- */
+body.ia11{margin:0;background:var(--bg-header);color:var(--white-soft);font-family:var(--f-body)}
+
+/* headings: Spectral Light, white, with ONE key word in brushed gold */
+.ia-h{font-family:var(--f-display);font-weight:300;letter-spacing:-.01em;line-height:1.05;color:#F7F1E3;margin:0}
+.ia-h em,.ia-gold-text{font-style:normal;background:var(--gold-brushed);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.ia-hero-word{font-family:var(--f-display);font-weight:400;letter-spacing:-.035em;line-height:.9;background:var(--gold-brushed);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 1px 0 rgba(110,80,26,.5)) drop-shadow(0 8px 18px rgba(243,223,162,.3))}
+
+/* eyebrow: small uppercase label with gold diamond-tipped rules either side */
+.ia-eyebrow{display:inline-flex;align-items:center;gap:14px;font:500 15px/1 var(--f-body);letter-spacing:.26em;text-transform:uppercase}
+.ia-eyebrow span{background:var(--gold-brushed);-webkit-background-clip:text;background-clip:text;color:transparent}
+.ia-eyebrow i{width:64px;height:1px;position:relative;background:linear-gradient(90deg,transparent,#EBC96B)}
+.ia-eyebrow i:last-child{background:linear-gradient(90deg,#EBC96B,transparent)}
+.ia-eyebrow i::after{content:"";position:absolute;top:-3px;width:6px;height:6px;background:#EBC96B;transform:rotate(45deg)}
+.ia-eyebrow i:first-child::after{right:-3px}.ia-eyebrow i:last-child::after{left:-3px}
+
+.ia-body{font:400 18px/1.5 var(--f-body);color:rgba(244,244,246,.86)}
+
+/* buttons */
+.ia-btn{display:inline-flex;align-items:center;gap:10px;padding:12px 18px;border-radius:6px;font:600 15px/1 var(--f-body);text-decoration:none;cursor:pointer}
+.ia-btn-gold{background:var(--gold-brushed);color:var(--navy);border:1px solid #D4AF61;box-shadow:0 8px 22px -12px rgba(212,175,97,.8)}
+.ia-btn-outline{background:rgba(28,27,27,.22);color:#F3DFA2;border:1px solid rgba(212,175,97,.7)}
+
+/* postage stamp: ivory, perforated edge, gold + blue inner frames, blue line-art landmark, tilted */
+.ia-stamp{display:inline-block;padding:7px;background:radial-gradient(circle at 5px 5px,transparent 3.2px,#F7F1E3 3.7px) -5px -5px/10px 10px;
+  transform:rotate(var(--r,-6deg));filter:drop-shadow(0 12px 18px rgba(10,16,60,.45))}
+.ia-stamp>div{position:relative;display:grid;justify-items:center;gap:2px;width:78px;padding:9px 6px 7px;background:#F7F1E3;color:#264CD7;
+  box-shadow:inset 0 0 0 1px #D4AF61,inset 0 0 0 4px #F7F1E3,inset 0 0 0 5px rgba(38,76,215,.35)}
+.ia-stamp b{font:600 9px var(--f-body);letter-spacing:.16em;text-transform:uppercase;color:#1C1B1B}
+.ia-stamp i{position:absolute;top:6px;right:8px;font:300 15px var(--f-display);font-style:normal;color:#9C7A36}
+
+/* wax seal: brushed gold disc with an engraved bronze "11" and a soft breathing glow */
+.ia-seal{width:84px;height:84px;border-radius:50%;display:grid;place-items:center;background:var(--gold-brushed);
+  box-shadow:inset 0 0 0 4px rgba(255,251,234,.35),inset 0 -6px 12px rgba(150,110,40,.35),0 6px 16px rgba(0,0,0,.35)}
+.ia-seal b{font:700 30px var(--f-display);color:#6B4E1A;text-shadow:0 1px 0 rgba(255,251,234,.8),0 -1px 0 rgba(90,64,20,.35)}
+
+/* split-flap departures board */
+.ia-board{background:linear-gradient(180deg,#060B22,#03071A);border:1px solid rgba(212,175,97,.5);border-radius:14px;padding:16px 20px;box-shadow:inset 0 0 50px rgba(0,0,0,.7)}
+.ia-flap{display:inline-flex;align-items:center;justify-content:center;width:1.12em;height:1.6em;margin-right:.2em;border-radius:3px;font:600 16px var(--f-body);
+  background:linear-gradient(rgba(244,244,246,.09) 50%,rgba(244,244,246,.05) 50%);color:#F7F1E3}
+.ia-flap.gold{color:#F3DFA2}
+
+/* gold hairline divider */
+.ia-rule{height:1px;background:var(--gold-hairline);border:0}
