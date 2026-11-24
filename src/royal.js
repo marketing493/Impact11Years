@@ -40,7 +40,7 @@ function vRoyalHome(){const up=upcoming();
   <div class="env-wrap" data-rv style="--i:1"><button class="env" data-act="envelope" aria-label="Tap the seal to open your boarding pass">
    <span class="env-back"></span><span class="env-air" aria-hidden="true"></span>
    <span class="env-pocket"><span class="env-card">${boardingPass()}</span></span>
-   <span class="env-front"></span><span class="env-flap"></span><span class="env-hint" aria-hidden="true">Tap the seal</span><span class="seal-glow" aria-hidden="true"></span><span class="seal"><b>11</b></span></button></div></div></section>
+   <span class="env-front"></span><span class="env-flap"></span><span class="env-hint" aria-hidden="true">Tap to reveal</span><span class="seal-glow" aria-hidden="true"></span><span class="seal"><b>11</b></span></button></div></div></section>
 
  ${marquee()}
 
