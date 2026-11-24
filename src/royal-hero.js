@@ -86,7 +86,7 @@ class Hero{constructor(sec){this.sec=sec;this.pin=sec.querySelector('.rh-pin');t
   g.lineWidth=.8;
   for(let lo=0;lo<180;lo+=30){g.beginPath();let pen=false;for(let la=-90;la<=90;la+=6){const q=this.proj(lo*Math.PI/180,la*Math.PI/180,R,cx,cy);if(q[2]>0){pen?g.lineTo(q[0],q[1]):g.moveTo(q[0],q[1]);pen=true}else pen=false}g.strokeStyle='rgba(212,175,97,.22)';g.stroke();
    g.beginPath();pen=false;for(let la=-90;la<=90;la+=6){const q=this.proj((lo+180)*Math.PI/180,la*Math.PI/180,R,cx,cy);if(q[2]>0){pen?g.lineTo(q[0],q[1]):g.moveTo(q[0],q[1]);pen=true}else pen=false}g.stroke()}
-  for(let la=-60;la<=60;la+=30){g.beginPath();let pen=false;for(let lo=0;lo<=360;lo+=5){const q=this.proj(lo*Math.PI/180,la*Math.PI/180,R,cx,cy);if(q[2]>0){pen?g.lineTo(q[0],q[1]):g.moveTo(q[0],q[1]);pen=true}else pen=false}g.strokeStyle=la===0?'rgba(243,223,162,.4)':'rgba(212,175,97,.2)';g.stroke()}
+  for(let la=-60;la<=60;la+=30){if(la===0)continue;g.beginPath();let pen=false;for(let lo=0;lo<=360;lo+=5){const q=this.proj(lo*Math.PI/180,la*Math.PI/180,R,cx,cy);if(q[2]>0){pen?g.lineTo(q[0],q[1]):g.moveTo(q[0],q[1]);pen=true}else pen=false}g.strokeStyle='rgba(212,175,97,.2)';g.stroke()}
   /* land, lit gold on the near side */
   {const B=8,paths=[];for(let i=0;i<B;i++)paths.push(new Path2D());
    for(const [lo,la] of this.land){const q=this.proj(lo,la,R,cx,cy);if(q[2]<=0)continue;const z=q[2],sz=1.4+z*.9;paths[Math.min(B-1,Math.floor(z*B))].rect(q[0]-.9,q[1]-.9,sz,sz)}
