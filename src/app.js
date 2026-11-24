@@ -7,7 +7,7 @@ plus:'M12 5v14M5 12h14',edit:'M4 20h4L19 9l-4-4L4 16zM13.5 6.5l4 4',trash:'M5 7h
 star:'M12 3l2.8 5.8 6.2.9-4.5 4.4 1.1 6.2L12 17.3 6.4 20.3l1.1-6.2L3 9.7l6.2-.9z',users:'M9 12a3.5 3.5 0 100-7 3.5 3.5 0 000 7zM2 20a7 7 0 0114 0M16 5.5a3.5 3.5 0 010 7M18 20h4a6 6 0 00-4-5.6',
 mic:'M12 3a3 3 0 00-3 3v6a3 3 0 006 0V6a3 3 0 00-3-3zM5 11a7 7 0 0014 0M12 18v3',cup:'M4 8h13v5a6 6 0 01-6 6h-1a6 6 0 01-6-6zM17 10h1.5a2.5 2.5 0 010 5H17M8 3v2M12 3v2',
 spark:'M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M6 18l2.5-2.5M15.5 8.5L18 6',music:'M9 18V5l11-2v13M9 18a3 3 0 11-6 0 3 3 0 016 0zM20 16a3 3 0 11-6 0 3 3 0 016 0z',
-share:'M12 3v12M7 8l5-5 5 5M5 13v7h14v-7',addbox:'M4 4h16v16H4zM12 8v8M8 12h8',phone:'M7 2h10v20H7zM11 18h2',map:'M9 4L3 6v14l6-2 6 2 6-2V4l-6 2zM9 4v14M15 6v14',
+share:'M12 3v12M7 8l5-5 5 5M5 13v7h14v-7',download:'M12 3v12M7 10l5 5 5-5M5 19h14',addbox:'M4 4h16v16H4zM12 8v8M8 12h8',phone:'M7 2h10v20H7zM11 18h2',map:'M9 4L3 6v14l6-2 6 2 6-2V4l-6 2zM9 4v14M15 6v14',
 ripple:'M12 12h.01M8 12a4 4 0 018 0M5 12a7 7 0 0114 0',type:'M4 6V4h16v2M12 4v16M9 20h6',brush:'M4 20c2 0 4-1 4-3a2 2 0 00-4 0M9 15l10-10a1.4 1.4 0 00-2-2L7 13',
 lock:'M6 11h12v9H6zM8 11V8a4 4 0 118 0v3',out:'M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10',arrow:'M5 12h14M13 6l6 6-6 6',ics:'M4 6h16v14H4zM4 10h16M8 3v4M16 3v4M9 15h6M12 12v6',x:'M6 6l12 12M18 6L6 18',prev2:'M15 5l-7 7 7 7'};
 const ic=(n,s=20,sw=1.6)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${P[n]||P.star}"/></svg>`;

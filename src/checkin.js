@@ -78,3 +78,69 @@ async function openCheckin(){if(CK)return;
    const now=Date.now();if(text){const fresh=!(text===CK.last&&now-CK.lastAt<3000);CK.last=text;CK.lastAt=now;if(fresh)check({code:text})}}
   CK&&(CK.timer=setTimeout(tick,160))};
  tick()}
+
+/* ---------- download the boarding pass as a high-resolution image (3000 x 1300 px) ---------- */
+const PLANE_PATH='M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z';
+/** The entry QR drawn straight onto a canvas, in the same style as on screen. */
+function drawQr(c,text,x,y,size){
+ qrcode.stringToBytes=qrcode.stringToBytesFuncs['UTF-8'];const q=qrcode(0,'H');q.addData(text,'Byte');q.make();
+ const n=q.getModuleCount(),Q=3,N=n+Q*2,u=size/N,k=Math.max(5,Math.round(n*.22))|1,s=(n-k)>>1;
+ const finder=(r,cc)=>(r<7&&cc<7)||(r<7&&cc>=n-7)||(r>=n-7&&cc<7),hole=(r,cc)=>r>=s&&r<s+k&&cc>=s&&cc<s+k;
+ const rr=(X,Y,W,H,R,fill)=>{c.beginPath();c.roundRect(X,Y,W,H,R);c.fillStyle=fill;c.fill()};
+ rr(x,y,size,size,u*1.5,'#FFFFFF');
+ for(let r=0;r<n;r++)for(let cc=0;cc<n;cc++){if(!q.isDark(r,cc)||finder(r,cc)||hole(r,cc))continue;rr(x+(cc+Q+.06)*u,y+(r+Q+.06)*u,u*.88,u*.88,u*.38,'#1C1B1B')}
+ for(const [r,cc] of [[0,0],[0,n-7],[n-7,0]]){const X=x+(cc+Q)*u,Y=y+(r+Q)*u;rr(X,Y,7*u,7*u,u,'#1C1B1B');rr(X+u,Y+u,5*u,5*u,u*.55,'#FFFFFF');rr(X+2*u,Y+2*u,3*u,3*u,u*.6,'#1C1B1B')}
+ const cx=x+(Q+s+k/2)*u,cy=y+(Q+s+k/2)*u,R=(k/2-.4)*u;
+ c.beginPath();c.arc(cx,cy,R,0,Math.PI*2);c.fillStyle='#D4AF61';c.fill();c.beginPath();c.arc(cx,cy,R*.84,0,Math.PI*2);c.fillStyle='#1C1B1B';c.fill();
+ c.fillStyle='#D4AF61';c.font=`400 ${R*1.05}px Spectral, Georgia, serif`;c.textAlign='center';c.textBaseline='middle';c.fillText('11',cx,cy+R*.04);c.textAlign='left';c.textBaseline='alphabetic'}
+
+async function passImage(){
+ try{await Promise.all(['300 120px Spectral','400 120px Spectral','600 40px "Inter Tight"','500 40px "Inter Tight"'].map(f=>document.fonts.load(f)))}catch(e){}
+ const S2=2,W=1500,H=650,cv=document.createElement('canvas');cv.width=W*S2;cv.height=H*S2;const c=cv.getContext('2d');c.scale(S2,S2);
+ const INTER='"Inter Tight", Inter, system-ui, sans-serif',SERIF='Spectral, Georgia, serif',track=v=>{try{c.letterSpacing=v}catch(e){}};
+ /* backdrop: the site's blue-to-ink gradient with a soft Impact Blue glow */
+ let g=c.createLinearGradient(0,0,W,0);g.addColorStop(0,'#264CD7');g.addColorStop(.6,'#22388C');g.addColorStop(1,'#1C1B1B');c.fillStyle=g;c.fillRect(0,0,W,H);
+ g=c.createRadialGradient(W*.3,H*.45,0,W*.3,H*.45,W*.6);g.addColorStop(0,'rgba(38,76,215,.9)');g.addColorStop(1,'rgba(38,76,215,0)');c.fillStyle=g;c.fillRect(0,0,W,H);
+ c.strokeStyle='rgba(212,175,97,.8)';c.lineWidth=1.5;c.beginPath();c.roundRect(18,18,W-36,H-36,18);c.stroke();
+ /* ticket */
+ const X=110,Y=110,TW=1280,TH=430,SX=X+TW-300,NR=18;
+ c.save();c.shadowColor='rgba(8,14,48,.55)';c.shadowBlur=40;c.shadowOffsetY=18;
+ const shape=()=>{c.beginPath();c.moveTo(X+24,Y);c.lineTo(SX-NR,Y);c.arc(SX,Y,NR,Math.PI,0,true);c.lineTo(X+TW-24,Y);c.arcTo(X+TW,Y,X+TW,Y+24,24);c.lineTo(X+TW,Y+TH-24);c.arcTo(X+TW,Y+TH,X+TW-24,Y+TH,24);
+  c.lineTo(SX+NR,Y+TH);c.arc(SX,Y+TH,NR,0,Math.PI,true);c.lineTo(X+24,Y+TH);c.arcTo(X,Y+TH,X,Y+TH-24,24);c.lineTo(X,Y+24);c.arcTo(X,Y,X+24,Y,24);c.closePath()};
+ g=c.createLinearGradient(X,Y,X+TW,Y+TH);g.addColorStop(0,'#FFFDF5');g.addColorStop(.6,'#F7F1E3');g.addColorStop(1,'#EFE5CC');shape();c.fillStyle=g;c.fill();c.restore();
+ c.save();shape();c.clip();c.fillStyle='#264CD7';c.fillRect(X,Y,TW,7);c.restore();
+ c.setLineDash([7,7]);c.strokeStyle='rgba(28,27,27,.3)';c.lineWidth=2;c.beginPath();c.moveTo(SX,Y+NR+6);c.lineTo(SX,Y+TH-NR-6);c.stroke();c.setLineDash([]);
+ const p=S.pass,name=(p&&p.name)||(S.user&&S.user.name)||'Impacter';
+ /* header row */
+ c.save();c.translate(X+46,Y+44);c.rotate(Math.PI/2);c.scale(1.1,1.1);c.translate(-12,-12);c.fillStyle='#264CD7';c.fill(new Path2D(PLANE_PATH));c.restore();
+ c.font=`600 21px ${INTER}`;track('3px');c.fillStyle='#264CD7';c.fillText('IMPACT ANALYTICS',X+70,Y+52);
+ c.fillStyle='#9C7A36';c.textAlign='right';c.fillText('FLIGHT IA 011',SX-40,Y+52);c.textAlign='left';track('0px');
+ /* route */
+ c.fillStyle='#264CD7';c.font=`300 92px ${SERIF}`;c.fillText('WORK',X+40,Y+160);c.textAlign='right';c.fillText('GALA',SX-40,Y+160);c.textAlign='left';
+ c.fillStyle='rgba(28,27,27,.62)';c.font=`500 20px ${INTER}`;c.fillText('11 Years of Hustle',X+42,Y+196);c.textAlign='right';c.fillText('11 Years of Impact',SX-42,Y+196);c.textAlign='left';
+ const L1=X+340,L2=SX-320,LY=Y+128;const MX=(L1+L2)/2;c.setLineDash([10,11]);c.strokeStyle='#C9A24A';c.lineWidth=3;c.beginPath();c.moveTo(L1,LY);c.lineTo(MX-38,LY);c.moveTo(MX+38,LY);c.lineTo(L2,LY);c.stroke();c.setLineDash([]);
+ c.save();c.translate((L1+L2)/2,LY);c.rotate(Math.PI/2);c.scale(1.9,1.9);c.translate(-12,-12);c.fillStyle='#C9A24A';c.fill(new Path2D(PLANE_PATH));c.restore();
+ c.strokeStyle='rgba(28,27,27,.12)';c.lineWidth=1.5;c.beginPath();c.moveTo(X+40,Y+240);c.lineTo(SX-40,Y+240);c.stroke();
+ /* details */
+ const cols=[[X+42,'PASSENGER',name.toUpperCase()],[X+520,'DATE','17 Dec 2026'],[X+700,'BOARDS','10:00'],[X+840,'GATE','Hilton ETV']];
+ for(const [cx,k,v] of cols){c.fillStyle='rgba(28,27,27,.55)';c.font=`600 15px ${INTER}`;track('2.5px');c.fillText(k,cx,Y+292);track('0px');c.fillStyle='#1C1B1B';c.font=`600 ${k==='PASSENGER'?27:25}px ${INTER}`;
+  let t=v;if(k==='PASSENGER'){while(c.measureText(t).width>440&&t.length>4)t=t.slice(0,-2)+'…'}c.fillText(t,cx,Y+332)}
+ c.fillStyle='rgba(28,27,27,.5)';c.font=`500 16px ${INTER}`;c.fillText(EVENT.venue+', '+EVENT.area,X+42,Y+392);
+ /* stub: the entry QR */
+ const QS=236;if(p&&p.code)drawQr(c,p.code,SX+(300-QS)/2,Y+(TH-QS)/2-14,QS);
+ else{c.fillStyle='#1C1B1B';c.font=`300 120px ${SERIF}`;c.textAlign='center';c.fillText('11',SX+150,Y+TH/2+30);c.textAlign='left'}
+ c.fillStyle='rgba(28,27,27,.55)';c.font=`600 14px ${INTER}`;track('2.5px');c.textAlign='center';c.fillText(p&&p.pin?'PIN '+p.pin.slice(0,3)+' '+p.pin.slice(3):'ENTRY PASS',SX+150,Y+TH-30);c.textAlign='left';track('0px');
+ /* footer line */
+ c.fillStyle='#F7E3A1';c.font=`600 19px ${INTER}`;track('4px');c.textAlign='center';c.fillText('11 YEARS OF IMPACT  ·  AROUND THE WORLD  ·  17 DECEMBER 2026',W/2,H-62);c.textAlign='left';track('0px');
+ return cv}
+
+async function downloadPass(){
+ const btn=$('[data-act="downloadPass"]');btn&&btn.setAttribute('aria-busy','true');
+ try{const cv=await passImage();const blob=await new Promise(r=>cv.toBlob(r,'image/png'));if(!blob)throw 0;
+  const who=((S.pass&&S.pass.name)||(S.user&&S.user.name)||'impacter').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+  const name=`11-years-of-impact-boarding-pass-${who}.png`,file=new File([blob],name,{type:'image/png'});
+  /* phones: the share sheet (Save Image on iPhone); computers: a normal download */
+  if(matchMedia('(pointer: coarse)').matches&&navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],title:'My boarding pass'});return}catch(e){if(e&&e.name==='AbortError')return}}
+  const a=document.createElement('a'),url=URL.createObjectURL(blob);a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),4000);toast('Boarding pass downloaded.')}
+ catch(e){toast('Could not create the image. Please try again.')}
+ finally{btn&&btn.removeAttribute('aria-busy')}}
