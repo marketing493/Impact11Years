@@ -28,7 +28,7 @@ const STOPS=[
 
 /* SVG sprite: defined once, used everywhere with <use href="#..."> */
 const ROYAL_SPRITE=`<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
-<linearGradient id="gGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9C7A36"/><stop offset=".25" stop-color="#F3DFA2"/><stop offset=".5" stop-color="#D4AF61"/><stop offset=".68" stop-color="#FFF1C1"/><stop offset=".85" stop-color="#B58C3F"/><stop offset="1" stop-color="#E9CD86"/></linearGradient>
+<linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFBEA"/><stop offset=".4" stop-color="#F7E3A1"/><stop offset=".7" stop-color="#EBC96B"/><stop offset="1" stop-color="#FFF6D6"/></linearGradient>
 <linearGradient id="gNavy" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1B3592"/><stop offset="1" stop-color="#0A1744"/></linearGradient>
 <radialGradient id="heroDisc" cx="50%" cy="50%" r="50%" fx="44%" fy="42%"><stop offset="0" stop-color="#3358DE"/><stop offset=".45" stop-color="#264CD7"/><stop offset=".7" stop-color="#264CD7"/><stop offset=".87" stop-color="#22388C"/><stop offset="1" stop-color="#1C1B1B"/></radialGradient><radialGradient id="dialDisc" cx="50%" cy="38%" r="70%"><stop offset="0" stop-color="#1E3FAE" stop-opacity=".55"/><stop offset=".7" stop-color="#0A1744" stop-opacity=".85"/><stop offset="1" stop-color="#050B26"/></radialGradient>
 <radialGradient id="gGlow"><stop offset="0" stop-color="#FFF1C1" stop-opacity=".9"/><stop offset="1" stop-color="#FFF1C1" stop-opacity="0"/></radialGradient>

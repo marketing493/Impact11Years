@@ -200,7 +200,7 @@ class Voyage{
  /* the land is drawn once into an offscreen layer: a soft gold glow, gold dots, brighter coastlines */
  buildLayer(){const blue=document.documentElement.dataset.tone==='blue',k=Math.min(DPR(),4096/this.mapW),cv=document.createElement('canvas');
   cv.width=Math.round(this.mapW*k);cv.height=Math.round(this.mapH*k);const c=cv.getContext('2d');c.scale(k,k);const cs=this.cell;
-  const sheen=c.createLinearGradient(0,0,this.mapW,this.mapH);(blue?[[0,'#C9A24A'],[.25,'#E9CD86'],[.5,'#D4AF61'],[.7,'#F3DFA2'],[1,'#C9A24A']]:[[0,'#B8944A'],[.22,'#F3DFA2'],[.45,'#D4AF61'],[.66,'#FFF1C1'],[.85,'#C9A24A'],[1,'#E9CD86']]).forEach(s=>sheen.addColorStop(s[0],s[1]));
+  const sheen=c.createLinearGradient(0,0,this.mapW,this.mapH);(blue?[[0,'#FFFBEA'],[.4,'#F7E3A1'],[.7,'#EBC96B'],[1,'#FFF6D6']]:[[0,'#B8944A'],[.22,'#F3DFA2'],[.45,'#D4AF61'],[.66,'#FFF1C1'],[.85,'#C9A24A'],[1,'#E9CD86']]).forEach(s=>sheen.addColorStop(s[0],s[1]));
   /* glow: paint the land once at grid resolution, then blur that single image (one filter pass, not one per dot) */
   const gl=document.createElement('canvas');gl.width=this.G.W;gl.height=this.G.H;const gc=gl.getContext('2d');gc.fillStyle='#D4AF61';for(const [x,y] of this.land)gc.fillRect(x,y,1,1);
   c.save();c.filter='blur('+(cs*1.4).toFixed(1)+'px)';c.globalAlpha=blue?.08:.42;c.imageSmoothingEnabled=true;c.drawImage(gl,0,0,this.mapW,this.mapH);c.restore();
@@ -230,7 +230,7 @@ class Voyage{
   /* travelled path: a wide soft glow under a crisp gold line */
   const trace=()=>{c.beginPath();for(let k=0;k<=w.k;k++){const L=this.legs[k],tt=k<w.k?1:w.t,steps=48;c.moveTo(L.a[0]-cx,L.a[1]-cy);for(let i=1;i<=steps*tt;i++){const q=this.bez(L,i/steps);c.lineTo(q[0]-cx,q[1]-cy)}if(k===w.k)c.lineTo(px,py)}};
   c.strokeStyle='rgba(243,223,162,.18)';c.lineWidth=10;trace();c.stroke();
-  const grad=c.createLinearGradient(0,0,W,H);grad.addColorStop(0,'#D4AF61');grad.addColorStop(.5,'#FFF1C1');grad.addColorStop(1,'#E9CD86');
+  const grad=c.createLinearGradient(0,0,W,H);grad.addColorStop(0,'#FFFBEA');grad.addColorStop(.4,'#F7E3A1');grad.addColorStop(.7,'#EBC96B');grad.addColorStop(1,'#FFF6D6');
   c.strokeStyle='rgba(255,241,193,.3)';c.lineWidth=5;trace();c.stroke();c.strokeStyle=grad;c.lineWidth=2.4;trace();c.stroke();
   /* sparkling trail behind the plane */
   if(w.t>0&&w.t<1&&!still){const L=this.legs[w.k];for(let i=1;i<=14;i++){const tt=Math.max(0,w.t-i*.012),q=this.bez(L,tt),a=1-i/14,j=Math.sin(time/120+i*1.7)*1.6;c.globalAlpha=a*.9;c.fillStyle='#FFF1C1';c.beginPath();c.arc(q[0]-cx+j,q[1]-cy-j,.6+a*2.2,0,6.283);c.fill()}c.globalAlpha=1}
