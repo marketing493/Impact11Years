@@ -86,7 +86,12 @@ document.addEventListener('submit',async e=>{const f=e.target.closest('[data-for
   await saveActs(list,m.id?`Saved ${a.title}.`:`Added ${a.title} at ${a.start}.`);setTimeout(()=>{A_.flash=null},1700)}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&A_.modal){A_.modal=null;render()}});
 /* links to a section on the current page glide there; nothing is re-rendered */
-function glideTo(id){const el=document.getElementById(id);if(!el)return false;el.scrollIntoView({behavior:RMQ.matches?'auto':'smooth',block:'start'});return true}
+function glideTo(id){const el=document.getElementById(id);if(!el)return false;const how=RMQ.matches?'auto':'smooth';
+ /* the invitation: bring the whole envelope into view with some space below it (never past the top of the section) */
+ const env=id==='invite'&&el.querySelector('.env');
+ if(env){const hdr=(document.querySelector('.top')||{}).offsetHeight||0,r=env.getBoundingClientRect(),sec=el.getBoundingClientRect(),gap=Math.min(60,innerHeight*.08);
+  let y=scrollY+r.bottom+gap-innerHeight;const envTop=scrollY+r.top-hdr-24;if(y>envTop)y=envTop;y=Math.max(y,scrollY+sec.top-hdr);scrollTo({top:Math.max(0,y),behavior:how});return true}
+ el.scrollIntoView({behavior:how,block:'start'});return true}
 document.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(!a||e.defaultPrevented)return;const id=a.getAttribute('href').slice(1);
  if(!id||id==='admin'||S.route!=='home'||!document.getElementById(id))return;e.preventDefault();glideTo(id);try{history.replaceState(null,'','#'+id)}catch(_){}},true);
 addEventListener('hashchange',()=>{const id=location.hash.slice(1);if(S.route==='home'&&id&&id!=='admin'&&!id.startsWith('event-')&&glideTo(id))return;const jump=parseHash();render();if(jump){requestAnimationFrame(()=>document.getElementById(jump)?.scrollIntoView({behavior:'smooth'}))}else scrollTo({top:0})});

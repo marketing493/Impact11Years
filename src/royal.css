@@ -1378,6 +1378,16 @@ html,body{max-width:100%;overflow-x:clip}
 .env-card .bp-logo{display:block;width:86%}
 .env-card .bp-logo img{display:block;width:100%;height:auto}
 
+/* phones: the portrait pass rises out of the envelope and settles fully in view, in front of the open flap */
+@media (max-width:900px){
+ :root[data-tone="blue"] .env-card.portrait{left:14%;right:14%;top:10%;height:auto;padding:0;background:none;box-shadow:none}
+ .env-card.portrait .bp-portrait{display:block;width:100%;height:auto;filter:drop-shadow(0 16px 24px rgba(10,16,60,.45))}
+ :root[data-tone="blue"] .env.open .env-card.portrait{animation:passPortrait 2s cubic-bezier(.3,.7,.2,1) 1.2s both}
+ @keyframes passPortrait{0%{transform:translateY(0)}100%{transform:translateY(-52.7%)}}
+ :root[data-tone="blue"] .env-wrap:has(.env-card.portrait){transition:padding-top .9s var(--ease) .9s}
+ :root[data-tone="blue"] .env-wrap:has(.env.open .env-card.portrait){padding-top:calc((100vw - 32px) * .6 + 26px)}}
+@media (max-width:900px) and (prefers-reduced-motion:reduce){:root[data-tone="blue"] .env.open .env-card.portrait{animation:none;transform:translateY(-52.7%)}}
+
 /* ---------- logos: 15% smaller, with breathing room ---------- */
 .top .logo11{width:clamp(124px,10.8vw,152px)}
 .top .wrap>a:first-child{padding:10px 6px 10px 0}

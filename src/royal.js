@@ -105,7 +105,7 @@ function mountEdges(){if(document.documentElement.dataset.tone!=='blue')return;f
  el.insertAdjacentHTML('afterbegin',`<i class="bg-edge t" aria-hidden="true" style="--g:var(--e-${top})"></i><i class="bg-edge b" aria-hidden="true" style="--g:var(--e-${bot})"></i>`)}}
 let HERO=null,VOYAGE=null,BOARD=null,CURTAINS=[];
 function mountRoyal(){syncTone();mountSkyline();HERO&&HERO.stop();HERO=null;VOYAGE&&VOYAGE.stop();VOYAGE=null;BOARD&&BOARD.stop();BOARD=null;CURTAINS.forEach(c=>c.stop());CURTAINS=[];
- if(S.skin!=='royal')return;const a=$('#arch');if(a)HERO=new Hero(a);const v=$('#voyage');if(v)VOYAGE=new Voyage(v);const b=$('[data-board]');if(b)BOARD=new Board(b);CURTAINS=$$('.venue .drape').map(e=>new Curtain(e));mountEdges();mountSignin();tickRoyal()}
+ if(S.skin!=='royal')return;const a=$('#arch');if(a)HERO=new Hero(a);const v=$('#voyage');if(v)VOYAGE=new Voyage(v);const b=$('[data-board]');if(b)BOARD=new Board(b);CURTAINS=$$('.venue .drape').map(e=>new Curtain(e));mountEdges();mountSignin();if(typeof mountPortraitPass==='function'){PP_KEY='';mountPortraitPass()}tickRoyal()}
 function tickRoyal(){const d=Math.max(0,TARGET_MS()-Date.now()),v={d:Math.floor(d/864e5),h:Math.floor(d%864e5/36e5),m:Math.floor(d%36e5/6e4),s:Math.floor(d%6e4/1e3)};
  if(typeof DIAL_C!=='undefined'){const frac={d:Math.min(1,v.d/30),h:v.h/24,m:v.m/60,s:v.s/60};
   $$('[data-rdial]').forEach(el=>{const k=el.dataset.rdial,f=frac[k],arc=el.querySelector('.d-arc'),orb=el.querySelector('.d-orb'),prev=+el.dataset.f;
@@ -162,7 +162,7 @@ async function onGoogle(r){try{const res=await fetch('/api/auth',{method:'POST',
 async function signOut(){S.user=null;S.pass=null;try{localStorage.removeItem('ia11-user');localStorage.removeItem('ia11-pass')}catch(e){}try{window.google&&google.accounts&&google.accounts.id.disableAutoSelect()}catch(e){}
  try{await fetch('/api/auth',{method:'DELETE',credentials:'same-origin'})}catch(e){}
  if(S.cfg&&S.cfg.locked){location.replace('/');return}applyPassenger();mountSignin();toast('Signed out.')}
-function applyPassenger(){const c=$('.env-card');if(c)c.innerHTML=boardingPass()}
+function applyPassenger(){const c=$('.env-card');if(c){c.classList.remove('portrait');c.innerHTML=boardingPass()}if(typeof mountPortraitPass==='function'){PP_KEY='';mountPortraitPass()}}
 function boardingPass(){return `<span class="bpass" role="img" aria-label="Boarding pass: Impact Analytics flight IA 011, passenger ${esc(passengerName())}, from WRK, Smartworks Global Tech Park, to PRTY, Hilton Embassy TechVillage, ${EVENT.dateLong}, boards 10:00 AM. Tap the QR code to enlarge your entry pass.">
  <span class="bp-main">
   <span class="bp-top"><span class="bp-air">${PLANE_SVG(14)} Impact Analytics</span><span class="bp-cls">Flight IA 011</span></span>

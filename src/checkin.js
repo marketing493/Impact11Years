@@ -29,7 +29,7 @@ async function loadPass(force){if(!S.user||!S.server)return;if(!force&&S.pass&&S
   S.pass=p;store.set('ia11-pass',p);if(typeof applyPassenger==='function')applyPassenger()}catch(e){}}
 
 /* tapping the QR on the opened pass shows it large, with the name and PIN, ready for the door */
-addEventListener('click',e=>{const stub=e.target.closest&&e.target.closest('.env.open .bp-stub');if(!stub)return;e.preventDefault();e.stopPropagation();showPass()},true);
+addEventListener('click',e=>{const stub=e.target.closest&&e.target.closest('.env.open .bp-stub,.env.open .bp-portrait');if(!stub)return;e.preventDefault();e.stopPropagation();showPass()},true);
 function showPass(){if(!S.pass){toast(S.user?'Your entry pass is loading. Try again in a moment.':'Sign in to get your entry pass.');return}
  const p=S.pass,w=document.createElement('div');w.className='modal-w how-w pass-w';w.setAttribute('role','dialog');w.setAttribute('aria-modal','true');w.setAttribute('aria-label','Your entry pass');
  w.innerHTML=`<div class="modal how pass-big"><div class="how-h"><h3>Your entry pass</h3><button class="icon-btn how-x" aria-label="Close">${ic('x',18)}</button></div>
@@ -145,3 +145,12 @@ async function downloadPass(){
   const a=document.createElement('a'),url=URL.createObjectURL(blob);a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),4000);toast('Boarding pass downloaded.')}
  catch(e){toast('Could not create the image. Please try again.')}
  finally{btn&&btn.removeAttribute('aria-busy')}}
+
+/* ---------- phones: the portrait pass (the same image as the download) is what comes out of the envelope ---------- */
+const PHONE_PASS=matchMedia('(max-width:900px)');let PP_KEY='';
+async function mountPortraitPass(){const card=$('.env-card');if(!card)return;
+ if(!PHONE_PASS.matches){if(card.classList.contains('portrait')){card.classList.remove('portrait');card.innerHTML=boardingPass()}return}
+ const key=(S.pass&&S.pass.code)||'none';if(key===PP_KEY&&card.querySelector('.bp-portrait'))return;PP_KEY=key;
+ try{const cv=await passImage();const url=cv.toDataURL('image/png');const c2=$('.env-card');if(!c2)return;
+  c2.classList.add('portrait');c2.innerHTML=`<img class="bp-portrait" src="${url}" alt="Your boarding pass" width="340" height="566">`}catch(e){}}
+PHONE_PASS.addEventListener('change',()=>{PP_KEY='';mountPortraitPass()});
