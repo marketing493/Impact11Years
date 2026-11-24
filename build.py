@@ -54,7 +54,6 @@ CROWN = '<svg width="14" height="14" viewBox="0 0 64 64" fill="none" stroke="cur
 body = f'''<header class="top"><div class="wrap">
  <a href="#home" aria-label="Impact Events home">{LOGO11}</a>
  <a class="btn sec sm bell" href="#reminders">{svg('bell', 18)}<span class="reminder-label">Reminders</span><span class="dot"></span></a>
- <div id="gsignin" class="gsignin" hidden></div>
 </div></header>
 <canvas id="ambient" aria-hidden="true"></canvas>
 <main id="app"></main>
@@ -75,7 +74,6 @@ if pub.exists(): shutil.rmtree(pub)
 for f in (R / 'static').iterdir(): shutil.copy(f, pub / f.name)
 for f in (R / 'assets/icons').iterdir(): shutil.copy(f, pub / 'icons' / f.name)
 (pub / 'version.json').write_text(json.dumps(BUILD))
-exec((R / 'build_gate.py').read_text())
 (R / 'dist').mkdir(exist_ok=True)
 (R / 'dist/artifact.html').write_text(head + '\n' + body + '\n')
 print('built', len(page) // 1024, 'KB ->', ', '.join(sorted(p.name for p in pub.rglob('*') if p.is_file())))

@@ -105,7 +105,7 @@ function mountEdges(){if(document.documentElement.dataset.tone!=='blue')return;f
  el.insertAdjacentHTML('afterbegin',`<i class="bg-edge t" aria-hidden="true" style="--g:var(--e-${top})"></i><i class="bg-edge b" aria-hidden="true" style="--g:var(--e-${bot})"></i>`)}}
 let HERO=null,VOYAGE=null,BOARD=null,CURTAINS=[];
 function mountRoyal(){syncTone();mountSkyline();HERO&&HERO.stop();HERO=null;VOYAGE&&VOYAGE.stop();VOYAGE=null;BOARD&&BOARD.stop();BOARD=null;CURTAINS.forEach(c=>c.stop());CURTAINS=[];
- if(S.skin!=='royal')return;const a=$('#arch');if(a)HERO=new Hero(a);const v=$('#voyage');if(v)VOYAGE=new Voyage(v);const b=$('[data-board]');if(b)BOARD=new Board(b);CURTAINS=$$('.venue .drape').map(e=>new Curtain(e));mountEdges();mountSignin();if(typeof mountPortraitPass==='function'){PP_KEY='';mountPortraitPass()}tickRoyal()}
+ if(S.skin!=='royal')return;const a=$('#arch');if(a)HERO=new Hero(a);const v=$('#voyage');if(v)VOYAGE=new Voyage(v);const b=$('[data-board]');if(b)BOARD=new Board(b);CURTAINS=$$('.venue .drape').map(e=>new Curtain(e));mountEdges();if(typeof mountPortraitPass==='function'){PP_KEY='';mountPortraitPass()}tickRoyal()}
 function tickRoyal(){const d=Math.max(0,TARGET_MS()-Date.now()),v={d:Math.floor(d/864e5),h:Math.floor(d%864e5/36e5),m:Math.floor(d%36e5/6e4),s:Math.floor(d%6e4/1e3)};
  if(typeof DIAL_C!=='undefined'){const frac={d:Math.min(1,v.d/30),h:v.h/24,m:v.m/60,s:v.s/60};
   $$('[data-rdial]').forEach(el=>{const k=el.dataset.rdial,f=frac[k],arc=el.querySelector('.d-arc'),orb=el.querySelector('.d-orb'),prev=+el.dataset.f;
@@ -130,38 +130,9 @@ function invDeco(){return `<div class="inv-deco" aria-hidden="true">
  <span class="ifl k1">✦</span><span class="ifl k2">✦</span><span class="ifl k3">✦</span><span class="ifl k4">✦</span><span class="ifl d1"></span><span class="ifl d2"></span><span class="ifl d3"></span><span class="ifl d4"></span><span class="ifl c1"></span><span class="ifl c2"></span><span class="ifl p1">${PLANE_SVG(16)}</span><span class="ifl p2">${PLANE_SVG(12)}</span>
  ${invStamp('vidhana','Bengaluru','11','s1')}${invStamp('liberty','New York','11','s2')}${invStamp('opera','Sydney','11','s3')}${invStamp('bigben','London','11','s4')}${invStamp('eiffel','Paris','11','s5')}
 </div>`}
-/* ---------- Google sign-in, Impact Analytics accounts only: puts the person's name on their boarding pass ---------- */
-S.user=store.get('ia11-user',null);
-const passengerName=()=>S.user&&S.user.name?S.user.name:'Impacter';
-const GDOMAIN=()=>(S.cfg&&S.cfg.googleDomain)||'impactanalytics.co';
-let GIS_P=null;
-function loadGis(){return GIS_P||(GIS_P=new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';s.async=true;s.onload=ok;s.onerror=()=>{GIS_P=null;no()};document.head.append(s)}))}
-async function mountSignin(){const box=$('#gsignin');if(!box)return;
- if(S.user){box.hidden=false;const nm=S.user.name||S.user.email||'';
-  box.innerHTML=`<div class="acct"><button class="acct-av" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="acct-menu" aria-label="Account: ${esc(nm)}">${esc(initials(nm))}</button>
-   <div class="acct-menu" id="acct-menu" role="menu"><div class="acct-who"><b>${esc(S.user.name||'')}</b><span>${esc(S.user.email||'').replace('@','<wbr>@')}</span></div>
-   <button class="acct-out" role="menuitem" data-act="signout">${ic('logout',16)} Sign out</button></div></div>`;return}
- const id=S.cfg&&S.cfg.googleClientId;if(!id){box.hidden=true;return}
- box.hidden=false;box.innerHTML=`<div class="gs-btn" title="Sign in with your @${esc(GDOMAIN())} Google account to put your name on your boarding pass"></div>`;
- try{await loadGis()}catch(e){box.hidden=true;return}
- const slot=box.querySelector('.gs-btn');if(!slot||!window.google||!google.accounts)return;
- google.accounts.id.initialize({client_id:id,hd:GDOMAIN(),callback:onGoogle,ux_mode:'popup',auto_select:false,itp_support:true,use_fedcm_for_prompt:true});
- const phone=matchMedia('(max-width:820px)').matches;
- google.accounts.id.renderButton(slot,phone?{type:'icon',theme:'outline',size:'medium',shape:'circle'}:{theme:'outline',size:'medium',shape:'pill',text:'signin',logo_alignment:'left'})}
-/* two initials from the name (Garvit Sindhwani -> GS), or from the email */
-function initials(n){const w=String(n).replace(/@.*/,'').split(/[\s._-]+/).filter(Boolean);return ((w[0]||'?')[0]+(w.length>1?w[w.length-1][0]:'')).toUpperCase()}
-/* the account menu opens on hover with a mouse, and on tap/click (or keyboard) everywhere */
-document.addEventListener('click',e=>{const av=e.target.closest&&e.target.closest('.acct-av'),acct=document.querySelector('.acct');if(!acct)return;
- if(av){const open=!acct.classList.contains('open');acct.classList.toggle('open',open);av.setAttribute('aria-expanded',open);if(open)acct.querySelector('.acct-out').focus({preventScroll:true});return}
- if(!e.target.closest('.acct-menu')){acct.classList.remove('open');acct.querySelector('.acct-av').setAttribute('aria-expanded','false')}});
-document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;const acct=document.querySelector('.acct.open');if(acct){acct.classList.remove('open');const av=acct.querySelector('.acct-av');av.setAttribute('aria-expanded','false');av.focus()}});
-async function onGoogle(r){try{const res=await fetch('/api/auth',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({credential:r.credential})});const j=await res.json().catch(()=>({}));
-  if(!res.ok){toast(j.error||'Sign-in failed. Please try again.');return}
-  S.user={name:j.name,given:j.given,email:j.email};store.set('ia11-user',S.user);if(j.pass){S.pass=j.pass;store.set('ia11-pass',j.pass)}applyPassenger();mountSignin();loadPass();toast(`Welcome, ${j.given||j.name}. Your boarding pass is ready.`)}
- catch(e){toast('Sign-in failed. Please try again.')}}
-async function signOut(){S.user=null;S.pass=null;try{localStorage.removeItem('ia11-user');localStorage.removeItem('ia11-pass')}catch(e){}try{window.google&&google.accounts&&google.accounts.id.disableAutoSelect()}catch(e){}
- try{await fetch('/api/auth',{method:'DELETE',credentials:'same-origin'})}catch(e){}
- if(S.cfg&&S.cfg.locked){location.replace('/');return}applyPassenger();mountSignin();toast('Signed out.')}
+/* ---------- demo: no sign-in; every device gets a guest boarding pass ---------- */
+S.user=null;
+const passengerName=()=>S.pass&&S.pass.name?S.pass.name:'Impacter';
 function applyPassenger(){const c=$('.env-card');if(c){c.classList.remove('portrait');c.innerHTML=boardingPass()}if(typeof mountPortraitPass==='function'){PP_KEY='';mountPortraitPass()}}
 function boardingPass(){return `<span class="bpass" role="img" aria-label="Boarding pass: Impact Analytics flight IA 011, passenger ${esc(passengerName())}, from WRK, Smartworks Global Tech Park, to PRTY, Hilton Embassy TechVillage, ${EVENT.dateLong}, boards 10:00 AM. Tap the QR code to enlarge your entry pass.">
  <span class="bp-main">

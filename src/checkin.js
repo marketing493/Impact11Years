@@ -4,7 +4,9 @@
    ===================================================================== */
 
 /* the person's pass, kept on the device so it still shows with weak venue Wi-Fi */
-S.pass=(()=>{const p=store.get('ia11-pass',null);return p&&S.user&&p.email===S.user.email?p:null})();
+/* demo: a random guest id kept on this device stands in for the Google account */
+const GUEST=(()=>{let g=store.get('ia11-guest','');if(!/^[a-z0-9]{12}$/.test(g)){g=Array.from(crypto.getRandomValues(new Uint8Array(12)),b=>'abcdefghijklmnopqrstuvwxyz0123456789'[b%36]).join('');store.set('ia11-guest',g)}return g})();
+S.pass=store.get('ia11-pass',null);
 
 /** A QR code as SVG: rounded dots, rounded eyes and the gold "11" badge (error correction H covers the badge). */
 function qrSvg(text,{badge=true,cls='qr'}={}){
@@ -24,13 +26,13 @@ const LOGO_COLOR='__LOGO_COLOR__';
 const passLogo=()=>`<span class="bp-logo" aria-hidden="true"><img src="${LOGO_COLOR}" alt="" width="900" height="279"></span>`;
 function passQr(){return passLogo()+(S.pass?qrSvg(S.pass.code):`<span class="qr-ph">${qrSvg('IA11 entry pass',{cls:'qr'})}</span>`)}
 
-async function loadPass(force){if(!S.user||!S.server)return;if(!force&&S.pass&&S.pass.email===S.user.email)return;
- try{const r=await fetch('/api/pass',{cache:'no-store',credentials:'same-origin'});if(!r.ok)return;const p=await r.json();
+async function loadPass(force){if(!S.server)return;if(!force&&S.pass&&S.pass.pin)return;
+ try{const r=await fetch('/api/pass',{cache:'no-store',headers:{'x-guest-id':GUEST}});if(!r.ok)return;const p=await r.json();
   S.pass=p;store.set('ia11-pass',p);if(typeof applyPassenger==='function')applyPassenger()}catch(e){}}
 
 /* tapping the QR on the opened pass shows it large, with the name and PIN, ready for the door */
 addEventListener('click',e=>{const stub=e.target.closest&&e.target.closest('.env.open .bp-stub');if(!stub)return;e.preventDefault();e.stopPropagation();showPass()},true);
-function showPass(){if(!S.pass){toast(S.user?'Your entry pass is loading. Try again in a moment.':'Sign in to get your entry pass.');return}
+function showPass(){if(!S.pass){toast('Your entry pass is loading. Try again in a moment.');return}
  const p=S.pass,w=document.createElement('div');w.className='modal-w how-w pass-w';w.setAttribute('role','dialog');w.setAttribute('aria-modal','true');w.setAttribute('aria-label','Your entry pass');
  w.innerHTML=`<div class="modal how pass-big"><div class="how-h"><h3>Your entry pass</h3><button class="icon-btn how-x" aria-label="Close">${ic('x',18)}</button></div>
   <div class="pb-qr">${qrSvg(p.code)}</div>
