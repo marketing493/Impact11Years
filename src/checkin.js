@@ -20,7 +20,8 @@ function qrSvg(text,{badge=true,cls='qr'}={}){
  return `<svg class="${cls}" viewBox="0 0 ${N} ${N}" role="img" aria-label="Entry QR code" shape-rendering="geometricPrecision"><rect width="${N}" height="${N}" rx="2" fill="#fff"/><g fill="#1C1B1B">${dots}${eye(0,0)}${eye(0,n-7)}${eye(n-7,0)}</g>${b}</svg>`}
 
 /** The boarding-pass stub: the person's QR, or a faded sample until their pass has loaded. */
-function passQr(){return S.pass?qrSvg(S.pass.code):`<span class="qr-ph">${qrSvg('IA11 entry pass',{cls:'qr'})}</span>`}
+const passLogo=()=>{const l=document.querySelector('.top .logo11');return l?`<span class="bp-logo" aria-hidden="true">${l.outerHTML.replace(/id="logoGold"/,'id="logoGoldPass"').replace(/url\(#logoGold\)/g,'url(#logoGoldPass)')}</span>`:''};
+function passQr(){return passLogo()+(S.pass?qrSvg(S.pass.code):`<span class="qr-ph">${qrSvg('IA11 entry pass',{cls:'qr'})}</span>`)}
 
 async function loadPass(force){if(!S.user||!S.server)return;if(!force&&S.pass&&S.pass.email===S.user.email)return;
  try{const r=await fetch('/api/pass',{cache:'no-store',credentials:'same-origin'});if(!r.ok)return;const p=await r.json();
@@ -94,6 +95,9 @@ function drawQr(c,text,x,y,size){
  c.beginPath();c.arc(cx,cy,R,0,Math.PI*2);c.fillStyle='#D4AF61';c.fill();c.beginPath();c.arc(cx,cy,R*.84,0,Math.PI*2);c.fillStyle='#1C1B1B';c.fill();
  c.fillStyle='#D4AF61';c.font=`400 ${R*1.05}px Spectral, Georgia, serif`;c.textAlign='center';c.textBaseline='middle';c.fillText('11',cx,cy+R*.04);c.textAlign='left';c.textBaseline='alphabetic'}
 
+function logoImage(){const l=document.querySelector('.top .logo11');if(!l)return Promise.resolve(null);
+ const svg=new XMLSerializer().serializeToString(l).replace(/width="[^"]*"/,'width="1200"').replace(/height="[^"]*"/,'height="387"');
+ return new Promise(ok=>{const i=new Image();i.onload=()=>ok(i);i.onerror=()=>ok(null);i.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg)})}
 async function passImage(){
  try{await Promise.all(['300 120px Spectral','400 120px Spectral','600 40px "Inter Tight"','500 40px "Inter Tight"'].map(f=>document.fonts.load(f)))}catch(e){}
  const S2=2,W=1500,H=650,cv=document.createElement('canvas');cv.width=W*S2;cv.height=H*S2;const c=cv.getContext('2d');c.scale(S2,S2);
@@ -116,9 +120,9 @@ async function passImage(){
  c.font=`600 21px ${INTER}`;track('3px');c.fillStyle='#264CD7';c.fillText('IMPACT ANALYTICS',X+70,Y+52);
  c.fillStyle='#9C7A36';c.textAlign='right';c.fillText('FLIGHT IA 011',SX-40,Y+52);c.textAlign='left';track('0px');
  /* route */
- c.fillStyle='#264CD7';c.font=`300 92px ${SERIF}`;c.fillText('WORK',X+40,Y+160);c.textAlign='right';c.fillText('GALA',SX-40,Y+160);c.textAlign='left';
- c.fillStyle='rgba(28,27,27,.62)';c.font=`500 20px ${INTER}`;c.fillText('11 Years of Hustle',X+42,Y+196);c.textAlign='right';c.fillText('11 Years of Impact',SX-42,Y+196);c.textAlign='left';
- const L1=X+340,L2=SX-320,LY=Y+128;const MX=(L1+L2)/2;c.setLineDash([10,11]);c.strokeStyle='#C9A24A';c.lineWidth=3;c.beginPath();c.moveTo(L1,LY);c.lineTo(MX-38,LY);c.moveTo(MX+38,LY);c.lineTo(L2,LY);c.stroke();c.setLineDash([]);
+ c.fillStyle='#264CD7';c.font=`300 92px ${SERIF}`;c.fillText('SWR',X+40,Y+160);c.textAlign='right';c.fillText('HLT',SX-40,Y+160);c.textAlign='left';
+ c.fillStyle='rgba(28,27,27,.62)';c.font=`500 20px ${INTER}`;c.fillText('Smartworks, Global Tech Park',X+42,Y+196);c.textAlign='right';c.fillText('Hilton, Embassy Tech Village',SX-42,Y+196);c.textAlign='left';
+ const L1=X+260,L2=SX-250,LY=Y+160-92*.33;const MX=(L1+L2)/2;c.setLineDash([10,11]);c.strokeStyle='#C9A24A';c.lineWidth=3;c.beginPath();c.moveTo(L1,LY);c.lineTo(MX-38,LY);c.moveTo(MX+38,LY);c.lineTo(L2,LY);c.stroke();c.setLineDash([]);
  c.save();c.translate((L1+L2)/2,LY);c.rotate(Math.PI/2);c.scale(1.9,1.9);c.translate(-12,-12);c.fillStyle='#C9A24A';c.fill(new Path2D(PLANE_PATH));c.restore();
  c.strokeStyle='rgba(28,27,27,.12)';c.lineWidth=1.5;c.beginPath();c.moveTo(X+40,Y+240);c.lineTo(SX-40,Y+240);c.stroke();
  /* details */
@@ -126,8 +130,9 @@ async function passImage(){
  for(const [cx,k,v] of cols){c.fillStyle='rgba(28,27,27,.55)';c.font=`600 15px ${INTER}`;track('2.5px');c.fillText(k,cx,Y+292);track('0px');c.fillStyle='#1C1B1B';c.font=`600 ${k==='PASSENGER'?27:25}px ${INTER}`;
   let t=v;if(k==='PASSENGER'){while(c.measureText(t).width>440&&t.length>4)t=t.slice(0,-2)+'…'}c.fillText(t,cx,Y+332)}
  c.fillStyle='rgba(28,27,27,.5)';c.font=`500 16px ${INTER}`;c.fillText(EVENT.venue+', '+EVENT.area,X+42,Y+392);
- /* stub: the entry QR */
- const QS=236;if(p&&p.code)drawQr(c,p.code,SX+(300-QS)/2,Y+(TH-QS)/2-14,QS);
+ /* stub: the logo, then the entry QR */
+ const lg=await logoImage();if(lg){const LW=170,LH=LW*lg.height/lg.width;c.drawImage(lg,SX+(300-LW)/2,Y+34,LW,LH)}
+ const QS=220;if(p&&p.code)drawQr(c,p.code,SX+(300-QS)/2,Y+118,QS);
  else{c.fillStyle='#1C1B1B';c.font=`300 120px ${SERIF}`;c.textAlign='center';c.fillText('11',SX+150,Y+TH/2+30);c.textAlign='left'}
  c.fillStyle='rgba(28,27,27,.55)';c.font=`600 14px ${INTER}`;track('2.5px');c.textAlign='center';c.fillText(p&&p.pin?'PIN '+p.pin.slice(0,3)+' '+p.pin.slice(3):'ENTRY PASS',SX+150,Y+TH-30);c.textAlign='left';track('0px');
  /* footer line */

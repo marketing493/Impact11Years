@@ -35,12 +35,12 @@ function vRoyalHome(){const up=upcoming();
  ${rHero()}
 
  <section class="band r-invite" id="invite">${invDeco()}<div class="wrap inv-grid">
-  <div class="col" style="gap:18px" data-rv><p class="eyebrow gold-eb">Your invitation</p><h2 class="r-h2">A seat at the <em>celebration</em></h2><p class="muted" style="max-width:44ch;font-size:18px">Eleven years, one journey around the world. Tap the seal to view the invite.</p>
-   <div class="inv-after"><div class="ctas"><button class="btn" data-act="downloadPass">${ic('download',18)} Download boarding pass</button><a class="btn sec" href="${EVENT.maps}" target="_blank" rel="noopener">${ic('pin',18)} Directions</a></div></div></div>
-  <div class="env-wrap" data-rv style="--i:1"><button class="env" data-act="envelope" aria-label="Tap the seal to view the invite">
+  <div class="col" style="gap:18px" data-rv><p class="eyebrow gold-eb">Your boarding pass</p><h2 class="r-h2">Ready for <em>boarding</em></h2><p class="muted" style="max-width:44ch;font-size:18px">Eleven years, one last flight together: from Smartworks to Hilton. Your boarding pass is sealed inside, with your name and a personal QR code to scan at the gate on 17 December. Open it, then save it to your phone.</p>
+   <div class="inv-after"><div class="ctas"><button class="btn" data-act="downloadPass">${ic('download',18)} Download boarding pass</button></div></div></div>
+  <div class="env-wrap" data-rv style="--i:1"><p class="env-hint">Tap the seal</p><button class="env" data-act="envelope" aria-label="Tap the seal to open your boarding pass">
    <span class="env-back"></span><span class="env-air" aria-hidden="true"></span>
    <span class="env-pocket"><span class="env-card">${boardingPass()}</span></span>
-   <span class="env-front"></span><span class="env-flap"></span><span class="seal"><b>11</b></span></button><p class="env-hint">Tap the seal</p></div></div></section>
+   <span class="env-front"></span><span class="env-flap"></span><span class="seal"><b>11</b></span></button></div></div></section>
 
  ${marquee()}
 
@@ -163,10 +163,10 @@ async function signOut(){S.user=null;S.pass=null;try{localStorage.removeItem('ia
  try{await fetch('/api/auth',{method:'DELETE',credentials:'same-origin'})}catch(e){}
  if(S.cfg&&S.cfg.locked){location.replace('/');return}applyPassenger();mountSignin();toast('Signed out.')}
 function applyPassenger(){const c=$('.env-card');if(c)c.innerHTML=boardingPass()}
-function boardingPass(){return `<span class="bpass" role="img" aria-label="Boarding pass: Impact Analytics flight IA 011, passenger ${esc(passengerName())}, from Work, 11 Years of Hustle, to Gala, 11 Years of Impact, ${EVENT.dateLong}, boards 10:00 AM, gate ${EVENT.venue}. Tap the QR code to enlarge your entry pass.">
+function boardingPass(){return `<span class="bpass" role="img" aria-label="Boarding pass: Impact Analytics flight IA 011, passenger ${esc(passengerName())}, from SWR, Smartworks Global Tech Park, to HLT, Hilton Embassy Tech Village, ${EVENT.dateLong}, boards 10:00 AM, gate ${EVENT.venue}. Tap the QR code to enlarge your entry pass.">
  <span class="bp-main">
   <span class="bp-top"><span class="bp-air">${PLANE_SVG(14)} Impact Analytics</span><span class="bp-cls">Flight IA 011</span></span>
-  <span class="bp-route"><span><b>WORK</b><small>11 Years of Hustle</small></span><span class="bp-line"><span>${PLANE_SVG(18)}</span></span><span class="r"><b>GALA</b><small>11 Years of Impact</small></span></span>
+  <span class="bp-route"><span><b>SWR</b><small>Smartworks, Global Tech Park</small></span><span class="bp-line"><span>${PLANE_SVG(18)}</span></span><span class="r"><b>HLT</b><small>Hilton, Embassy Tech Village</small></span></span>
   <span class="bp-grid"><span class="bp-pax"><small>Passenger</small><b>${esc(passengerName())}</b></span><span><small>Date</small><b>17 Dec</b></span><span><small>Boards</small><b>10:00</b></span><span><small>Gate</small><b>Hilton ETV</b></span></span>
  </span>
  <span class="bp-stub bp-qrstub" title="Tap to enlarge your entry pass">${passQr()}</span>
