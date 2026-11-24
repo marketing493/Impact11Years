@@ -22,7 +22,7 @@ const ROYAL_ACT={
  skin(){if(!ROYAL_ONLY)setSkin(S.skin==='royal'?'modern':'royal');return false},
  envelope(){const e=$('.env');if(!e)return false;const open=!e.classList.contains('open');e.classList.toggle('open',open);$('.inv-after')?.classList.toggle('show',open);if(open)toast('Boarding pass collected. See you on 17 December.');return false},
  tent(i){$$('.tent').forEach((t,k)=>{const on=k===+i&&!t.classList.contains('open');t.classList.toggle('open',on);t.setAttribute('aria-expanded',on)});return false},
- eventIcs(){const a={id:'event',title:'11 Years of Impact: Around the World in 11 Years',date:'2026-12-17',start:'10:00',end:'21:00',location:'Main hall',description:'The 11th anniversary celebration of Impact Analytics.'};S.acts.some(x=>x.id==='event')||S.acts.push(a);ics('event');S.acts=S.acts.filter(x=>x.id!=='event');return false},
+ eventIcs(){const a={id:'event',title:'11 Years of Impact: Around the World in 11 Years',date:'2026-12-17',start:'10:00',end:'22:00',location:'Main hall',description:'The 11th anniversary celebration of Impact Analytics.'};S.acts.some(x=>x.id==='event')||S.acts.push(a);ics('event');S.acts=S.acts.filter(x=>x.id!=='event');return false},
  voyageGo(i){VOYAGE&&VOYAGE.goTo(+i);return false}};
 
 /* ---------- pieces ---------- */
@@ -174,8 +174,8 @@ function boardingPass(){return `<span class="bpass" role="img" aria-label="Board
 
 
 /* departures board names: short names on phones, lightly shortened titles on desktop (other places keep the full title) */
-const BOARD_SHORT={'check-in and breakfast':'CHECK-IN','welcome and opening':'WELCOME','keynote: eleven years of impact':'KEYNOTE','teams showcase':'SHOWCASE','lunch and networking':'LUNCH','live quiz: know your impact':'LIVE QUIZ','games arena':'GAMES ARENA','awards and recognition':'AWARDS','high tea and photo walls':'HIGH TEA','evening entertainment':'EVENING SHOW','closing and celebration':'CELEBRATION'};
-const BOARD_DESK={'keynote: eleven years of impact':'Keynote: 11 Years of Impact','live quiz: know your impact':'Quiz: Know Your Impact'};
+const BOARD_SHORT={'check in and boarding':'CHECK-IN','keynote: 11 years of impact':'KEYNOTE','fireside chat':'FIRESIDE','lunch':'LUNCH','games arena':'GAMES ARENA','hall of fame':'HALL OF FAME','out of office':'OOO','high tea':'HIGH TEA',"impact's got talent":'GOT TALENT','turn up the volume':'VOLUME UP','dinner and dj':'DINNER & DJ','closure':'CLOSURE'};
+const BOARD_DESK={};
 function boardName(a,narrow,w){const k=a.title.trim().toLowerCase();if(!narrow)return BOARD_DESK[k]||a.title;if(BOARD_SHORT[k])return BOARD_SHORT[k];
  /* a session added later: as many whole words as fit */let out='';for(const word of a.title.split(/\s+/)){const n=out?out+' '+word:word;if(n.length>w)break;out=n}return out||a.title.slice(0,w)}
 /* the voyage map: a gold plane flies the route as you scroll, the camera follows it */
@@ -257,7 +257,7 @@ class Board{constructor(el){this.el=el;this.rows=el.querySelector('.brows');this
  cols(){const narrow=innerWidth<700;return {narrow,dest:innerWidth<400?12:narrow?14:27,gate:narrow?0:10,rem:narrow?8:9}}
  status(a){const n=Date.now(),s=startMs(a),e=endMs(a);if(n>=e)return ['DEPARTED','gone'];if(n>=s)return ['NOW','now'];if(s-n<=10*6e4)return ['BOARDING','board'];return ['ON TIME','ok']}
  build(first){const C=this.cols(),list=S.acts.filter(a=>endMs(a)>Date.now()-30*6e4);
-  const cell=(txt,w)=>{const t=txt.toUpperCase().replace(/[^A-Z0-9:\-.& ]/g,' ').padEnd(w).slice(0,w);return [...t].map(ch=>`<span class="fc" data-c="${ch}">${first&&!this.played?' ':ch}</span>`).join('')};
+  const cell=(txt,w)=>{const t=txt.toUpperCase().replace(/[’']/g,'').replace(/[^A-Z0-9:\-.& ]/g,' ').padEnd(w).slice(0,w);return [...t].map(ch=>`<span class="fc" data-c="${ch}">${first&&!this.played?' ':ch}</span>`).join('')};
   const html=list.map(a=>{const [st,cls]=this.status(a);return `<div class="brow ${cls}"><span>${cell(a.start,5)}</span><span>${cell(boardName(a,C.narrow,C.dest),C.dest)}</span>${C.gate?`<span class="bg">${cell(a.location,C.gate)}</span>`:''}<span class="rem">${cell(st,C.rem)}</span></div>`}).join('')||`<div class="empty">All flights have departed. Thank you for travelling with us.</div>`;
   if(first||!this.played){this.rows.innerHTML=html;return}
   /* later refreshes: only flip cells that changed */
