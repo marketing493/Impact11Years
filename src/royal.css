@@ -924,7 +924,7 @@ html,body{max-width:100%;overflow-x:clip}
  .brow .rem{flex-basis:100%;padding-left:calc(5 * 1.32 * var(--fs) + 10px)}
  .brow .rem .fc{font-size:calc(var(--fs) * .88)}
  .brow.bh span:last-child{display:none}.brow.bh span:nth-child(2){width:auto}}
-@media (max-width:399px){.board>*{--cells:17}}
+@media (max-width:399px){.board>*{--cells:18}}
 /* venue: the chandelier hangs above the heading, not across it */
 @media (max-width:900px){.venue .shead,.venue .wrap>:first-child{padding-top:70px}}
 /* footer: room for the back-to-top button so it never sits on a footer button */
