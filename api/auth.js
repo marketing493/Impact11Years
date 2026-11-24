@@ -1,15 +1,18 @@
-import { send } from './_lib.js';
+import { db, hasStore, passCode, send } from './_lib.js';
+import { verifyGoogleIdToken } from './_google.js';
 import { gateOn, makeSession, readSession, sessionCookie } from './_session.js';
 
 /**
  * Google sign-in for Impact Analytics accounts only.
- *   POST   {credential}  verify a Google ID token; on success set the session cookie and return the name
+ *   POST   {credential}  verify a Google ID token; on success set the session cookie and return the person
+ *                        with their entry pass (created here, so signing in costs one database round trip)
  *   GET                  who is signed in (from the session cookie), 401 if nobody
  *   DELETE               sign out: clear the session cookie
  * In Google's redirect mode (used in home-screen apps) the POST is a form with g_csrf_token, which must match
  * the g_csrf_token cookie Google set (double-submit check); the answer is then a redirect instead of JSON.
- * The token is verified by Google's tokeninfo endpoint, then accepted only if it was issued for this site
- * (GOOGLE_CLIENT_ID), is unexpired, has a verified email and belongs to the allowed Workspace domain.
+ * The token is verified locally against Google's cached public keys (see _google.js), then accepted only if it
+ * was issued for this site (GOOGLE_CLIENT_ID), is unexpired, has a verified email and belongs to the allowed
+ * Workspace domain.
  */
 const DOMAIN = (process.env.GOOGLE_ALLOWED_DOMAIN || 'impactanalytics.co').trim().toLowerCase();
 
@@ -46,20 +49,9 @@ export default async function handler(req, res) {
     return reply(400, { error: 'Missing sign-in token.' });
   }
 
-  let t;
-  try {
-    const r = await fetch('https://oauth2.googleapis.com/tokeninfo?id_token=' + encodeURIComponent(credential));
-    if (!r.ok) return reply(401, { error: 'Google could not verify this sign-in. Please try again.' });
-    t = await r.json();
-  } catch (e) {
-    return reply(502, { error: 'Could not reach Google. Please try again.' });
-  }
+  const t = await verifyGoogleIdToken(credential, clientId);
+  if (!t) return reply(401, { error: 'Google could not verify this sign-in. Please try again.' });
 
-  const issuerOk = t.iss === 'accounts.google.com' || t.iss === 'https://accounts.google.com';
-  const fresh = Number(t.exp) * 1000 > Date.now();
-  if (t.aud !== clientId || !issuerOk || !fresh) {
-    return reply(401, { error: 'This sign-in is not valid for this site. Please try again.' });
-  }
   const email = String(t.email || '').toLowerCase();
   const verified = t.email_verified === true || t.email_verified === 'true';
   if (!verified || String(t.hd || '').toLowerCase() !== DOMAIN || !email.endsWith('@' + DOMAIN)) {
@@ -68,5 +60,13 @@ export default async function handler(req, res) {
 
   const user = { name: String(t.name || '').slice(0, 80), given: String(t.given_name || '').slice(0, 40), email };
   if (gateOn(process.env)) res.setHeader('Set-Cookie', sessionCookie(await makeSession(secret, user)));
+
+  /* the entry pass comes back with the sign-in; if the database is slow, the page fetches it later */
+  if (hasStore()) {
+    try {
+      const p = await db.getOrCreatePass(email, user.name);
+      user.pass = { name: p.name, email: p.email, pin: p.pin, code: passCode(p) };
+    } catch (e) { /* the pass is fetched from /api/pass instead */ }
+  }
   return reply(200, user);
 }

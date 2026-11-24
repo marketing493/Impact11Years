@@ -147,7 +147,7 @@ async function mountSignin(){const box=$('#gsignin');if(!box)return;
  google.accounts.id.renderButton(slot,{theme:'filled_black',size:'large',shape:'pill',text:'signin_with',logo_alignment:'left'})}
 async function onGoogle(r){try{const res=await fetch('/api/auth',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({credential:r.credential})});const j=await res.json().catch(()=>({}));
   if(!res.ok){toast(j.error||'Sign-in failed. Please try again.');return}
-  S.user={name:j.name,given:j.given,email:j.email};store.set('ia11-user',S.user);applyPassenger();mountSignin();loadPass();toast(`Welcome, ${j.given||j.name}. Your boarding pass is ready.`)}
+  S.user={name:j.name,given:j.given,email:j.email};store.set('ia11-user',S.user);if(j.pass){S.pass=j.pass;store.set('ia11-pass',j.pass)}applyPassenger();mountSignin();loadPass();toast(`Welcome, ${j.given||j.name}. Your boarding pass is ready.`)}
  catch(e){toast('Sign-in failed. Please try again.')}}
 async function signOut(){S.user=null;S.pass=null;try{localStorage.removeItem('ia11-user');localStorage.removeItem('ia11-pass')}catch(e){}try{window.google&&google.accounts&&google.accounts.id.disableAutoSelect()}catch(e){}
  try{await fetch('/api/auth',{method:'DELETE',credentials:'same-origin'})}catch(e){}

@@ -19,7 +19,7 @@ _GATE_JS = r"""(async()=>{const box=document.getElementById('gt-btn'),msg=docume
  const app=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
  async function go(r){say('Signing you in…');try{const res=await fetch('/api/auth',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify({credential:r.credential})});const j=await res.json().catch(()=>({}));
    if(!res.ok){say(j.error||'Sign-in failed. Please try again.');return}
-   try{localStorage.setItem('ia11-user',JSON.stringify({name:j.name,given:j.given,email:j.email}))}catch(e){}
+   try{localStorage.setItem('ia11-user',JSON.stringify({name:j.name,given:j.given,email:j.email}));if(j.pass)localStorage.setItem('ia11-pass',JSON.stringify(j.pass))}catch(e){}
    location.replace('/'+(location.pathname==='/login.html'?'':location.hash))}catch(e){say('Sign-in failed. Please try again.')}}
  const s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';s.async=true;
  s.onerror=()=>say('Google sign-in could not load. Check your connection and refresh the page.');

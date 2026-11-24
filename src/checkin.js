@@ -22,7 +22,7 @@ function qrSvg(text,{badge=true,cls='qr'}={}){
 /** The boarding-pass stub: the person's QR, or a faded sample until their pass has loaded. */
 function passQr(){return S.pass?qrSvg(S.pass.code):`<span class="qr-ph">${qrSvg('IA11 entry pass',{cls:'qr'})}</span>`}
 
-async function loadPass(){if(!S.user||!S.server)return;
+async function loadPass(force){if(!S.user||!S.server)return;if(!force&&S.pass&&S.pass.email===S.user.email)return;
  try{const r=await fetch('/api/pass',{cache:'no-store',credentials:'same-origin'});if(!r.ok)return;const p=await r.json();
   S.pass=p;store.set('ia11-pass',p);if(typeof applyPassenger==='function')applyPassenger()}catch(e){}}
 

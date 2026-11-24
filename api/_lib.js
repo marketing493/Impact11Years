@@ -30,12 +30,15 @@ async function redis(...command) {
 
 /* Tables are created on first use, so there is no migration step. */
 let ready = null;
+/* Under a rush, many fresh instances run this at once; Postgres can then report the table as already
+   created (42P07) or a duplicate catalogue row (23505). Both mean another instance won the race. */
+const ddl = async run => { try { await run(); } catch (e) { if (!['42P07', '23505', '42710'].includes(e.code) && !/already exists/i.test(String(e.message))) throw e; } };
 function schema() {
   ready ??= (async () => {
-    await sql`CREATE TABLE IF NOT EXISTS ia_settings (key text PRIMARY KEY, value jsonb NOT NULL, updated_at timestamptz NOT NULL DEFAULT now())`;
-    await sql`CREATE TABLE IF NOT EXISTS ia_push_subs (id text PRIMARY KEY, subscription jsonb NOT NULL, created_at timestamptz NOT NULL DEFAULT now())`;
-    await sql`CREATE TABLE IF NOT EXISTS ia_sent_reminders (key text PRIMARY KEY, sent_at timestamptz NOT NULL DEFAULT now())`;
-    await sql`CREATE TABLE IF NOT EXISTS ia_passes (email text PRIMARY KEY, name text NOT NULL, pin char(6) NOT NULL UNIQUE, created_at timestamptz NOT NULL DEFAULT now(), checked_in_at timestamptz)`;
+    await ddl(() => sql`CREATE TABLE IF NOT EXISTS ia_settings (key text PRIMARY KEY, value jsonb NOT NULL, updated_at timestamptz NOT NULL DEFAULT now())`);
+    await ddl(() => sql`CREATE TABLE IF NOT EXISTS ia_push_subs (id text PRIMARY KEY, subscription jsonb NOT NULL, created_at timestamptz NOT NULL DEFAULT now())`);
+    await ddl(() => sql`CREATE TABLE IF NOT EXISTS ia_sent_reminders (key text PRIMARY KEY, sent_at timestamptz NOT NULL DEFAULT now())`);
+    await ddl(() => sql`CREATE TABLE IF NOT EXISTS ia_passes (email text PRIMARY KEY, name text NOT NULL, pin char(6) NOT NULL UNIQUE, created_at timestamptz NOT NULL DEFAULT now(), checked_in_at timestamptz)`);
   })().catch(e => { ready = null; throw e; });
   return ready;
 }
@@ -90,18 +93,17 @@ export const db = {
     email = String(email).toLowerCase();
     if (sql) {
       await schema();
-      const have = await sql`SELECT email, name, pin, checked_in_at FROM ia_passes WHERE email = ${email}`;
-      if (have.length) {
-        if (name && have[0].name !== name) await sql`UPDATE ia_passes SET name = ${name} WHERE email = ${email}`;
-        return toPass({ ...have[0], name: name || have[0].name });
-      }
-      for (let i = 0; i < 20; i++) { // the PIN is unique across everyone, so it also works on its own at the door
-        const pin = newPin();
-        const rows = await sql`INSERT INTO ia_passes (email, name, pin) VALUES (${email}, ${name || email}, ${pin})
-                               ON CONFLICT DO NOTHING RETURNING email, name, pin, checked_in_at`;
-        if (rows.length) return toPass(rows[0]);
-        const again = await sql`SELECT email, name, pin, checked_in_at FROM ia_passes WHERE email = ${email}`;
-        if (again.length) return toPass(again[0]); // created at the same moment on another device
+      for (let i = 0; i < 20; i++) {
+        try {
+          /* one statement: creates the pass with a new PIN, or keeps the existing PIN and refreshes the name */
+          const rows = await sql`INSERT INTO ia_passes (email, name, pin) VALUES (${email}, ${name || email}, ${newPin()})
+                                 ON CONFLICT (email) DO UPDATE SET name = COALESCE(NULLIF(EXCLUDED.name, ''), ia_passes.name)
+                                 RETURNING email, name, pin, checked_in_at`;
+          return toPass(rows[0]);
+        } catch (e) {
+          if (e.code === '23505' && /pin/.test(String(e.constraint || e.message))) continue; // that PIN is taken: draw another
+          throw e;
+        }
       }
       throw new Error('Could not create a unique PIN.');
     }
