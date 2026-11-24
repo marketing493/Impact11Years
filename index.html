@@ -1571,6 +1571,7 @@ html,body{max-width:100%;overflow-x:clip}
  .inv-waves{display:none}
  .istamp.s1{left:auto;right:5%;top:2%}.istamp.s2{display:none}.istamp.s3{left:5%;bottom:auto;top:57%}.istamp.s4{display:none}
  .istamp .is-in{width:60px}.istamp svg{width:34px;height:34px}
+ .istamp .is-in b{font-size:7.5px;letter-spacing:.06em}
  .bpass{max-width:100%;transform:none}
  .bp-route b{font-size:28px}.bp-stub{width:86px}
  .bp-grid{grid-template-columns:1.4fr 1fr 1fr;row-gap:8px}.bp-grid>div:last-child{grid-column:1/-1}}
@@ -5142,6 +5143,7 @@ const GOLD='#D4AF61',GOLD_HI='#F3DFA2',GOLD_LO='#9C7A36',NAVY='#0A1744',IVORY='#
 
 /* line-art landmarks, 64x64, drawn with a gold stroke */
 const LANDMARKS={
+ vidhana:'M6 58h52M10 58V40h44v18M8 40h48M24 40v-8h16v8M23 32h18M25 32c-1-7 2-11 7-13 5 2 8 6 7 13M32 19v-3.5M30.8 14.3a1.2 1.2 0 1 0 2.4 0a1.2 1.2 0 1 0-2.4 0M12 40c0-4 2-6.5 4-6.5s4 2.5 4 6.5M16 33.5v-2M44 40c0-4 2-6.5 4-6.5s4 2.5 4 6.5M48 33.5v-2M22 43h20M24 52V43M28 52V43M32 52V43M36 52V43M40 52V43M21 58l1.5-6h19l1.5 6M14 46v6M18 46v6M46 46v6M50 46v6',
  taj:'M14 58h36M20 58V36h24v22M24 36c0-10 8-13 8-20 0 7 8 10 8 20M32 16v-5M28 58v-8a4 4 0 018 0v8M12 58V30M52 58V30M10.5 30h3M50.5 30h3M12 28v-3M52 28v-3M23 36h18',
  bigben:'M25 60V18h14v42M23 18h18M27 18l5-11 5 11M32 7V2M28 23h8v8h-8zM32 27l2.5-2M25 37h14M25 47h14M22 60h20',
  eiffel:'M32 3v7M28 10h8M29 10l-5 22h16l-5-22M24 32l-7 27M40 32l7 27M15 59h34M25 45h14M21 46c4-7 18-7 22 0M27.5 21h9',
@@ -5316,7 +5318,7 @@ function invDeco(){return `<div class="inv-deco" aria-hidden="true">
   <text class="pm-big" x="110" y="106" text-anchor="middle">BLR</text><text class="pm-sm" x="110" y="132" text-anchor="middle">17 · XII · 2026</text></svg>
  <svg class="inv-waves" viewBox="0 0 300 90" preserveAspectRatio="none"><path d="M0 15 q 18.75 -12 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0M0 45 q 18.75 -12 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0M0 75 q 18.75 -12 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0"/></svg>
  <span class="ifl k1">✦</span><span class="ifl k2">✦</span><span class="ifl k3">✦</span><span class="ifl k4">✦</span><span class="ifl d1"></span><span class="ifl d2"></span><span class="ifl d3"></span><span class="ifl d4"></span><span class="ifl c1"></span><span class="ifl c2"></span><span class="ifl p1">${PLANE_SVG(16)}</span><span class="ifl p2">${PLANE_SVG(12)}</span>
- ${invStamp('taj','India','11','s1')}${invStamp('liberty','New York','11','s2')}${invStamp('opera','Sydney','11','s3')}${invStamp('bigben','London','11','s4')}${invStamp('eiffel','Paris','11','s5')}
+ ${invStamp('vidhana','Bengaluru','11','s1')}${invStamp('liberty','New York','11','s2')}${invStamp('opera','Sydney','11','s3')}${invStamp('bigben','London','11','s4')}${invStamp('eiffel','Paris','11','s5')}
 </div>`}
 /* ---------- Google sign-in, Impact Analytics accounts only: puts the person's name on their boarding pass ---------- */
 S.user=store.get('ia11-user',null);

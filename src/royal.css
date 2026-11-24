@@ -857,6 +857,7 @@ html,body{max-width:100%;overflow-x:clip}
  .inv-waves{display:none}
  .istamp.s1{left:auto;right:5%;top:2%}.istamp.s2{display:none}.istamp.s3{left:5%;bottom:auto;top:57%}.istamp.s4{display:none}
  .istamp .is-in{width:60px}.istamp svg{width:34px;height:34px}
+ .istamp .is-in b{font-size:7.5px;letter-spacing:.06em}
  .bpass{max-width:100%;transform:none}
  .bp-route b{font-size:28px}.bp-stub{width:86px}
  .bp-grid{grid-template-columns:1.4fr 1fr 1fr;row-gap:8px}.bp-grid>div:last-child{grid-column:1/-1}}
