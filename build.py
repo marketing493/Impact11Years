@@ -52,6 +52,7 @@ LOGO11 = (R / 'assets/logo-11-years.svg').read_text().replace('<svg ', '<svg cla
 CROWN = '<svg width="14" height="14" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round" aria-hidden="true"><path d="M10 46l-4-24 14 12 12-20 12 20 14-12-4 24z"/></svg>'
 body = f'''<header class="top"><div class="wrap">
  <a href="#home" aria-label="Impact Events home">{LOGO11}</a>
+ <div id="gsignin" class="gsignin" hidden></div>
  <a class="btn sec sm bell" href="#reminders">{svg('bell', 18)}<span class="reminder-label">Reminders</span><span class="dot"></span></a>
 </div></header>
 <canvas id="ambient" aria-hidden="true"></canvas>

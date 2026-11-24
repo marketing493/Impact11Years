@@ -1320,6 +1320,18 @@ html,body{max-width:100%;overflow-x:clip}
 .ck-pin .row{display:flex;gap:10px}
 .ck-pin input{flex:1;min-width:0;min-height:48px;border-radius:10px;border:1px solid rgba(244,244,246,.25);background:#111;color:#fff;font-size:22px;letter-spacing:.15em;padding:0 14px;text-align:center}
 
+/* sign-in / sign-out in the header, beside Reminders */
+.top .gsignin{margin-left:auto;display:flex;align-items:center;gap:10px;max-width:none}
+.top .gsignin[hidden]{display:none}
+.top .gsignin+.bell{margin-left:10px}
+.top .gsignin .gs-btn{min-height:0;display:flex;align-items:center}
+.top .gsignin .gs-hi{display:inline-flex;align-items:center;gap:8px;font-size:14px;color:#F4F4F6}
+.top .gsignin .gs-hi b{color:#F7E3A1;font-weight:600;max-width:12ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.top .gsignin .gs-av{width:30px;height:30px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:600;font-size:14px;color:#1C1B1B;background:var(--goldtext)}
+.top .gsignin .gs-out{text-decoration:none;color:#F7E3A1;padding:0 14px;border:1px solid rgba(212,175,97,.7);background:rgba(28,27,27,.22)}
+@media (max-width:820px){.top .gsignin{gap:8px}.top .gsignin .gs-hi b{display:none}.top .gsignin .gs-out{padding:0 12px;font-size:13px}.top .gsignin+.bell{margin-left:8px}}
+@media (max-width:380px){.top .gsignin .gs-av{display:none}}
+
 /* ---------- logos: 15% smaller, with breathing room ---------- */
 .top .logo11{width:clamp(124px,10.8vw,152px)}
 .top .wrap>a:first-child{padding:10px 6px 10px 0}

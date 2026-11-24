@@ -36,7 +36,6 @@ function vRoyalHome(){const up=upcoming();
 
  <section class="band r-invite" id="invite">${invDeco()}<div class="wrap inv-grid">
   <div class="col" style="gap:18px" data-rv><p class="eyebrow gold-eb">Your invitation</p><h2 class="r-h2">A seat at the <em>celebration</em></h2><p class="muted" style="max-width:44ch;font-size:18px">Eleven years, one journey around the world. Tap the seal to view the invite.</p>
-   <div id="gsignin" class="gsignin" hidden></div>
    <div class="inv-after"><div class="ctas"><button class="btn" data-act="downloadPass">${ic('download',18)} Download boarding pass</button><a class="btn sec" href="${EVENT.maps}" target="_blank" rel="noopener">${ic('pin',18)} Directions</a></div></div></div>
   <div class="env-wrap" data-rv style="--i:1"><button class="env" data-act="envelope" aria-label="Tap the seal to view the invite">
    <span class="env-back"></span><span class="env-air" aria-hidden="true"></span>
@@ -138,13 +137,15 @@ const GDOMAIN=()=>(S.cfg&&S.cfg.googleDomain)||'impactanalytics.co';
 let GIS_P=null;
 function loadGis(){return GIS_P||(GIS_P=new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';s.async=true;s.onload=ok;s.onerror=()=>{GIS_P=null;no()};document.head.append(s)}))}
 async function mountSignin(){const box=$('#gsignin');if(!box)return;
- if(S.user){box.hidden=false;box.innerHTML=`<span class="gs-hi">${ic('check',16,2)} Signed in as <b>${esc(S.user.name||S.user.email)}</b></span><button class="gs-out" data-act="signout">Sign out</button>`;return}
+ if(S.user){const first=(S.user.given||String(S.user.name||'').split(' ')[0]||S.user.email);box.hidden=false;
+  box.innerHTML=`<span class="gs-hi" title="${esc(S.user.name||'')} · ${esc(S.user.email||'')}"><span class="gs-av" aria-hidden="true">${esc(first.charAt(0).toUpperCase())}</span><b>${esc(first)}</b></span><button class="btn sec sm gs-out" data-act="signout" aria-label="Sign out ${esc(S.user.name||'')}">Sign out</button>`;return}
  const id=S.cfg&&S.cfg.googleClientId;if(!id){box.hidden=true;return}
- box.hidden=false;box.innerHTML=`<p class="gs-k">Sign in with your <b>@${esc(GDOMAIN())}</b> Google account to put your name on your boarding pass.</p><div class="gs-btn"></div>`;
- try{await loadGis()}catch(e){const b=box.querySelector('.gs-btn');if(b)b.textContent='Google sign-in could not load. Check your connection and refresh the page.';return}
+ box.hidden=false;box.innerHTML=`<div class="gs-btn" title="Sign in with your @${esc(GDOMAIN())} Google account to put your name on your boarding pass"></div>`;
+ try{await loadGis()}catch(e){box.hidden=true;return}
  const slot=box.querySelector('.gs-btn');if(!slot||!window.google||!google.accounts)return;
  google.accounts.id.initialize({client_id:id,hd:GDOMAIN(),callback:onGoogle,ux_mode:'popup',auto_select:false,itp_support:true,use_fedcm_for_prompt:true});
- google.accounts.id.renderButton(slot,{theme:'filled_black',size:'large',shape:'pill',text:'signin_with',logo_alignment:'left'})}
+ const phone=matchMedia('(max-width:820px)').matches;
+ google.accounts.id.renderButton(slot,phone?{type:'icon',theme:'filled_black',size:'medium',shape:'circle'}:{theme:'filled_black',size:'medium',shape:'pill',text:'signin',logo_alignment:'left'})}
 async function onGoogle(r){try{const res=await fetch('/api/auth',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({credential:r.credential})});const j=await res.json().catch(()=>({}));
   if(!res.ok){toast(j.error||'Sign-in failed. Please try again.');return}
   S.user={name:j.name,given:j.given,email:j.email};store.set('ia11-user',S.user);if(j.pass){S.pass=j.pass;store.set('ia11-pass',j.pass)}applyPassenger();mountSignin();loadPass();toast(`Welcome, ${j.given||j.name}. Your boarding pass is ready.`)}
