@@ -875,7 +875,7 @@ html,body{max-width:100%;overflow-x:clip}
 .ifl.c1,.ifl.c2{width:150px;height:42px;border-radius:42px;background:rgba(255,255,255,.07);animation-name:iflX}
 .ifl.c1::before,.ifl.c2::before{content:"";position:absolute;left:28px;top:-22px;width:66px;height:52px;border-radius:50%;background:inherit}
 .ifl.c1::after,.ifl.c2::after{content:"";position:absolute;left:70px;top:-12px;width:48px;height:40px;border-radius:50%;background:inherit}
-.ifl.c1{left:24%;top:40%;--t:16s}.ifl.c2{right:8%;bottom:30%;--t:20s;--dl:-8s;transform:scale(.7)}
+.ifl.c1{left:24%;top:72%;--t:16s}.ifl.c2{right:8%;bottom:30%;--t:20s;--dl:-8s;transform:scale(.7)}
 .ifl.p1,.ifl.p2{color:rgba(255,246,214,.55);animation-name:iflP}
 .ifl.p1{left:8%;top:64%;--t:14s}.ifl.p2{left:62%;bottom:10%;--t:18s;--dl:-7s}
 @keyframes iflY{from{transform:translateY(-12px)}to{transform:translateY(12px)}}
@@ -1086,7 +1086,7 @@ html,body{max-width:100%;overflow-x:clip}
 .rh-fl.tl,.rh-fl.tr{top:14px}
 @media (max-width:900px){.rh-fl.tl,.rh-fl.tr{top:10px}}
 /* invitation: the text column is centred on the envelope (the envelope keeps room above it for the pass) */
-@media (min-width:901px){.inv-grid>.col{padding-top:min(30vw,230px)}}
+@media (min-width:901px){.inv-grid>.col{padding-top:min(30vw,230px);align-self:start}}
 /* a larger boarding pass */
 :root[data-tone="blue"] .env-card{left:1%;right:1%}
 .env-card .bp-main{padding:22px 24px 22px 26px}
