@@ -1,6 +1,6 @@
 # Impact Events: 11 Years of Impact
 
-An installable web app for the Impact Analytics 11th anniversary (17 December 2026, Hilton Embassy Tech Village, Bangalore). It follows the IA brand guidelines.
+An installable web app for the Impact Analytics 11th anniversary (17 December 2026, Hilton Embassy TechVillage, Bangalore). It follows the IA brand guidelines.
 
 ## What it does
 

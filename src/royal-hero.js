@@ -18,7 +18,7 @@ function rHero(){return `<section class="r-hero" id="arch"><div class="rh-pin"><
   <div class="rh-copy">
    <p class="rh-eb"><i></i><span>11 Years of Impact</span><i></i></p>
    <h1 class="rh-title" aria-label="Around the World"><span class="t1">Around the</span><span class="t2">World</span></h1>
-   <p class="rh-sub">Thursday, 17 December 2026<span>◆</span>Hilton Embassy Tech Village, Bangalore</p>
+   <p class="rh-sub">Thursday, 17 December 2026<span>◆</span>Hilton Embassy TechVillage, Bangalore</p>
    <div class="rh-count" role="timer" aria-label="Countdown to the celebration"><svg class="constel" viewBox="0 0 100 20" preserveAspectRatio="none" aria-hidden="true"><path d="M12.5 10 Q25 2 37.5 10 T62.5 10 T87.5 10"/></svg>${rhUnit('d','Days')}${rhUnit('h','Hours')}${rhUnit('m','Minutes')}${rhUnit('s','Seconds')}</div>
    <div class="ctas"><a class="btn" href="#invite">${ic('star',18)} Get your boarding pass</a><a class="btn sec" href="#voyage">Begin the voyage</a></div>
   </div>

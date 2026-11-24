@@ -163,11 +163,11 @@ async function signOut(){S.user=null;S.pass=null;try{localStorage.removeItem('ia
  try{await fetch('/api/auth',{method:'DELETE',credentials:'same-origin'})}catch(e){}
  if(S.cfg&&S.cfg.locked){location.replace('/');return}applyPassenger();mountSignin();toast('Signed out.')}
 function applyPassenger(){const c=$('.env-card');if(c)c.innerHTML=boardingPass()}
-function boardingPass(){return `<span class="bpass" role="img" aria-label="Boarding pass: Impact Analytics flight IA 011, passenger ${esc(passengerName())}, from SWR, Smartworks Global Tech Park, to HLT, Hilton Embassy Tech Village, ${EVENT.dateLong}, boards 10:00 AM, gate ${EVENT.venue}. Tap the QR code to enlarge your entry pass.">
+function boardingPass(){return `<span class="bpass" role="img" aria-label="Boarding pass: Impact Analytics flight IA 011, passenger ${esc(passengerName())}, from WRK, Smartworks Global Tech Park, to PRTY, Hilton Embassy TechVillage, ${EVENT.dateLong}, boards 10:00 AM. Tap the QR code to enlarge your entry pass.">
  <span class="bp-main">
   <span class="bp-top"><span class="bp-air">${PLANE_SVG(14)} Impact Analytics</span><span class="bp-cls">Flight IA 011</span></span>
-  <span class="bp-route"><span><b>SWR</b><small>Smartworks, Global Tech Park</small></span><span class="bp-line"><span>${PLANE_SVG(18)}</span></span><span class="r"><b>HLT</b><small>Hilton, Embassy Tech Village</small></span></span>
-  <span class="bp-grid"><span class="bp-pax"><small>Passenger</small><b>${esc(passengerName())}</b></span><span><small>Date</small><b>17 Dec</b></span><span><small>Boards</small><b>10:00</b></span><span><small>Gate</small><b>Hilton ETV</b></span></span>
+  <span class="bp-route"><span><b>WRK</b><small>Smartworks, Global Tech Park</small></span><span class="bp-line"><span>${PLANE_SVG(18)}</span></span><span class="r"><b>PRTY</b><small>Hilton, Embassy TechVillage</small></span></span>
+  <span class="bp-grid"><span class="bp-pax"><small>Passenger</small><b>${esc(passengerName())}</b></span><span><small>Date</small><b>17 Dec</b></span><span><small>Boarding time</small><b>10:00</b></span></span>
  </span>
  <span class="bp-stub bp-qrstub" title="Tap to enlarge your entry pass">${passQr()}</span>
 </span>`}

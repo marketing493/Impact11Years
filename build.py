@@ -22,6 +22,7 @@ css = (R / 'src/styles.css').read_text() + (R / 'src/royal.css').read_text()
 js = '\n'.join((R / f'src/{n}.js').read_text() for n in ['vendor-qrcode', 'data', 'grid', 'fx', 'audio', 'story', 'app', 'pages', 'royal-data', 'royal', 'royal-hero', 'pwa', 'admin', 'checkin', 'main'])
 js = (js.replace('__LOGO_H__', b64('assets/Logo.png'))
         .replace('__ICON__', b64('assets/icons/icon-192.png'))
+        .replace('__LOGO_COLOR__', b64('assets/logo-11-years-color.png'))
         .replace('__DEFAULTS__', json.dumps(defaults, ensure_ascii=False))
         .replace('__WORLD__', (R / 'assets/world-dots.json').read_text().strip())
         .replace('__WORLD_HD__', ((R / 'assets/world-dots-hd.json') if (R / 'assets/world-dots-hd.json').exists() else (R / 'assets/world-dots.json')).read_text().strip()))
@@ -57,7 +58,7 @@ body = f'''<header class="top"><div class="wrap">
 </div></header>
 <canvas id="ambient" aria-hidden="true"></canvas>
 <main id="app"></main>
-<footer><div class="wrap">{LOGO11}<p class="sm muted">11 Years of Impact. 17 December 2026, Hilton Embassy Tech Village, Bangalore.</p><span class="xs muted" title="Build {BUILD['built']}">Version {BUILD['commit']}</span><a class="btn ghost sm" href="#admin">Organizer login</a></div></footer>
+<footer><div class="wrap">{LOGO11}<p class="sm muted">11 Years of Impact. 17 December 2026, Hilton Embassy TechVillage, Bangalore.</p><span class="xs muted" title="Build {BUILD['built']}">Version {BUILD['commit']}</span><a class="btn ghost sm" href="#admin">Organizer login</a></div></footer>
 <button class="totop" id="totop" aria-label="Back to the top" hidden><svg class="tt-ring" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21" class="tt-track"/><circle cx="24" cy="24" r="21" class="tt-prog" pathLength="1" transform="rotate(-90 24 24)"/></svg><svg class="tt-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
 <div id="toast" role="status" aria-live="polite"></div>
 <div class="curtain" aria-hidden="true"><i class="cl"></i><i class="cr"></i><span class="c-val"></span><span class="c-seal">11</span></div>

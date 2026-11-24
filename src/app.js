@@ -84,7 +84,7 @@ function vHome(){const nx=upcoming()[0],st=nx&&statusOf(nx),modeBtn=(m,label,i)=
  ${remindBand()}`}
 
 function venueBand(){return `<section class="band inkfield venue" id="venue" data-acc style="--acc:${ACC.yellow}">${S.skin==='royal'?royalDrapes():''}${sprinkle(37,14)}${floaters([['line',6,10,40,.6],['sky',46,6,10,1],['glass',92,12,52,.8],['cells',40,92,22,1.1],['hot',96,70,8,1.2]])}<div class="wrap venue-grid" style="position:relative;z-index:2">
- <div class="col" style="gap:20px" data-rv><p class="eyebrow" style="opacity:.7">The venue</p><h2>Hilton Embassy <em>Tech Village</em></h2><p style="opacity:.8;font-size:18px">${EVENT.area}. One venue, four spaces, eleven hours together.</p>
+ <div class="col" style="gap:20px" data-rv><p class="eyebrow" style="opacity:.7">The venue</p><h2>Hilton Embassy <em>TechVillage</em></h2><p style="opacity:.8;font-size:18px">${EVENT.area}. One venue, four spaces, eleven hours together.</p>
  <div class="facts"><div class="glass"><span>Date</span><b>17 Dec</b></div><div class="glass"><span>Doors open</span><b class="tn">9:00 AM</b></div><div class="glass"><span>First session</span><b class="tn">10:00 AM</b></div><div class="glass"><span>Shuttles</span><b>Every 20 min</b></div></div>
  <div class="zones" role="group" aria-label="Venue spaces">${ZONES.map(z=>`<button data-act="zone" data-arg="${esc(z.id)}" aria-pressed="${S.zone===z.id}"><i style="background:${z.top}"></i>${esc(z.id)}</button>`).join('')}</div>
  <div class="ctas"><a class="btn white" href="${EVENT.maps}" target="_blank" rel="noopener">${ic('pin',18)} Get directions</a></div></div>

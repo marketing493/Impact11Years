@@ -1230,7 +1230,7 @@ html,body{max-width:100%;overflow-x:clip}
 @media (min-width:901px){
  :root[data-tone="blue"] .env{width:min(100%,640px)}
  :root[data-tone="blue"] .env-card{left:2.5%;right:2.5%}
- .env-card .bp-grid{grid-template-columns:2.6fr 1fr 1fr 1.3fr}}
+ .env-card .bp-grid{grid-template-columns:2.4fr 1fr 1.25fr}}
 .env-card .bp-pax b{letter-spacing:.02em}
 @media (max-width:900px){.env-card .bp-grid>.bp-pax{grid-column:1/-1}}
 
@@ -1375,8 +1375,8 @@ html,body{max-width:100%;overflow-x:clip}
 .env-wrap:has(.env.open) .env-hint{opacity:0}
 /* the header logo, small, above the QR on the stub */
 .env-card .bp-qrstub{flex-direction:column;gap:8px}
-.env-card .bp-logo{display:block;width:80%;filter:drop-shadow(0 1px 0 rgba(90,64,20,.35))}
-.env-card .bp-logo .logo11{display:block;width:100%;height:auto}
+.env-card .bp-logo{display:block;width:86%}
+.env-card .bp-logo img{display:block;width:100%;height:auto}
 
 /* ---------- logos: 15% smaller, with breathing room ---------- */
 .top .logo11{width:clamp(124px,10.8vw,152px)}
