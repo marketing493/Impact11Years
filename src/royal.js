@@ -35,7 +35,7 @@ function vRoyalHome(){const up=upcoming();
  ${rHero()}
 
  <section class="band r-invite" id="invite">${invDeco()}<div class="wrap inv-grid">
-  <div class="col" style="gap:18px" data-rv><p class="eyebrow gold-eb">Your boarding pass</p><h2 class="r-h2">Ready for <em>boarding</em></h2><p class="muted" style="max-width:44ch;font-size:18px">Your boarding pass is sealed inside, with your name and a personal QR code to scan at the gate on 17 December. Open it, then save it to your phone.</p>
+  <div class="col" style="gap:18px" data-rv><p class="eyebrow gold-eb">Your boarding pass</p><h2 class="r-h2">Ready for <em>boarding</em></h2><p class="muted" style="max-width:44ch;font-size:18px">Every one of us has a seat on this flight. The people who were here on day one, the ones who joined last month, and everyone in between. Eleven years in, this is the trip we take together.</p>
    <div class="inv-after"><div class="ctas"><button class="btn" data-act="downloadPass">${ic('download',18)} Download boarding pass</button></div></div></div>
   <div class="env-wrap" data-rv style="--i:1"><p class="env-hint">Tap the seal</p><button class="env" data-act="envelope" aria-label="Tap the seal to open your boarding pass">
    <span class="env-back"></span><span class="env-air" aria-hidden="true"></span>

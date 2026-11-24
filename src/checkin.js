@@ -99,15 +99,12 @@ function drawQr(c,text,x,y,size){
 function logoImage(){return new Promise(ok=>{const i=new Image();i.onload=()=>ok(i);i.onerror=()=>ok(null);i.src=LOGO_COLOR})}
 async function passImage(){
  try{await Promise.all(['300 120px Spectral','400 120px Spectral','600 40px "Inter Tight"','500 40px "Inter Tight"'].map(f=>document.fonts.load(f)))}catch(e){}
- const S2=2,W=1500,H=650,cv=document.createElement('canvas');cv.width=W*S2;cv.height=H*S2;const c=cv.getContext('2d');c.scale(S2,S2);
+ /* only the ticket, on a transparent background: 1280 x 430 drawn at 2.5x = 3200 x 1075 px */
+ const S2=2.5,TW=1280,TH=430,W=TW,H=TH,cv=document.createElement('canvas');cv.width=W*S2;cv.height=H*S2;const c=cv.getContext('2d');c.scale(S2,S2);
  const INTER='"Inter Tight", Inter, system-ui, sans-serif',SERIF='Spectral, Georgia, serif',track=v=>{try{c.letterSpacing=v}catch(e){}};
- /* backdrop: the site's blue-to-ink gradient with a soft Impact Blue glow */
- let g=c.createLinearGradient(0,0,W,0);g.addColorStop(0,'#264CD7');g.addColorStop(.6,'#22388C');g.addColorStop(1,'#1C1B1B');c.fillStyle=g;c.fillRect(0,0,W,H);
- g=c.createRadialGradient(W*.3,H*.45,0,W*.3,H*.45,W*.6);g.addColorStop(0,'rgba(38,76,215,.9)');g.addColorStop(1,'rgba(38,76,215,0)');c.fillStyle=g;c.fillRect(0,0,W,H);
- c.strokeStyle='rgba(212,175,97,.8)';c.lineWidth=1.5;c.beginPath();c.roundRect(18,18,W-36,H-36,18);c.stroke();
- /* ticket */
- const X=110,Y=110,TW=1280,TH=430,SX=X+TW-300,NR=18;
- c.save();c.shadowColor='rgba(8,14,48,.55)';c.shadowBlur=40;c.shadowOffsetY=18;
+ let g;
+ const X=0,Y=0,SX=X+TW-300,NR=18;
+ c.save();
  const shape=()=>{c.beginPath();c.moveTo(X+24,Y);c.lineTo(SX-NR,Y);c.arc(SX,Y,NR,Math.PI,0,true);c.lineTo(X+TW-24,Y);c.arcTo(X+TW,Y,X+TW,Y+24,24);c.lineTo(X+TW,Y+TH-24);c.arcTo(X+TW,Y+TH,X+TW-24,Y+TH,24);
   c.lineTo(SX+NR,Y+TH);c.arc(SX,Y+TH,NR,0,Math.PI,true);c.lineTo(X+24,Y+TH);c.arcTo(X,Y+TH,X,Y+TH-24,24);c.lineTo(X,Y+24);c.arcTo(X,Y,X+24,Y,24);c.closePath()};
  g=c.createLinearGradient(X,Y,X+TW,Y+TH);g.addColorStop(0,'#FFFDF5');g.addColorStop(.6,'#F7F1E3');g.addColorStop(1,'#EFE5CC');shape();c.fillStyle=g;c.fill();c.restore();
@@ -128,14 +125,12 @@ async function passImage(){
  const cols=[[X+42,'PASSENGER',name.toUpperCase()],[X+560,'DATE','17 Dec 2026'],[X+790,'BOARDING TIME','10:00']];
  for(const [cx,k,v] of cols){c.fillStyle='rgba(28,27,27,.55)';c.font=`600 15px ${INTER}`;track('2.5px');c.fillText(k,cx,Y+292);track('0px');c.fillStyle='#1C1B1B';c.font=`600 ${k==='PASSENGER'?27:25}px ${INTER}`;
   let t=v;if(k==='PASSENGER'){while(c.measureText(t).width>440&&t.length>4)t=t.slice(0,-2)+'…'}c.fillText(t,cx,Y+332)}
- c.fillStyle='rgba(28,27,27,.5)';c.font=`500 16px ${INTER}`;c.fillText(EVENT.venue+', '+EVENT.area,X+42,Y+392);
+ c.fillStyle='#9C7A36';c.font=`600 16px ${INTER}`;track('3.5px');c.fillText('AROUND THE WORLD IN 11 YEARS',X+42,Y+392);track('0px');
  /* stub: the logo, then the entry QR */
  const lg=await logoImage();if(lg){const LW=170,LH=LW*lg.height/lg.width;c.drawImage(lg,SX+(300-LW)/2,Y+34,LW,LH)}
  const QS=220;if(p&&p.code)drawQr(c,p.code,SX+(300-QS)/2,Y+118,QS);
  else{c.fillStyle='#1C1B1B';c.font=`300 120px ${SERIF}`;c.textAlign='center';c.fillText('11',SX+150,Y+TH/2+30);c.textAlign='left'}
  c.fillStyle='rgba(28,27,27,.55)';c.font=`600 14px ${INTER}`;track('2.5px');c.textAlign='center';c.fillText('SCAN AT THE ENTRANCE',SX+150,Y+TH-30);c.textAlign='left';track('0px');
- /* footer line */
- c.fillStyle='#F7E3A1';c.font=`600 19px ${INTER}`;track('4px');c.textAlign='center';c.fillText('11 YEARS OF IMPACT  ·  AROUND THE WORLD  ·  17 DECEMBER 2026',W/2,H-62);c.textAlign='left';track('0px');
  return cv}
 
 async function downloadPass(){
