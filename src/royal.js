@@ -258,7 +258,7 @@ class Board{constructor(el){this.el=el;this.rows=el.querySelector('.brows');this
  status(a){const n=Date.now(),s=startMs(a),e=endMs(a);if(n>=e)return ['DEPARTED','gone'];if(n>=s)return ['NOW','now'];if(s-n<=10*6e4)return ['BOARDING','board'];return ['ON TIME','ok']}
  build(first){const C=this.cols(),list=S.acts.filter(a=>endMs(a)>Date.now()-30*6e4);
   const cell=(txt,w)=>{const t=txt.toUpperCase().replace(/[’']/g,'').replace(/[^A-Z0-9:\-.& ]/g,' ').padEnd(w).slice(0,w);return [...t].map(ch=>`<span class="fc" data-c="${ch}">${first&&!this.played?' ':ch}</span>`).join('')};
-  const html=list.map(a=>{const [st,cls]=this.status(a);return `<div class="brow ${cls}"><span>${cell(a.start,5)}</span><span>${cell(boardName(a,C.narrow,C.dest),C.dest)}</span>${C.gate?`<span class="bg">${cell(a.location,C.gate)}</span>`:''}<span class="rem">${cell(st,C.rem)}</span></div>`}).join('')||`<div class="empty">All flights have departed. Thank you for travelling with us.</div>`;
+  const html=list.map(a=>{const [st,cls]=this.status(a);return `<div class="brow ${cls}"><span>${cell(a.start,5)}</span><span>${cell(boardName(a,C.narrow,C.dest),C.dest)}</span>${C.gate?`<span class="bg">${cell(a.location,C.gate)}</span>`:''}<span class="rem">${cell(st,st.length)}</span></div>`}).join('')||`<div class="empty">All flights have departed. Thank you for travelling with us.</div>`;
   if(first||!this.played){this.rows.innerHTML=html;return}
   /* later refreshes: only flip cells that changed */
   const tmp=document.createElement('div');tmp.innerHTML=html;const old=[...this.rows.querySelectorAll('.fc')],nu=[...tmp.querySelectorAll('.fc')];
