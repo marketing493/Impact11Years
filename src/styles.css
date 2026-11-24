@@ -344,7 +344,7 @@ main>section:not(.bluefield):not(.inkfield):not(.story):not(.hjourney){backgroun
 .marquee span::after{content:"";width:18px;height:18px;border-radius:2px;background:var(--blue);flex:none}
 .marquee span:nth-child(3n)::after{background:var(--orange)}
 @keyframes marq{to{transform:translateX(-50%)}}
-.marquee:hover .track{animation-play-state:paused}
+
 
 /* scroll reveal: only hidden once JS has armed it */
 html.rv-on [data-rv]:not(.in){opacity:0;transform:translateY(34px)}
