@@ -5,7 +5,7 @@
    Everything below applies only with html[data-skin="royal"], except the switch and the curtains.
    ===================================================================== */
 :root{--gold:#D4AF61;--gold-hi:#F3DFA2;--gold-lo:#9C7A36;--navy:#0A1744;--ivory:#F7F1E3;--f-royal:'Cinzel','Spectral',Georgia,serif;
- --goldgrad:linear-gradient(180deg,#FFFBEA 0%,#F7E3A1 40%,#EBC96B 70%,#FFF6D6 100%)}
+ --goldgrad:linear-gradient(155deg,#FFFBEA 0%,#F7E3A1 32%,#EBC96B 62%,#F7E3A1 82%,#FFF6D6 100%)}
 
 /* theme switch (both themes) */
 .skin-toggle{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:13px;font-weight:500;color:var(--muted);flex:none}
@@ -1387,6 +1387,31 @@ html,body{max-width:100%;overflow-x:clip}
  :root[data-tone="blue"] .env-wrap:has(.env-card.portrait){transition:padding-top .9s var(--ease) .9s}
  :root[data-tone="blue"] .env-wrap:has(.env.open .env-card.portrait){padding-top:calc((100vw - 32px) * .6 + 26px)}}
 @media (max-width:900px) and (prefers-reduced-motion:reduce){:root[data-tone="blue"] .env.open .env-card.portrait{animation:none;transform:translateY(-52.7%)}}
+
+/* =====================================================================
+   One gold palette, shaped to each element
+   ===================================================================== */
+:root{
+ --gold-sheen:linear-gradient(155deg,#FFFBEA 0%,#F7E3A1 32%,#EBC96B 62%,#F7E3A1 82%,#FFF6D6 100%);
+ --gold-sphere:radial-gradient(circle at 32% 28%,#FFFBEA 0%,#F7E3A1 30%,#EBC96B 68%,#D9B65C 88%,#F7E3A1 100%);
+ --gold-cylinder:linear-gradient(90deg,#D9B65C 0%,#F7E3A1 30%,#FFFBEA 45%,#EBC96B 75%,#D9B65C 100%);
+ --gold-bar:linear-gradient(180deg,#FFFBEA 0%,#F7E3A1 45%,#EBC96B 100%);
+ --gold-sweep:linear-gradient(90deg,#EBC96B 0%,#FFFBEA 40%,#F7E3A1 60%,#EBC96B 100%);
+ --gold-ring:conic-gradient(from 200deg,#EBC96B,#FFFBEA 18%,#F7E3A1 35%,#EBC96B 55%,#FFF6D6 72%,#F7E3A1 88%,#EBC96B)}
+/* gold buttons: sheen plus a soft top highlight, like polished metal */
+[data-skin="royal"] .btn:not(.sec):not(.ghost):not(.white){background:radial-gradient(120% 90% at 30% 0%,rgba(255,255,255,.45),transparent 55%),var(--gold-sheen)}
+/* round things are spheres: account circle, seal, step ticks, icon badges, toggles */
+.top .gsignin .gs-av,.acct-av,[data-skin="royal"] .step.done .n,[data-skin="royal"] :is(.bt-ic,.acard .ic,.bn-ic,.js-dot),[data-skin="royal"] .val.open .val-ic,.tone-toggle .sk-knob,.how-n{background:var(--gold-sphere)}
+:root[data-tone="blue"] .seal{background:var(--gold-ring);box-shadow:inset 0 0 0 4px rgba(255,251,234,.35),inset 0 -6px 12px rgba(150,110,40,.35),0 6px 16px rgba(0,0,0,.35)}
+:root[data-tone="blue"] .seal b{background:none;color:#6B4E1A;-webkit-text-fill-color:#6B4E1A;text-shadow:0 1px 0 rgba(255,251,234,.8),0 -1px 0 rgba(90,64,20,.35)}
+/* poles and the flag are cylinders; rails and progress bars sweep along their length */
+:root[data-tone="blue"] .t-flag{background:var(--gold-cylinder)}
+.t-flag::after{background:linear-gradient(100deg,#FFFBEA 0%,#F7E3A1 35%,#EBC96B 80%)}
+.vy-pin::after,[data-skin="royal"] :is(.hj-line b,.story-bar),[data-skin="royal"] .subnav .ind{background:var(--gold-sweep)}
+/* small signs, chips and tabs: a gentle bar shading (lit from above) */
+.t-sign,[data-skin="royal"] :is(.chip[aria-pressed="true"],.chip[aria-current="page"],.fchip[aria-pressed="true"]),:root[data-tone="blue"] :is(.zones button,.zrow,.viewbar button)[aria-pressed="true"],[data-skin="royal"] #toast,[data-skin="royal"] .rb-b.now{background:var(--gold-bar)}
+/* bunting and floating sparkles: a diagonal sheen so each flag catches the light differently */
+[data-skin="royal"] :is(.hj-deco i,.fl i){background:var(--gold-sheen)}
 
 /* ---------- logos: 15% smaller, with breathing room ---------- */
 .top .logo11{width:clamp(124px,10.8vw,152px)}
