@@ -1,3 +1,8 @@
+> **Demo build (branch `site-demo`).** Same site as the main one without Google sign-in: anyone with the
+> link can view everything. Each device gets a guest boarding pass (name "Impacter") with its own entry QR and
+> PIN, so the download and the organiser check-in scanner can be tried end to end. Host it as its own Vercel
+> project with its own database; do not set GOOGLE_CLIENT_ID or SESSION_SECRET here (they are not used).
+
 # Impact Events: 11 Years of Impact
 
 An installable web app for the Impact Analytics 11th anniversary (17 December 2026, Hilton Embassy Tech Village, Bangalore). It follows the IA brand guidelines.

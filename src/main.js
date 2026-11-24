@@ -66,7 +66,7 @@ const ACT={
  vspin(){S.spin=!S.spin;syncSpin();return false},
  copyAddr(){const t=`${EVENT.venue}, ${EVENT.area}`;const ok=()=>toast('Address copied.');try{navigator.clipboard.writeText(t).then(ok,()=>toast(t))}catch(e){toast(t)}return false},
  ics(id){ics(id);return false},
- install(){doInstall();return false},howInstall(){howSheet('install');return false},howRemind(){howSheet('remind');return false},signout(){signOut();return false},remon(){remindersOn();return false},remoff(){remindersOff();return false},testnotif(){testNotif();return false},
+ install(){doInstall();return false},howInstall(){howSheet('install');return false},howRemind(){howSheet('remind');return false},remon(){remindersOn();return false},remoff(){remindersOff();return false},testnotif(){testNotif();return false},
  aNew(){const last=S.acts[S.acts.length-1];A_.modal={id:null,a:{title:'',date:last?last.date:'2026-12-17',start:last?last.end:'10:00',end:last?shift(last.end,30):'10:30',location:'Main hall',category:'Stage',description:''}}},
  aEdit(id){const a=S.acts.find(x=>x.id===id);if(a)A_.modal={id,a:{...a}}},
  aClose(){A_.modal=null},aBg(_,el,ev){if(ev.target===el)A_.modal=null;else return false},
