@@ -35,12 +35,12 @@ function vRoyalHome(){const up=upcoming();
  ${rHero()}
 
  <section class="band r-invite" id="invite">${invDeco()}<div class="wrap inv-grid">
-  <div class="col" style="gap:18px" data-rv><p class="eyebrow gold-eb">Your boarding pass</p><h2 class="r-h2">Ready for <em>boarding</em></h2><p class="muted" style="max-width:44ch;font-size:18px">Every one of us has a seat on this flight. The people who were here on day one, the ones who joined last month, and everyone in between. Eleven years in, this is the trip we take together.</p>
+  <div class="col" style="gap:18px" data-rv><p class="eyebrow gold-eb">Your boarding pass</p><h2 class="r-h2">Ready for <em>boarding</em></h2><p class="muted" style="max-width:44ch;font-size:18px">Every one of us has a seat on this flight. The people who were here on day one, the ones who joined last month, and everyone in between.<span style="display:block;margin-top:1em">Eleven years in, this is the trip we take together.</span></p>
    <div class="inv-after"><div class="ctas"><button class="btn" data-act="downloadPass">${ic('download',18)} Download boarding pass</button></div></div></div>
-  <div class="env-wrap" data-rv style="--i:1"><p class="env-hint">Tap the seal</p><button class="env" data-act="envelope" aria-label="Tap the seal to open your boarding pass">
+  <div class="env-wrap" data-rv style="--i:1"><button class="env" data-act="envelope" aria-label="Tap the seal to open your boarding pass">
    <span class="env-back"></span><span class="env-air" aria-hidden="true"></span>
    <span class="env-pocket"><span class="env-card">${boardingPass()}</span></span>
-   <span class="env-front"></span><span class="env-flap"></span><span class="seal"><b>11</b></span></button></div></div></section>
+   <span class="env-front"></span><span class="env-flap"></span><span class="env-hint" aria-hidden="true">Tap the seal</span><span class="seal-glow" aria-hidden="true"></span><span class="seal"><b>11</b></span></button></div></div></section>
 
  ${marquee()}
 
