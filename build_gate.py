@@ -17,7 +17,7 @@ _GATE_JS = r"""(async()=>{const box=document.getElementById('gt-btn'),msg=docume
  if(!cfg.googleClientId){say('Sign-in is not available right now. Please try again in a moment.');return}
  /* home-screen apps (iPhone especially) cannot rely on popups: use Google's full-page redirect there */
  const app=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
- async function go(r){say('Signing you in…');try{const res=await fetch('/api/auth',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify({credential:r.credential})});const j=await res.json().catch(()=>({}));
+ async function go(r){msg.innerHTML='Signing you in<span class="gt-dots" aria-hidden="true"><i>.</i><i>.</i><i>.</i></span>';try{const res=await fetch('/api/auth',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify({credential:r.credential})});const j=await res.json().catch(()=>({}));
    if(!res.ok){say(j.error||'Sign-in failed. Please try again.');return}
    try{localStorage.setItem('ia11-user',JSON.stringify({name:j.name,given:j.given,email:j.email}));if(j.pass)localStorage.setItem('ia11-pass',JSON.stringify(j.pass))}catch(e){}
    location.replace('/'+(location.pathname==='/login.html'?'':location.hash))}catch(e){say('Sign-in failed. Please try again.')}}
@@ -41,7 +41,7 @@ _gate_body = (
     '   <p class="rh-eb"><i></i><span>11 Years of Impact</span><i></i></p>\n'
     '   <h1 class="gt-title"><span>Around the</span><b>World</b></h1>\n'
     '   <span class="gt-rule" aria-hidden="true"></span>\n'
-    '   <p class="gt-k">Your invitation is waiting.</p>\n'
+    '   <p class="gt-k">Your boarding pass is waiting.</p>\n'
     '   <p class="gt-sub">Sign in with your <b>@impactanalytics.co</b> Google account to continue.</p>\n'
     '   <div class="gt-btn" id="gt-btn"></div>\n'
     '   <p class="gt-msg" id="gt-msg" role="status" aria-live="polite"></p>\n'
