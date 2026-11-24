@@ -137,8 +137,10 @@ const GDOMAIN=()=>(S.cfg&&S.cfg.googleDomain)||'impactanalytics.co';
 let GIS_P=null;
 function loadGis(){return GIS_P||(GIS_P=new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';s.async=true;s.onload=ok;s.onerror=()=>{GIS_P=null;no()};document.head.append(s)}))}
 async function mountSignin(){const box=$('#gsignin');if(!box)return;
- if(S.user){const first=(S.user.given||String(S.user.name||'').split(' ')[0]||S.user.email);box.hidden=false;
-  box.innerHTML=`<span class="gs-hi" title="${esc(S.user.name||'')} · ${esc(S.user.email||'')}"><span class="gs-av" aria-hidden="true">${esc(first.charAt(0).toUpperCase())}</span><b>${esc(first)}</b></span><button class="btn sec sm gs-out" data-act="signout" aria-label="Sign out ${esc(S.user.name||'')}">Sign out</button>`;return}
+ if(S.user){box.hidden=false;const nm=S.user.name||S.user.email||'';
+  box.innerHTML=`<div class="acct"><button class="acct-av" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="acct-menu" aria-label="Account: ${esc(nm)}">${esc(initials(nm))}</button>
+   <div class="acct-menu" id="acct-menu" role="menu"><div class="acct-who"><b>${esc(S.user.name||'')}</b><span>${esc(S.user.email||'').replace('@','<wbr>@')}</span></div>
+   <button class="acct-out" role="menuitem" data-act="signout">${ic('logout',16)} Sign out</button></div></div>`;return}
  const id=S.cfg&&S.cfg.googleClientId;if(!id){box.hidden=true;return}
  box.hidden=false;box.innerHTML=`<div class="gs-btn" title="Sign in with your @${esc(GDOMAIN())} Google account to put your name on your boarding pass"></div>`;
  try{await loadGis()}catch(e){box.hidden=true;return}
@@ -146,6 +148,13 @@ async function mountSignin(){const box=$('#gsignin');if(!box)return;
  google.accounts.id.initialize({client_id:id,hd:GDOMAIN(),callback:onGoogle,ux_mode:'popup',auto_select:false,itp_support:true,use_fedcm_for_prompt:true});
  const phone=matchMedia('(max-width:820px)').matches;
  google.accounts.id.renderButton(slot,phone?{type:'icon',theme:'outline',size:'medium',shape:'circle'}:{theme:'outline',size:'medium',shape:'pill',text:'signin',logo_alignment:'left'})}
+/* two initials from the name (Garvit Sindhwani -> GS), or from the email */
+function initials(n){const w=String(n).replace(/@.*/,'').split(/[\s._-]+/).filter(Boolean);return ((w[0]||'?')[0]+(w.length>1?w[w.length-1][0]:'')).toUpperCase()}
+/* the account menu opens on hover with a mouse, and on tap/click (or keyboard) everywhere */
+document.addEventListener('click',e=>{const av=e.target.closest&&e.target.closest('.acct-av'),acct=document.querySelector('.acct');if(!acct)return;
+ if(av){const open=!acct.classList.contains('open');acct.classList.toggle('open',open);av.setAttribute('aria-expanded',open);if(open)acct.querySelector('.acct-out').focus({preventScroll:true});return}
+ if(!e.target.closest('.acct-menu')){acct.classList.remove('open');acct.querySelector('.acct-av').setAttribute('aria-expanded','false')}});
+document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;const acct=document.querySelector('.acct.open');if(acct){acct.classList.remove('open');const av=acct.querySelector('.acct-av');av.setAttribute('aria-expanded','false');av.focus()}});
 async function onGoogle(r){try{const res=await fetch('/api/auth',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({credential:r.credential})});const j=await res.json().catch(()=>({}));
   if(!res.ok){toast(j.error||'Sign-in failed. Please try again.');return}
   S.user={name:j.name,given:j.given,email:j.email};store.set('ia11-user',S.user);if(j.pass){S.pass=j.pass;store.set('ia11-pass',j.pass)}applyPassenger();mountSignin();loadPass();toast(`Welcome, ${j.given||j.name}. Your boarding pass is ready.`)}
