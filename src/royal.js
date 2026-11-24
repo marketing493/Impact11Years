@@ -130,11 +130,13 @@ function invDeco(){return `<div class="inv-deco" aria-hidden="true">
  <span class="ifl k1">✦</span><span class="ifl k2">✦</span><span class="ifl k3">✦</span><span class="ifl k4">✦</span><span class="ifl d1"></span><span class="ifl d2"></span><span class="ifl d3"></span><span class="ifl d4"></span><span class="ifl c1"></span><span class="ifl c2"></span><span class="ifl p1">${PLANE_SVG(16)}</span><span class="ifl p2">${PLANE_SVG(12)}</span>
  ${invStamp('taj','India','11','s1')}${invStamp('liberty','New York','11','s2')}${invStamp('opera','Sydney','11','s3')}${invStamp('bigben','London','11','s4')}${invStamp('eiffel','Paris','11','s5')}
 </div>`}
-function boardingPass(){return `<span class="bpass" role="img" aria-label="Boarding pass: Impact Analytics flight IA 011, passenger Impacter, 2015 to 2026, ${EVENT.dateLong}, boards 10:00 AM, gate ${EVENT.venue}, seat 11A">
+/* the passenger name printed on the boarding pass */
+const PASSENGER='GARVIT SINDHWANI';
+function boardingPass(){return `<span class="bpass" role="img" aria-label="Boarding pass: Impact Analytics flight IA 011, passenger ${PASSENGER}, from Work, 11 Years of Hustle, to Gala, 11 Years of Impact, ${EVENT.dateLong}, boards 10:00 AM, gate ${EVENT.venue}, seat 11A">
  <span class="bp-main">
   <span class="bp-top"><span class="bp-air">${PLANE_SVG(14)} Impact Analytics</span><span class="bp-cls">Flight IA 011</span></span>
-  <span class="bp-route"><span><b>2015</b><small>Where it began</small></span><span class="bp-line"><span>${PLANE_SVG(18)}</span></span><span class="r"><b>2026</b><small>Bangalore</small></span></span>
-  <span class="bp-grid"><span><small>Passenger</small><b>Impacter</b></span><span><small>Date</small><b>17 Dec</b></span><span><small>Boards</small><b>10:00</b></span><span><small>Gate</small><b>Hilton ETV</b></span></span>
+  <span class="bp-route"><span><b>WORK</b><small>11 Years of Hustle</small></span><span class="bp-line"><span>${PLANE_SVG(18)}</span></span><span class="r"><b>GALA</b><small>11 Years of Impact</small></span></span>
+  <span class="bp-grid"><span class="bp-pax"><small>Passenger</small><b>${PASSENGER}</b></span><span><small>Date</small><b>17 Dec</b></span><span><small>Boards</small><b>10:00</b></span><span><small>Gate</small><b>Hilton ETV</b></span></span>
  </span>
  <span class="bp-stub"><small>Seat</small><b>11A</b><small>Class</small><b class="sm">Royal</b><span class="bp-bar"></span></span>
 </span>`}

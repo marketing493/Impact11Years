@@ -1023,7 +1023,7 @@ html,body{max-width:100%;overflow-x:clip}
 :root[data-tone="blue"] .env-flap{transition:transform 1.3s cubic-bezier(.45,.05,.25,1),z-index 0s .65s}
 /* the pass waits deep inside the envelope (a pocket clips anything below the envelope's bottom edge),
    then rises out of the top once the flap is open, and settles in front of it */
-.env-pocket{position:absolute;inset:0;z-index:1;pointer-events:none;clip-path:inset(-300% 0 0 0)}
+.env-pocket{position:absolute;inset:0;z-index:1;pointer-events:none;clip-path:inset(-300% -60% 0 -60%)}
 :root[data-tone="blue"] .env-card{top:10%;transform:translateY(105%)}
 :root[data-tone="blue"] .env.open .env-card{animation:passOut 2s cubic-bezier(.3,.7,.2,1) 1.2s both}
 :root[data-tone="blue"] .env.open .env-pocket{animation:pocketUp 2s linear 1.2s both}
@@ -1223,6 +1223,14 @@ html,body{max-width:100%;overflow-x:clip}
 /* departures: the hovered row is marked with a gold edge while its letters flip */
 @media (hover:hover) and (pointer:fine){:root[data-tone="blue"] .brows .brow{cursor:default}:root[data-tone="blue"] .brows .brow:hover{background:rgba(247,227,161,.07);box-shadow:inset 3px 0 0 #EBC96B}}
 
+
+/* boarding pass: a longer ticket on desktop, with a wide passenger box for full first and last names */
+@media (min-width:901px){
+ :root[data-tone="blue"] .env-card{left:-26%;right:-8%}
+ .env-card .bp-grid{grid-template-columns:2.6fr 1fr 1fr 1.3fr}}
+@media (min-width:901px) and (max-width:1250px){:root[data-tone="blue"] .env-card{left:-34%;right:0}}
+.env-card .bp-pax b{letter-spacing:.02em}
+@media (max-width:900px){.env-card .bp-grid>.bp-pax{grid-column:1/-1}}
 
 /* ---------- logos: 15% smaller, with breathing room ---------- */
 .top .logo11{width:clamp(124px,10.8vw,152px)}
