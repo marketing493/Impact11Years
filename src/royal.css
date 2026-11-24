@@ -1224,6 +1224,33 @@ html,body{max-width:100%;overflow-x:clip}
 @media (hover:hover) and (pointer:fine){:root[data-tone="blue"] .brows .brow{cursor:default}:root[data-tone="blue"] .brows .brow:hover{background:rgba(247,227,161,.07);box-shadow:inset 3px 0 0 #EBC96B}}
 
 
+/* =====================================================================
+   10% darker gradients everywhere: navy arrives 10 points earlier and the last 10% is solid ink.
+   Same angles; each angled section keeps the same area shares as its horizontal version, and the
+   shared horizontal gradients (header, footer, marquee surround, edge bands) shift by the same amount.
+   ===================================================================== */
+:root[data-tone="blue"]{
+ --lin:linear-gradient(90deg,#264CD7 0%,#22388C 50%,#1C1B1B 90%,#1C1B1B 100%);--bg-band:linear-gradient(90deg,#264CD7 0%,#22388C 50%,#1C1B1B 90%,#1C1B1B 100%);
+ --e-hero:linear-gradient(90deg,#264CD7 0%,#22388C 50%,#1C1B1B 90%,#1C1B1B 100%);--e-blue:linear-gradient(90deg,#264CD7 0%,#264CD7 22%,#22388C 80%,#1C1B1B 90%,#1C1B1B 100%);--e-mid:linear-gradient(90deg,#264CD7 0%,#264CD7 12%,#22388C 76%,#1C1B1B 90%,#1C1B1B 100%);
+ --g-hero:linear-gradient(90deg,#264CD7 0%,#22388C 50%,#1C1B1B 90%,#1C1B1B 100%);--g-blue:linear-gradient(90deg,#264CD7 0%,#264CD7 22%,#22388C 80%,#1C1B1B 90%,#1C1B1B 100%);--g-mid:linear-gradient(90deg,#264CD7 0%,#264CD7 12%,#22388C 76%,#1C1B1B 90%,#1C1B1B 100%)}
+:root[data-tone="blue"] .rh-pin{background:var(--rad),linear-gradient(100deg,#264CD7 0.0%,#22388C 50.0%,#1C1B1B 86.4%,#1C1B1B 100.0%)!important}
+:root[data-tone="blue"] .r-sky{background:linear-gradient(84deg,#264CD7 0.0%,#264CD7 22.7%,#22388C 79.2%,#1C1B1B 89.0%,#1C1B1B 100.0%)!important}
+:root[data-tone="blue"] .r-invite{background:linear-gradient(76deg,#264CD7 0.0%,#264CD7 25.3%,#22388C 76.5%,#1C1B1B 85.3%,#1C1B1B 100.0%)!important}
+:root[data-tone="blue"] .vy-pin{background:var(--rad),linear-gradient(104deg,#264CD7 0.0%,#22388C 50.0%,#1C1B1B 85.1%,#1C1B1B 100.0%)!important}
+:root[data-tone="blue"] .r-dep{background:linear-gradient(78deg,#264CD7 0.0%,#264CD7 16.2%,#22388C 73.2%,#1C1B1B 85.6%,#1C1B1B 100.0%)!important}
+:root[data-tone="blue"] .r-fair{background:linear-gradient(101deg,#264CD7 0.0%,#264CD7 15.6%,#22388C 73.5%,#1C1B1B 86.2%,#1C1B1B 100.0%)!important}
+:root[data-tone="blue"] .venue{background:linear-gradient(80deg,#264CD7 0.0%,#22388C 50.0%,#1C1B1B 86.8%,#1C1B1B 100.0%)!important}
+:root[data-tone="blue"] #reminders{background:linear-gradient(99deg,#264CD7 0.0%,#264CD7 15.0%,#22388C 74.0%,#1C1B1B 86.9%,#1C1B1B 100.0%)!important}
+@media (max-width:900px){
+ :root[data-tone="blue"] .rh-pin{background:var(--rad),linear-gradient(94deg,#264CD7 0.0%,#22388C 50.0%,#1C1B1B 83.2%,#1C1B1B 100.0%)!important}
+ :root[data-tone="blue"] .r-sky{background:linear-gradient(88deg,#264CD7 0.0%,#264CD7 22.5%,#22388C 79.5%,#1C1B1B 89.3%,#1C1B1B 100.0%)!important}
+ :root[data-tone="blue"] .r-invite{background:linear-gradient(86deg,#264CD7 0.0%,#264CD7 27.7%,#22388C 73.9%,#1C1B1B 82.0%,#1C1B1B 100.0%)!important}
+ :root[data-tone="blue"] .vy-pin{background:var(--rad),linear-gradient(95deg,#264CD7 0.0%,#22388C 50.0%,#1C1B1B 84.0%,#1C1B1B 100.0%)!important}
+ :root[data-tone="blue"] .r-dep{background:linear-gradient(86deg,#264CD7 0.0%,#264CD7 18.0%,#22388C 71.9%,#1C1B1B 83.7%,#1C1B1B 100.0%)!important}
+ :root[data-tone="blue"] .r-fair{background:linear-gradient(94deg,#264CD7 0.0%,#264CD7 17.0%,#22388C 72.6%,#1C1B1B 84.7%,#1C1B1B 100.0%)!important}
+ :root[data-tone="blue"] .venue{background:linear-gradient(86deg,#264CD7 0.0%,#22388C 50.0%,#1C1B1B 82.0%,#1C1B1B 100.0%)!important}
+ :root[data-tone="blue"] #reminders{background:linear-gradient(94deg,#264CD7 0.0%,#264CD7 18.9%,#22388C 71.3%,#1C1B1B 82.8%,#1C1B1B 100.0%)!important}}
+
 /* ---------- logos: 15% smaller, with breathing room ---------- */
 .top .logo11{width:clamp(124px,10.8vw,152px)}
 .top .wrap>a:first-child{padding:10px 6px 10px 0}
