@@ -149,7 +149,9 @@ async function onGoogle(r){try{const res=await fetch('/api/auth',{method:'POST',
   if(!res.ok){toast(j.error||'Sign-in failed. Please try again.');return}
   S.user={name:j.name,given:j.given,email:j.email};store.set('ia11-user',S.user);applyPassenger();mountSignin();toast(`Welcome, ${j.given||j.name}. Your boarding pass is ready.`)}
  catch(e){toast('Sign-in failed. Please try again.')}}
-function signOut(){S.user=null;try{localStorage.removeItem('ia11-user')}catch(e){}try{window.google&&google.accounts&&google.accounts.id.disableAutoSelect()}catch(e){}applyPassenger();mountSignin();toast('Signed out.')}
+async function signOut(){S.user=null;try{localStorage.removeItem('ia11-user')}catch(e){}try{window.google&&google.accounts&&google.accounts.id.disableAutoSelect()}catch(e){}
+ try{await fetch('/api/auth',{method:'DELETE',credentials:'same-origin'})}catch(e){}
+ if(S.cfg&&S.cfg.locked){location.replace('/');return}applyPassenger();mountSignin();toast('Signed out.')}
 function applyPassenger(){const c=$('.env-card');if(c)c.innerHTML=boardingPass()}
 function boardingPass(){return `<span class="bpass" role="img" aria-label="Boarding pass: Impact Analytics flight IA 011, passenger ${esc(passengerName())}, from Work, 11 Years of Hustle, to Gala, 11 Years of Impact, ${EVENT.dateLong}, boards 10:00 AM, gate ${EVENT.venue}, seat 11A">
  <span class="bp-main">

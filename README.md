@@ -47,15 +47,23 @@ Under **Settings > Environment Variables** add:
 | `CRON_SECRET` | Any long random string |
 | `GOOGLE_CLIENT_ID` | OAuth client ID for "Sign in with Google" (see below). Leave unset to hide sign-in. |
 | `GOOGLE_ALLOWED_DOMAIN` | Optional. Google Workspace domain allowed to sign in. Default `impactanalytics.co`. |
+| `SESSION_SECRET` | A long random string (for example `openssl rand -hex 32`). With `GOOGLE_CLIENT_ID`, it locks the site. |
 
-**Google sign-in** puts each person's name on their boarding pass. Only verified accounts on the allowed
-domain are accepted (checked on the server in `api/auth.js`). To get the client ID:
+**Google sign-in** locks the whole site and puts each person's name on their boarding pass. Only verified
+accounts on the allowed domain are accepted (checked on the server in `api/auth.js`). Signing in sets a
+signed, HTTP-only session cookie for 30 days; `middleware.js` checks it on every request and shows the
+sign-in page (`login.html`, which contains no event details) to everyone else, and the API answers 401.
+The lock only turns on when both `GOOGLE_CLIENT_ID` and `SESSION_SECRET` are set, so the site cannot lock
+everyone out before sign-in is set up. The reminders cron (`/api/notify`) is not affected.
+
+To get the client ID:
 1. In Google Cloud Console, open **APIs & Services > OAuth consent screen**, choose **Internal** (only your
    Workspace users), and fill in the app name and support email.
 2. Open **Credentials > Create credentials > OAuth client ID**, type **Web application**.
 3. Under **Authorized JavaScript origins** add the site's address, for example `https://11yearsofimpact.vercel.app`.
-   No redirect URI is needed.
-4. Copy the client ID into `GOOGLE_CLIENT_ID` and redeploy.
+   Under **Authorized redirect URIs** add the sign-in endpoint, for example
+   `https://11yearsofimpact.vercel.app/api/auth` (used by the home-screen app, where pop-ups are unreliable).
+4. Copy the client ID into `GOOGLE_CLIENT_ID`, add `SESSION_SECRET`, and redeploy.
 
 Generate the push keys once on your computer:
 

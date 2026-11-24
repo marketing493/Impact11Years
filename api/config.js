@@ -1,4 +1,5 @@
 import { hasStore } from './_lib.js';
+import { gateOn } from './_session.js';
 
 export default function handler(req, res) {
   const pub = process.env.VAPID_PUBLIC_KEY || '';
@@ -10,5 +11,6 @@ export default function handler(req, res) {
     admin: Boolean(process.env.ADMIN_PASSWORD),
     googleClientId: process.env.GOOGLE_CLIENT_ID || '',
     googleDomain: (process.env.GOOGLE_ALLOWED_DOMAIN || 'impactanalytics.co').trim().toLowerCase(),
+    locked: gateOn(process.env),
   });
 }
