@@ -217,7 +217,7 @@
 .brow{display:flex;align-items:center;gap:clamp(10px,1.6vw,22px);padding:7px 4px;text-decoration:none;color:#F7F1E3;border-bottom:1px solid rgba(212,175,97,.1);width:max-content;min-width:100%;border-radius:6px;transition:background .25s}
 a.brow:hover{background:rgba(212,175,97,.07)}
 .brow.bh{font-family:var(--f-royal);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);border-bottom-color:rgba(212,175,97,.35)}
-.brow.bh span:nth-child(1){width:calc(5 * 1.32 * var(--fs))}.brow.bh span:nth-child(2){width:calc(26 * 1.32 * var(--fs))}.brow.bh span:nth-child(3){width:calc(10 * 1.32 * var(--fs))}
+.brow.bh span:nth-child(1){width:calc(5 * 1.32 * var(--fs))}.brow.bh span:nth-child(2){width:calc(27 * 1.32 * var(--fs))}.brow.bh span:nth-child(3){width:calc(10 * 1.32 * var(--fs))}
 .brow>span{display:flex;flex:none}
 .fc{display:inline-flex;align-items:center;justify-content:center;width:1.12em;height:1.6em;margin-right:.2em;border-radius:3px;background:linear-gradient(#1C2244 50%,#141936 50%);font-weight:600;font-size:var(--fs);font-variant-numeric:tabular-nums;color:#F7F1E3;position:relative;box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 1px 2px rgba(0,0,0,.6);white-space:pre}
 .fc::after{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(0,0,0,.65)}
