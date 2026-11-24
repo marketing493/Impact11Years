@@ -58,7 +58,7 @@ body = f'''<header class="top"><div class="wrap">
 </div></header>
 <canvas id="ambient" aria-hidden="true"></canvas>
 <main id="app"></main>
-<footer><div class="wrap">{LOGO11}<p class="sm muted">11 Years of Impact. 17 December 2026, Hilton Embassy TechVillage, Bangalore.</p><span class="xs muted" title="Build {BUILD['built']}">Version {BUILD['commit']}</span><a class="btn ghost sm" href="#admin">Organizer login</a></div></footer>
+<footer><div class="wrap">{LOGO11}<p class="sm muted ft-copy">© 2026 Impact Analytics. All rights reserved.</p></div></footer>
 <button class="totop" id="totop" aria-label="Back to the top" hidden><svg class="tt-ring" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21" class="tt-track"/><circle cx="24" cy="24" r="21" class="tt-prog" pathLength="1" transform="rotate(-90 24 24)"/></svg><svg class="tt-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
 <div id="toast" role="status" aria-live="polite"></div>
 <div class="curtain" aria-hidden="true"><i class="cl"></i><i class="cr"></i><span class="c-val"></span><span class="c-seal">11</span></div>
