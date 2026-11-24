@@ -98,39 +98,41 @@ function drawQr(c,text,x,y,size){
 
 function logoImage(){return new Promise(ok=>{const i=new Image();i.onload=()=>ok(i);i.onerror=()=>ok(null);i.src=LOGO_COLOR})}
 async function passImage(){
- try{await Promise.all(['300 120px Spectral','400 120px Spectral','600 40px "Inter Tight"','500 40px "Inter Tight"'].map(f=>document.fonts.load(f)))}catch(e){}
- /* only the ticket, on a transparent background: 1280 x 430 drawn at 2.5x = 3200 x 1075 px */
- const S2=2.5,TW=1280,TH=430,W=TW,H=TH,cv=document.createElement('canvas');cv.width=W*S2;cv.height=H*S2;const c=cv.getContext('2d');c.scale(S2,S2);
+ try{await Promise.all(['300 46px Spectral','600 16px "Inter Tight"','500 11px "Inter Tight"'].map(f=>document.fonts.load(f)))}catch(e){}
+ /* a wallet-size pass (340 x 566, drawn at 3x = 1020 x 1698 px) in the ivory and gold of the on-screen pass, on a transparent background */
+ const S2=3,W=340,H=566,R=14,cv=document.createElement('canvas');cv.width=W*S2;cv.height=H*S2;const c=cv.getContext('2d');c.scale(S2,S2);
  const INTER='"Inter Tight", Inter, system-ui, sans-serif',SERIF='Spectral, Georgia, serif',track=v=>{try{c.letterSpacing=v}catch(e){}};
- let g;
- const X=0,Y=0,SX=X+TW-300,NR=18;
- c.save();
- const shape=()=>{c.beginPath();c.moveTo(X+24,Y);c.lineTo(SX-NR,Y);c.arc(SX,Y,NR,Math.PI,0,true);c.lineTo(X+TW-24,Y);c.arcTo(X+TW,Y,X+TW,Y+24,24);c.lineTo(X+TW,Y+TH-24);c.arcTo(X+TW,Y+TH,X+TW-24,Y+TH,24);
-  c.lineTo(SX+NR,Y+TH);c.arc(SX,Y+TH,NR,0,Math.PI,true);c.lineTo(X+24,Y+TH);c.arcTo(X,Y+TH,X,Y+TH-24,24);c.lineTo(X,Y+24);c.arcTo(X,Y,X+24,Y,24);c.closePath()};
- g=c.createLinearGradient(X,Y,X+TW,Y+TH);g.addColorStop(0,'#FFFDF5');g.addColorStop(.6,'#F7F1E3');g.addColorStop(1,'#EFE5CC');shape();c.fillStyle=g;c.fill();c.restore();
- c.save();shape();c.clip();c.fillStyle='#264CD7';c.fillRect(X,Y,TW,7);c.restore();
- c.setLineDash([7,7]);c.strokeStyle='rgba(28,27,27,.3)';c.lineWidth=2;c.beginPath();c.moveTo(SX,Y+NR+6);c.lineTo(SX,Y+TH-NR-6);c.stroke();c.setLineDash([]);
- const p=S.pass,name=(p&&p.name)||(S.user&&S.user.name)||'Impacter';
- /* header row */
- c.save();c.translate(X+46,Y+44);c.rotate(Math.PI/2);c.scale(1.1,1.1);c.translate(-12,-12);c.fillStyle='#264CD7';c.fill(new Path2D(PLANE_PATH));c.restore();
- c.font=`600 21px ${INTER}`;track('3px');c.fillStyle='#264CD7';c.fillText('IMPACT ANALYTICS',X+70,Y+52);
- c.fillStyle='#9C7A36';c.textAlign='right';c.fillText('FLIGHT IA 011',SX-40,Y+52);c.textAlign='left';track('0px');
- /* route */
- c.fillStyle='#264CD7';c.font=`300 92px ${SERIF}`;c.fillText('WRK',X+40,Y+160);const wL=c.measureText('WRK').width;c.textAlign='right';c.fillText('PRTY',SX-40,Y+160);const wR=c.measureText('PRTY').width;c.textAlign='left';
- c.fillStyle='rgba(28,27,27,.62)';c.font=`500 20px ${INTER}`;c.fillText('Smartworks, Global Tech Park',X+42,Y+196);c.textAlign='right';c.fillText('Hilton, Embassy TechVillage',SX-42,Y+196);c.textAlign='left';
- const L1=X+40+wL+40,L2=SX-40-wR-40,LY=Y+160-92*.33;const MX=(L1+L2)/2;c.setLineDash([10,11]);c.strokeStyle='#C9A24A';c.lineWidth=3;c.beginPath();c.moveTo(L1,LY);c.lineTo(MX-38,LY);c.moveTo(MX+38,LY);c.lineTo(L2,LY);c.stroke();c.setLineDash([]);
- c.save();c.translate((L1+L2)/2,LY);c.rotate(Math.PI/2);c.scale(1.9,1.9);c.translate(-12,-12);c.fillStyle='#C9A24A';c.fill(new Path2D(PLANE_PATH));c.restore();
- c.strokeStyle='rgba(28,27,27,.12)';c.lineWidth=1.5;c.beginPath();c.moveTo(X+40,Y+240);c.lineTo(SX-40,Y+240);c.stroke();
- /* details */
- const cols=[[X+42,'PASSENGER',name.toUpperCase()],[X+560,'DATE','17 Dec 2026'],[X+790,'BOARDING TIME','10:00']];
- for(const [cx,k,v] of cols){c.fillStyle='rgba(28,27,27,.55)';c.font=`600 15px ${INTER}`;track('2.5px');c.fillText(k,cx,Y+292);track('0px');c.fillStyle='#1C1B1B';c.font=`600 ${k==='PASSENGER'?27:25}px ${INTER}`;
-  let t=v;if(k==='PASSENGER'){while(c.measureText(t).width>440&&t.length>4)t=t.slice(0,-2)+'…'}c.fillText(t,cx,Y+332)}
- c.fillStyle='#9C7A36';c.font=`600 16px ${INTER}`;track('3.5px');c.fillText('AROUND THE WORLD IN 11 YEARS',X+42,Y+392);track('0px');
- /* stub: the logo, then the entry QR */
- const lg=await logoImage();if(lg){const LW=170,LH=LW*lg.height/lg.width;c.drawImage(lg,SX+(300-LW)/2,Y+34,LW,LH)}
- const QS=220;if(p&&p.code)drawQr(c,p.code,SX+(300-QS)/2,Y+118,QS);
- else{c.fillStyle='#1C1B1B';c.font=`300 120px ${SERIF}`;c.textAlign='center';c.fillText('11',SX+150,Y+TH/2+30);c.textAlign='left'}
- c.fillStyle='rgba(28,27,27,.55)';c.font=`600 14px ${INTER}`;track('2.5px');c.textAlign='center';c.fillText('SCAN AT THE ENTRANCE',SX+150,Y+TH-30);c.textAlign='left';track('0px');
+ const p=S.pass,name=((p&&p.name)||(S.user&&S.user.name)||'Impacter').toUpperCase(),PX=18;
+ const label=(t,x,y,align='left')=>{c.fillStyle='rgba(28,27,27,.55)';c.font=`600 9.5px ${INTER}`;track('1.4px');c.textAlign=align;c.fillText(t.toUpperCase(),x+(align==='right'?1.4:0),y);track('0px');c.textAlign='left'};
+ /* card: ivory to gold, a thin Impact Blue stripe along the top */
+ c.save();c.beginPath();c.roundRect(0,0,W,H,R);c.clip();
+ let g=c.createLinearGradient(0,0,W,H);g.addColorStop(0,'#FFFDF5');g.addColorStop(.6,'#F7F1E3');g.addColorStop(1,'#EFE5CC');c.fillStyle=g;c.fillRect(0,0,W,H);
+ c.fillStyle='#264CD7';c.fillRect(0,0,W,5);c.restore();
+ /* header: logo and flight */
+ const lg=await logoImage();if(lg){const LH=32,LW=LH*lg.width/lg.height;c.drawImage(lg,PX,16,LW,LH)}
+ label('Flight',W-PX,26,'right');c.fillStyle='#9C7A36';c.font=`600 15px ${INTER}`;c.textAlign='right';c.fillText('IA 011',W-PX,45);c.textAlign='left';
+ /* route: WRK to PRTY, the dotted line and plane through the middle of the capitals */
+ label('From',PX,78);label('To',W-PX,78,'right');
+ const BASE=124;c.fillStyle='#264CD7';c.font=`300 46px ${SERIF}`;c.fillText('WRK',PX,BASE);const wL=c.measureText('WRK').width;
+ c.textAlign='right';c.fillText('PRTY',W-PX,BASE);const wR=c.measureText('PRTY').width;c.textAlign='left';
+ const cap=c.measureText('H').actualBoundingBoxAscent||46*.66,LY=BASE-cap/2;
+ const L1=PX+wL+10,L2=W-PX-wR-10,MX=(L1+L2)/2;
+ c.setLineDash([3,3]);c.strokeStyle='#C9A24A';c.lineWidth=2;c.beginPath();c.moveTo(L1,LY);c.lineTo(MX-14,LY);c.moveTo(MX+14,LY);c.lineTo(L2,LY);c.stroke();c.setLineDash([]);
+ c.save();c.translate(MX,LY);c.rotate(Math.PI/2);c.scale(.95,.95);c.translate(-12,-12);c.fillStyle='#C9A24A';c.fill(new Path2D(PLANE_PATH));c.restore();
+ c.fillStyle='rgba(28,27,27,.62)';c.font=`500 11px ${INTER}`;
+ c.fillText('Smartworks,',PX,148);c.fillText('Global Tech Park',PX,162);c.textAlign='right';c.fillText('Hilton, Embassy',W-PX,148);c.fillText('TechVillage',W-PX,162);c.textAlign='left';
+ /* passenger, date, boarding time */
+ label('Passenger',PX,196);c.fillStyle='#1C1B1B';c.font=`600 15.5px ${INTER}`;let t=name;while(c.measureText(t).width>W-PX*2&&t.length>4)t=t.slice(0,-2)+'…';c.fillText(t,PX,216);
+ label('Date',PX,246);label('Boarding time',W-PX,246,'right');c.fillStyle='#1C1B1B';c.font=`600 15.5px ${INTER}`;c.fillText('17 Dec 2026',PX,266);c.textAlign='right';c.fillText('10:00',W-PX,266);c.textAlign='left';
+ /* tear line with notches cut out of the card */
+ const TY=292;c.setLineDash([4,3]);c.strokeStyle='rgba(28,27,27,.28)';c.lineWidth=1.2;c.beginPath();c.moveTo(14,TY);c.lineTo(W-14,TY);c.stroke();c.setLineDash([]);
+ c.save();c.globalCompositeOperation='destination-out';c.beginPath();c.arc(0,TY,9,0,Math.PI*2);c.arc(W,TY,9,0,Math.PI*2);c.fill();c.restore();
+ /* AROUND THE WORLD IN 11 YEARS, centred above the QR */
+ c.fillStyle='#9C7A36';c.font=`600 10.5px ${INTER}`;track('2px');c.textAlign='center';c.fillText('AROUND THE WORLD IN 11 YEARS',W/2+1,322);track('0px');
+ /* entry QR on white */
+ const QB=192,QX=(W-QB)/2,QY=338;c.fillStyle='#FFFFFF';c.beginPath();c.roundRect(QX,QY,QB,QB,10);c.fill();c.strokeStyle='rgba(28,27,27,.08)';c.lineWidth=1;c.stroke();
+ if(p&&p.code)drawQr(c,p.code,QX+6,QY+6,QB-12);else{c.fillStyle='#1C1B1B';c.font=`300 64px ${SERIF}`;c.fillText('11',W/2,QY+QB/2+22)}
+ c.fillStyle='rgba(28,27,27,.55)';c.font=`600 10.5px ${INTER}`;track('1.7px');c.textAlign='center';c.fillText('SCAN AT THE ENTRANCE',W/2+1,QY+QB+24);track('0px');c.textAlign='left';
  return cv}
 
 async function downloadPass(){
