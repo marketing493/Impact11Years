@@ -29,7 +29,7 @@ async function loadPass(force){if(!S.user||!S.server)return;if(!force&&S.pass&&S
   S.pass=p;store.set('ia11-pass',p);if(typeof applyPassenger==='function')applyPassenger()}catch(e){}}
 
 /* tapping the QR on the opened pass shows it large, with the name and PIN, ready for the door */
-addEventListener('click',e=>{const stub=e.target.closest&&e.target.closest('.env.open .bp-stub,.env.open .bp-portrait');if(!stub)return;e.preventDefault();e.stopPropagation();showPass()},true);
+addEventListener('click',e=>{const stub=e.target.closest&&e.target.closest('.env.open .bp-stub');if(!stub)return;e.preventDefault();e.stopPropagation();showPass()},true);
 function showPass(){if(!S.pass){toast(S.user?'Your entry pass is loading. Try again in a moment.':'Sign in to get your entry pass.');return}
  const p=S.pass,w=document.createElement('div');w.className='modal-w how-w pass-w';w.setAttribute('role','dialog');w.setAttribute('aria-modal','true');w.setAttribute('aria-label','Your entry pass');
  w.innerHTML=`<div class="modal how pass-big"><div class="how-h"><h3>Your entry pass</h3><button class="icon-btn how-x" aria-label="Close">${ic('x',18)}</button></div>
