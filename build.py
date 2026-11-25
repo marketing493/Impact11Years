@@ -54,6 +54,9 @@ CROWN = '<svg width="14" height="14" viewBox="0 0 64 64" fill="none" stroke="cur
 body = f'''<header class="top"><div class="wrap">
  <a href="#home" aria-label="Impact Events home">{LOGO11}</a>
  <a class="btn sec sm bell" href="#reminders">{svg('bell', 18)}<span class="reminder-label">Reminders</span><span class="dot"></span></a>
+ <div id="gsignin" class="gsignin"><div class="acct"><button class="acct-av" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="acct-menu" aria-label="Account: Prashant Agrawal">PA</button>
+  <div class="acct-menu" id="acct-menu" role="menu"><div class="acct-who"><b>Prashant Agrawal</b><span>Impact Analytics</span></div>
+  <button class="acct-out" type="button" role="menuitem"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h11"/></svg> Sign out</button></div></div></div>
 </div></header>
 <canvas id="ambient" aria-hidden="true"></canvas>
 <main id="app"></main>

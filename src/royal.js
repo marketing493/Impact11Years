@@ -133,6 +133,11 @@ function invDeco(){return `<div class="inv-deco" aria-hidden="true">
 /* ---------- demo: no sign-in; every device gets a guest boarding pass ---------- */
 S.user=null;
 const passengerName=()=>'Prashant Agrawal';
+/* demo: a dummy account menu (PA) like the main site's; it opens on hover or tap, and Sign out only closes it */
+document.addEventListener('click',e=>{const t=e.target.closest?e.target:null,acct=document.querySelector('.acct');if(!acct||!t)return;const av=t.closest('.acct-av');
+ if(av){const open=!acct.classList.contains('open');acct.classList.toggle('open',open);av.setAttribute('aria-expanded',open);if(open)acct.querySelector('.acct-out').focus({preventScroll:true});return}
+ if(t.closest('.acct-out')||!t.closest('.acct-menu')){acct.classList.remove('open');acct.querySelector('.acct-av').setAttribute('aria-expanded','false');if(t.closest('.acct-out'))acct.querySelector('.acct-out').blur()}});
+document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;const acct=document.querySelector('.acct.open');if(acct){acct.classList.remove('open');const av=acct.querySelector('.acct-av');av.setAttribute('aria-expanded','false');av.focus()}});
 function applyPassenger(){const c=$('.env-card');if(c){c.classList.remove('portrait');c.innerHTML=boardingPass()}if(typeof mountPortraitPass==='function'){PP_KEY='';mountPortraitPass()}}
 function boardingPass(){return `<span class="bpass" role="img" aria-label="Boarding pass: Impact Analytics flight IA 011, passenger ${esc(passengerName())}, from WRK, Smartworks Global Tech Park, to PRTY, Hilton Embassy TechVillage, ${EVENT.dateLong}, boards 10:00 AM. Tap the QR code to enlarge your entry pass.">
  <span class="bp-main">
