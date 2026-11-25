@@ -15,15 +15,26 @@ const mtof=m=>440*Math.pow(2,(m-69)/12);
 
 class StoryScore{
  constructor(){this.on=false;this.ctx=null;this.ch=0;this.visible=false;this.voices=[];this.listeners=new Set();this.blocked=false;
-  this.muted=(()=>{try{return localStorage.getItem('ia11-muted')==='1'}catch(e){return false}})()}
+  this.muted=(()=>{try{return localStorage.getItem('ia11-muted')==='1'}catch(e){return false}})();
+  this.unlockOnFirstGesture()}
+ /* Browsers (Safari especially) only let a page make sound if its audio was started inside a tap, click or key press.
+    So the very first gesture anywhere on the page (the boarding-pass button, the seal, a link...) quietly creates and
+    unlocks the audio. Then, when the visitor later scrolls into a story section, the score can start on its own. */
+ unlockOnFirstGesture(){const ev=['pointerdown','pointerup','touchend','mousedown','keydown','click'];
+  const unlock=()=>{if(this.muted||!this.supported)return done();if(!this.ctx&&!this.init())return done();const c=this.ctx;
+   try{const b=c.createBuffer(1,1,22050),src=c.createBufferSource();src.buffer=b;src.connect(c.destination);src.start(0)}catch(e){}
+   c.resume().then(()=>{if(c.state!=='running')return;done();
+    if(this.visible&&!this.on&&!this.muted&&!document.hidden)this.start();else if(!this.on||!this.visible)setTimeout(()=>{if(!(this.on&&this.visible))c.suspend()},400)}).catch(()=>{})};
+  const done=()=>ev.forEach(e=>removeEventListener(e,unlock,true));
+  ev.forEach(e=>addEventListener(e,unlock,{capture:true,passive:true}))}
  /* Browsers allow sound only after the visitor has tapped, clicked or pressed a key on the page.
     If that has not happened yet, wait for the first such gesture and start then. */
  start(){if(!this.ctx&&!this.init())return;this.on=true;const c=this.ctx;
   const go=()=>{if(c.state!=='running')c.resume().catch(()=>{});};go();this.setChord(this.ch,true);this.fade();
   setTimeout(()=>{this.blocked=c.state!=='running';if(this.blocked)this.arm();this.emit()},120);this.emit()}
- arm(){if(this.armed)return;this.armed=true;const kick=()=>{this.armed=false;['pointerdown','touchend','keydown','click'].forEach(e=>removeEventListener(e,kick,true));
+ arm(){if(this.armed)return;this.armed=true;const kick=()=>{this.armed=false;['pointerdown','pointerup','touchend','mousedown','keydown','click'].forEach(e=>removeEventListener(e,kick,true));
    if(!this.on||!this.ctx)return;this.ctx.resume().then(()=>{this.blocked=false;this.fade();this.emit()}).catch(()=>{})};
-  ['pointerdown','touchend','keydown','click'].forEach(e=>addEventListener(e,kick,true))}
+  ['pointerdown','pointerup','touchend','mousedown','keydown','click'].forEach(e=>addEventListener(e,kick,true))}
  emit(){this.listeners.forEach(f=>f(this.on,this.blocked))}
  get supported(){return Boolean(window.AudioContext||window.webkitAudioContext)}
  init(){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return false;
@@ -73,7 +84,7 @@ class StoryScore{
  setVisible(v){if(v===this.visible)return;this.visible=v;if(v&&!this.on&&!this.muted&&!document.hidden){this.start();return}this.fade()}
  fade(){if(!this.ctx)return;const want=this.on&&this.visible&&!document.hidden,c=this.ctx;
   clearTimeout(this.st);
-  if(want){if(c.state==='suspended')c.resume();this.master.gain.setTargetAtTime(.6,c.currentTime,.7)}
+  if(want){if(c.state!=='running')c.resume().catch(()=>{});this.master.gain.setTargetAtTime(.6,c.currentTime,.7)}
   else{this.master.gain.setTargetAtTime(0,c.currentTime,.35);this.st=setTimeout(()=>{if(!(this.on&&this.visible&&!document.hidden))c.suspend()},1800)}}
  /* must run inside a tap or click */
  toggle(){const turnOn=!this.on||this.blocked;try{localStorage.setItem('ia11-muted',turnOn?'0':'1')}catch(e){}this.muted=!turnOn;
