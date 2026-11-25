@@ -5973,6 +5973,8 @@ function glideTo(id){const el=document.getElementById(id);if(!el)return false;co
   let y=scrollY+r.bottom+gap-innerHeight;const envTop=scrollY+r.top-hdr-24;if(y>envTop)y=envTop;y=Math.max(y,scrollY+sec.top-hdr);scrollTo({top:Math.max(0,y),behavior:how});return true}
  el.scrollIntoView({behavior:how,block:'start'});return true}
 document.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(!a||e.defaultPrevented)return;const id=a.getAttribute('href').slice(1);
+ /* the header logo: on the home page, glide back up to the hero (from the organizer page it still goes home) */
+ if(id==='home'&&S.route==='home'){e.preventDefault();scrollTo({top:0,behavior:RMQ.matches?'auto':'smooth'});try{history.replaceState(null,'',location.pathname+location.search)}catch(_){}return}
  if(!id||id==='admin'||S.route!=='home'||!document.getElementById(id))return;e.preventDefault();glideTo(id);try{history.replaceState(null,'','#'+id)}catch(_){}},true);
 addEventListener('hashchange',()=>{const id=location.hash.slice(1);if(S.route==='home'&&id&&id!=='admin'&&!id.startsWith('event-')&&glideTo(id))return;const jump=parseHash();render();if(jump){requestAnimationFrame(()=>document.getElementById(jump)?.scrollIntoView({behavior:'smooth'}))}else scrollTo({top:0})});
 document.addEventListener('change',e=>{if(e.target.id==='wayfind'&&e.target.value){const a=S.acts.find(x=>x.id===e.target.value);if(a){ACT.zone(a.location);toast(`Follow the orange path to the ${a.location} for ${a.title}.`);$('.ex-stage')?.scrollIntoView({behavior:'smooth',block:'center'})}}});
