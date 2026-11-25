@@ -4,6 +4,7 @@ import { db, hasStore, isAdmin, parsePassCode, pushReady, send, storeName, webpu
  * POST {action:'checkin', code | pin}: check a person in from their entry QR (or their 6-digit PIN).
  * POST {subscription}: send a test notification to one device. */
 export default async function handler(req, res) {
+  if (!String(process.env.ADMIN_PASSWORD || '').trim()) return send(res, 503, { error: 'The organizer password is not set up on this deployment. Add ADMIN_PASSWORD for Production in Vercel, then redeploy.' });
   if (!isAdmin(req)) return send(res, 401, { error: 'Wrong organizer password.' });
   try {
     if (req.method === 'GET') {

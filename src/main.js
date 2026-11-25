@@ -78,7 +78,7 @@ const ACT={
 Object.assign(ACT,ROYAL_ACT);
 document.addEventListener('click',e=>{const el=e.target.closest('[data-act]');if(!el||el.disabled)return;const f=ACT[el.dataset.act];if(!f)return;const r=f(el.dataset.arg,el,e);if(r===false||r instanceof Promise)return;render()});
 document.addEventListener('submit',async e=>{const f=e.target.closest('[data-form]');if(!f)return;e.preventDefault();
- if(f.dataset.form==='login'){const k=$('#l-key').value;const ok=await adminLogin(k);if(!ok){$('#l-err').textContent='That password did not work. Try again.';return}toast('Signed in.');render()}
+ if(f.dataset.form==='login'){const k=$('#l-key').value;const ok=await adminLogin(k);if(!ok){$('#l-err').textContent=A_.err||'That password did not work. Try again.';return}toast('Signed in.');render()}
  if(f.dataset.form==='act'){const m=A_.modal,loc=$('#f-loc').value;
   const a={id:m.id||'a'+Date.now().toString(36),title:$('#f-title').value.trim(),date:$('#f-date').value,start:$('#f-start').value,end:$('#f-end').value,category:$('#f-cat').value,location:loc==='Other'?($('#f-loc2').value.trim()||'Other'):loc,description:$('#f-desc').value.trim()};
   $$('.modal .err').forEach(x=>x.textContent='');const bad=validAct(a);if(bad){const el=$(`.err[data-for="${bad[0]}"]`);if(el)el.textContent=bad[1];$('#'+bad[0]).focus();return}
