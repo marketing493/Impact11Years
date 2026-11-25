@@ -23,6 +23,7 @@ js = '\n'.join((R / f'src/{n}.js').read_text() for n in ['vendor-qrcode', 'data'
 js = (js.replace('__LOGO_H__', b64('assets/Logo.png'))
         .replace('__ICON__', b64('assets/icons/icon-192.png'))
         .replace('__LOGO_COLOR__', b64('assets/logo-11-years-color.png'))
+        .replace('__CLIENT_LOGOS__', json.dumps({f.stem: '/clients/' + f.name for f in sorted((R / 'assets/clients').glob('*')) if f.suffix.lower() in ('.svg', '.png', '.webp')} if (R / 'assets/clients').exists() else {}))
         .replace('__DEFAULTS__', json.dumps(defaults, ensure_ascii=False))
         .replace('__WORLD__', (R / 'assets/world-dots.json').read_text().strip())
         .replace('__WORLD_HD__', ((R / 'assets/world-dots-hd.json') if (R / 'assets/world-dots-hd.json').exists() else (R / 'assets/world-dots.json')).read_text().strip()))
@@ -77,6 +78,10 @@ if pub.exists(): shutil.rmtree(pub)
 (R / 'index.html').write_text(page)
 for f in (R / 'static').iterdir(): shutil.copy(f, pub / f.name)
 for f in (R / 'assets/icons').iterdir(): shutil.copy(f, pub / 'icons' / f.name)
+if (R / 'assets/clients').exists():
+    (pub / 'clients').mkdir()
+    for f in (R / 'assets/clients').iterdir():
+        if f.suffix.lower() in ('.svg', '.png', '.webp'): shutil.copy(f, pub / 'clients' / f.name)
 (pub / 'version.json').write_text(json.dumps(BUILD))
 (R / 'dist').mkdir(exist_ok=True)
 (R / 'dist/artifact.html').write_text(head + '\n' + body + '\n')
