@@ -2161,6 +2161,8 @@ html::-webkit-scrollbar,body::-webkit-scrollbar,*::-webkit-scrollbar{display:non
 /* postcards: the client's logo as a faint ink watermark, bottom right */
 .postcard .pc-logo{position:absolute;right:26px;bottom:24px;max-width:110px;max-height:38px;width:auto;height:auto;object-fit:contain;opacity:.16;filter:grayscale(1) brightness(0);mix-blend-mode:multiply;pointer-events:none;transform:rotate(-12deg);transform-origin:50% 50%}
 .postcard.has-logo p{max-width:27ch}
+/* the Briscoe logo is mostly light yellow, so its watermark needs more ink to match the others */
+.postcard .pc-logo[src*="briscoes"]{opacity:.3}
 @media (max-width:820px){.postcard.has-logo p{max-width:none}.postcard .pc-logo{right:18px;bottom:16px;max-width:72px;max-height:24px}.postcard.has-logo p{padding-right:80px}}
 
 /* ---------- logos: 15% smaller, with breathing room ---------- */
@@ -4525,12 +4527,12 @@ const ZONES=[
 /* the voyage: [year, heading, line, client logo key (a file in assets/clients/, shown as a watermark)] */
 const JOURNEY=[
  ['2015','Where it all began','A small team sets out to change how retailers make decisions.'],
- ['2016','Our first product, our first client','Inventory Optimization (IRT) goes live with Pandora.','pandora'],
+ ['2016','Our first product, our first client','Inventory Optimization (IRT) goes live.','pandora'],
  ['2021','One platform, many smarts','Assort, Pricing, Promo and Attribute launch, and the Smart Platform goes live.'],
- ['2023','Going multinational','Our first multinational inventory allocation, built for Ralph Lauren.','ralph-lauren'],
- ['2024','Hello, Down Under','Our first client in New Zealand: Briscoes.','briscoes'],
- ['2025','One icon, many regions',"Another multi-region rollout for an iconic US retailer, Levi's.",'levis'],
- ['2026','Next stop, Africa',"Work begins for Levi's stores across the African region.",'levis'],
+ ['2023','Going multinational','Our first multinational inventory allocation goes live.','ralph-lauren'],
+ ['2024','Hello, Down Under','We welcome our first client in New Zealand.','briscoes'],
+ ['2025','One icon, many regions','Another multi-region rollout for an iconic US retailer.','levis'],
+ ['2026','Next stop, Africa','Work begins on stores across the African region.','levis'],
  ['2026','To the end of the Earth','Inventory planning for a gift store in Antarctica. No one else in the world does this.']];
 const FAQ=[['Who can attend?','Every employee. You check in with your personal QR code at the entrance.'],
  ['Where is the venue?','Hilton Embassy TechVillage, Marathahalli, Bangalore. Open the Venue tab for the layout and directions.'],

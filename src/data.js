@@ -16,12 +16,12 @@ const ZONES=[
 /* the voyage: [year, heading, line, client logo key (a file in assets/clients/, shown as a watermark)] */
 const JOURNEY=[
  ['2015','Where it all began','A small team sets out to change how retailers make decisions.'],
- ['2016','Our first product, our first client','Inventory Optimization (IRT) goes live with Pandora.','pandora'],
+ ['2016','Our first product, our first client','Inventory Optimization (IRT) goes live.','pandora'],
  ['2021','One platform, many smarts','Assort, Pricing, Promo and Attribute launch, and the Smart Platform goes live.'],
- ['2023','Going multinational','Our first multinational inventory allocation, built for Ralph Lauren.','ralph-lauren'],
- ['2024','Hello, Down Under','Our first client in New Zealand: Briscoes.','briscoes'],
- ['2025','One icon, many regions',"Another multi-region rollout for an iconic US retailer, Levi's.",'levis'],
- ['2026','Next stop, Africa',"Work begins for Levi's stores across the African region.",'levis'],
+ ['2023','Going multinational','Our first multinational inventory allocation goes live.','ralph-lauren'],
+ ['2024','Hello, Down Under','We welcome our first client in New Zealand.','briscoes'],
+ ['2025','One icon, many regions','Another multi-region rollout for an iconic US retailer.','levis'],
+ ['2026','Next stop, Africa','Work begins on stores across the African region.','levis'],
  ['2026','To the end of the Earth','Inventory planning for a gift store in Antarctica. No one else in the world does this.']];
 const FAQ=[['Who can attend?','Every employee. You check in with your personal QR code at the entrance.'],
  ['Where is the venue?','Hilton Embassy TechVillage, Marathahalli, Bangalore. Open the Venue tab for the layout and directions.'],
