@@ -2147,6 +2147,11 @@ html::-webkit-scrollbar,body::-webkit-scrollbar,*::-webkit-scrollbar{display:non
 .env.open .seal-glow{animation:none;opacity:0}
 @media (prefers-reduced-motion:reduce){.seal-glow{animation:none;opacity:.6}}
 
+/* hero: the New York stamp in the open space between the title and the globe (wide screens only) */
+.rh-stamp{display:none}
+@media (min-width:1101px){.rh-copy{position:relative}.rh-stamp{display:block;position:absolute;z-index:3;left:calc(100% - 115px);top:130px;pointer-events:none;animation:riseIn 1.4s var(--ease) both .7s}
+ .rh-stamp .istamp{position:relative;display:block;--r:8deg;scale:1.2;transform-origin:50% 50%}}
+
 /* ---------- logos: 15% smaller, with breathing room ---------- */
 .top .logo11{width:clamp(124px,10.8vw,152px)}
 .top .wrap>a:first-child{padding:10px 6px 10px 0}
@@ -5163,6 +5168,7 @@ const LANDMARKS={
  bigben:'M25 60V18h14v42M23 18h18M27 18l5-11 5 11M32 7V2M28 23h8v8h-8zM32 27l2.5-2M25 37h14M25 47h14M22 60h20',
  eiffel:'M32 3v7M28 10h8M29 10l-5 22h16l-5-22M24 32l-7 27M40 32l7 27M15 59h34M25 45h14M21 46c4-7 18-7 22 0M27.5 21h9',
  colosseum:'M7 50h50M7 50V31c9-7 41-7 50 0v19M7 39h50M13 50v-7M21 50v-7M29 50v-7M37 50v-7M45 50v-7M53 50v-7M13 36v-4M21 35v-5M29 34v-5M37 34v-5M45 35v-5M53 36v-4M5 56h54',
+ antarctica:'M6 58h52M10 58l8-20 5 6 7-16 9 14 4-6 9 22M23 44l-3 7M30 28l3 10M39 42l2 5M44 52c0-6 1.5-10 4-12 2.5 2 4 6 4 12M42 58c-1-5 0-10 2-14M54 58c1-5 0-10-2-14M48 40c-2.6 0-4-2-4-4.3 0-2.6 1.8-4.2 4-4.2s4 1.6 4 4.2c0 2.3-1.4 4.3-4 4.3M51.6 35.3l3-.8M46.6 35.4h.1M45 58h2M49 58h2',
  liberty:'M22 60h20M24 60V49h16v11M26 49l2-4h8l2 4M29 45l-1-15c0-3 1.5-4.5 4-4.5s4 1.5 4 4.5l-1 15M29.5 21.5a2.5 2.5 0 105 0 2.5 2.5 0 00-5 0M28.6 19.4l-2.4-3M32 18.6v-4M35.4 19.4l2.4-3M35.6 27.5L39.5 13M37.6 13h3.8l-1.9 3.4zM39.5 12.6c-1.4-1.8-.4-4.2 1-5.4.2 2 1.2 3.2-1 5.4M28.6 31.5l-3.4 4.5 2.4 3.4',
  pagoda:'M32 3v7M20 14h24l-4-4H24zM18 14l-4 4h36l-4-4M22 18v8M42 18v8M16 30h32l-4-4H20zM20 30v8M44 30v8M12 42h40l-4-4H16zM18 42v16M46 42v16M10 58h44M28 58V48h8v10',
  opera:'M5 50h54M10 50c2-14 10-22 18-24-2 8-2 18 0 24M24 50c2-14 10-22 20-24-4 8-4 18-2 24M40 50c2-10 8-16 16-18-2 6-2 12 0 18M3 56h58',
@@ -5333,7 +5339,7 @@ function invDeco(){return `<div class="inv-deco" aria-hidden="true">
   <text class="pm-big" x="110" y="106" text-anchor="middle">BLR</text><text class="pm-sm" x="110" y="132" text-anchor="middle">17 · XII · 2026</text></svg>
  <svg class="inv-waves" viewBox="0 0 300 90" preserveAspectRatio="none"><path d="M0 15 q 18.75 -12 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0M0 45 q 18.75 -12 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0M0 75 q 18.75 -12 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0"/></svg>
  <span class="ifl k1">✦</span><span class="ifl k2">✦</span><span class="ifl k3">✦</span><span class="ifl k4">✦</span><span class="ifl d1"></span><span class="ifl d2"></span><span class="ifl d3"></span><span class="ifl d4"></span><span class="ifl c1"></span><span class="ifl c2"></span><span class="ifl p1">${PLANE_SVG(16)}</span><span class="ifl p2">${PLANE_SVG(12)}</span>
- ${invStamp('vidhana','Bengaluru','11','s1')}${invStamp('liberty','New York','11','s2')}${invStamp('opera','Sydney','11','s3')}${invStamp('bigben','London','11','s4')}${invStamp('eiffel','Paris','11','s5')}
+ ${invStamp('vidhana','Bengaluru','11','s1')}${invStamp('antarctica','Antarctica','11','s2')}${invStamp('opera','Sydney','11','s3')}${invStamp('bigben','London','11','s4')}${invStamp('eiffel','Paris','11','s5')}
 </div>`}
 /* ---------- Google sign-in, Impact Analytics accounts only: puts the person's name on their boarding pass ---------- */
 S.user=store.get('ia11-user',null);
@@ -5497,6 +5503,7 @@ function rHero(){return `<section class="r-hero" id="arch"><div class="rh-pin"><
  ${flourish('tl')}${flourish('tr')}${flourish('bl')}${flourish('br')}
  <div class="rh-grid">
   <div class="rh-copy">
+   <span class="rh-stamp" aria-hidden="true">${invStamp('liberty','New York','11','hs1')}</span>
    <p class="rh-eb"><i></i><span>11 Years of Impact</span><i></i></p>
    <h1 class="rh-title" aria-label="Around the World"><span class="t1">Around the</span><span class="t2">World</span></h1>
    <p class="rh-sub">Thursday, 17 December 2026<span>◆</span>Hilton Embassy TechVillage, Bangalore</p>
