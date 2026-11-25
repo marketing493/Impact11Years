@@ -52,7 +52,7 @@ head = f'''<title>11 Years of Impact | Around the World in 11 Years</title>
 LOGO11 = (R / 'assets/logo-11-years.svg').read_text().replace('<svg ', '<svg class="logo11" width="200" height="65" ', 1).strip()
 CROWN = '<svg width="14" height="14" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round" aria-hidden="true"><path d="M10 46l-4-24 14 12 12-20 12 20 14-12-4 24z"/></svg>'
 body = f'''<header class="top"><div class="wrap">
- <a href="#home" aria-label="11 Years of Impact home">{LOGO11}</a>
+ <a href="#home" aria-label="11 Years of Impact home"><img class="logo11" src="/icons/logo-11-years-gold.webp" width="450" height="140" alt=""></a>
  <a class="btn sec sm bell" href="#reminders">{svg('bell', 18)}<span class="reminder-label">Reminders</span><span class="dot"></span></a>
  <div id="gsignin" class="gsignin"><div class="acct"><button class="acct-av" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="acct-menu" aria-label="Account: Prashant Agrawal">PA</button>
   <div class="acct-menu" id="acct-menu" role="menu"><div class="acct-who"><b>Prashant Agrawal</b><span>Impact Analytics</span></div>
@@ -60,7 +60,7 @@ body = f'''<header class="top"><div class="wrap">
 </div></header>
 <canvas id="ambient" aria-hidden="true"></canvas>
 <main id="app"></main>
-<footer><div class="wrap">{LOGO11}<p class="sm muted ft-copy">© 2026 Impact Analytics. All rights reserved.</p></div>
+<footer><div class="wrap"><img class="logo11" src="/icons/logo-11-years-gold.webp" width="450" height="140" alt="11 Years of Impact" loading="lazy"><p class="sm muted ft-copy">© 2026 Impact Analytics. All rights reserved.</p></div>
 <div class="ft-admin"><a href="#admin"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 11h12v9H6zM8 11V8a4 4 0 118 0v3"/></svg>Organizer login</a></div></footer>
 <button class="totop" id="totop" aria-label="Back to the top" hidden><svg class="tt-ring" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21" class="tt-track"/><circle cx="24" cy="24" r="21" class="tt-prog" pathLength="1" transform="rotate(-90 24 24)"/></svg><svg class="tt-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
 <div id="toast" role="status" aria-live="polite"></div>
