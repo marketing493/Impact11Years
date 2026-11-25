@@ -22,7 +22,7 @@ const JOURNEY=[
  ['2024','Hello, Down Under','We welcome our first client in New Zealand.','briscoes'],
  ['2025','One icon, many regions','Another multi-region rollout for an iconic US retailer.','levis'],
  ['2026','Next stop, Africa','Work begins on stores across the African region.','levis'],
- ['2026','To the end of the Earth','Inventory planning for a gift store in Antarctica. No one else in the world does this.']];
+ ['2026','To the end of the Earth','Inventory planning for a gift store in Antarctica. No one else in the world does this.','uk-antarctic-heritage-trust']];
 const FAQ=[['Who can attend?','Every employee. You check in with your personal QR code at the entrance.'],
  ['Where is the venue?','Hilton Embassy TechVillage, Marathahalli, Bangalore. Open the Venue tab for the layout and directions.'],
  ['What time should I arrive?','Check-in and boarding opens at 10:00 AM. The keynote starts at 11:00 AM.'],
