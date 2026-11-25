@@ -16,6 +16,7 @@ function rHero(){return `<section class="r-hero" id="arch"><div class="rh-pin"><
  ${flourish('tl')}${flourish('tr')}${flourish('bl')}${flourish('br')}
  <div class="rh-grid">
   <div class="rh-copy">
+   <span class="rh-stamp" aria-hidden="true">${invStamp('liberty','New York','11','hs1')}</span>
    <p class="rh-eb"><i></i><span>11 Years of Impact</span><i></i></p>
    <h1 class="rh-title" aria-label="Around the World"><span class="t1">Around the</span><span class="t2">World</span></h1>
    <p class="rh-sub">Thursday, 17 December 2026<span>◆</span>Hilton Embassy TechVillage, Bangalore</p>
