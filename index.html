@@ -5454,7 +5454,7 @@ class Voyage{
   this.pin.style.setProperty('--vp',(this.s/(this.n-1)).toFixed(4))}
  showCard(i){const s=STOPS[i],j=JOURNEY[i]||['','',''],last=i===this.n-1;this.card.classList.remove('in');this.card.offsetWidth;
   this.card.innerHTML=`<div class="pc-stamp">${lmSvg(s.lm,40,1.4)}<span>${j[0]}</span></div><div class="pc-mark"><span>IMPACT</span><b>${j[0]}</b><span>${String(i+1).padStart(2,'0')} / ${String(this.n).padStart(2,'0')}</span></div>
-  <p class="pc-eb">Stop ${i+1} of ${this.n}, ${esc(s.place)}</p><div class="pc-year tn">${j[0]}</div><h3>${esc(j[1])}</h3><p>${esc(j[2])}</p>${last?``:''}<p class="pc-note">Sample milestones. The team adds the official story.</p>`;
+  <div class="pc-year tn">${j[0]}</div><h3>${esc(j[1])}</h3><p>${esc(j[2])}</p>${last?``:''}`;
   this.card.classList.add('in')}
 }
 
