@@ -6,7 +6,9 @@ import DEFAULTS from './_defaults.js';
 /* ---------- storage ----------
  Neon Postgres (DATABASE_URL, set by the Vercel Neon integration) is the primary store.
  Upstash Redis (KV_REST_API_URL + KV_REST_API_TOKEN) still works as an alternative. */
-const PG_URL = process.env.DATABASE_URL || process.env.POSTGRES_URL;
+/* the Neon integration may add the URL under a custom prefix (e.g. STORAGE_URL), so fall back to any postgres URL */
+const PG_URL = process.env.DATABASE_URL || process.env.POSTGRES_URL ||
+  (Object.entries(process.env).find(([k, v]) => /URL$/.test(k) && !/UNPOOLED|NON_POOLING/.test(k) && /^postgres(ql)?:\/\//.test(String(v))) || [])[1];
 const KV_URL = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
 const KV_TOKEN = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
 let sql = PG_URL ? neon(PG_URL) : null;

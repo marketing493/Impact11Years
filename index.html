@@ -5722,9 +5722,14 @@ const LOGO_COLOR='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA4QAAAEXCAYAAAD1
 const passLogo=()=>`<span class="bp-logo" aria-hidden="true"><img src="${LOGO_COLOR}" alt="" width="900" height="279"></span>`;
 function passQr(){return passLogo()+(S.pass?qrSvg(S.pass.code):`<span class="qr-ph">${qrSvg('IA11 entry pass',{cls:'qr'})}</span>`)}
 
-async function loadPass(force){if(!S.server)return;if(!force&&S.pass&&S.pass.pin)return;
- try{const r=await fetch('/api/pass',{cache:'no-store',headers:{'x-guest-id':GUEST}});if(!r.ok)return;const p=await r.json();
-  S.pass=p;store.set('ia11-pass',p);if(typeof applyPassenger==='function')applyPassenger()}catch(e){}}
+/* demo: if the server can't issue a pass (no database, offline), make this device's pass here so the QR always shows */
+function localPass(){let h=0;for(const c of GUEST)h=(h*31+c.charCodeAt(0))>>>0;const pin=String(100000+h%900000),email=`guest-${GUEST}@demo.impactanalytics.co`;
+ return {name:'Impacter',email,pin,code:`IA11|${pin}|${email}|Impacter`,checkedIn:false,local:true}}
+function useLocalPass(){if(S.pass&&S.pass.pin)return;S.pass=localPass();if(typeof applyPassenger==='function')applyPassenger()}
+async function loadPass(force){if(!force&&S.pass&&S.pass.pin&&!S.pass.local)return;
+ if(!S.server){useLocalPass();return}
+ try{const r=await fetch('/api/pass',{cache:'no-store',headers:{'x-guest-id':GUEST}});if(!r.ok){useLocalPass();return}const p=await r.json();
+  S.pass=p;store.set('ia11-pass',p);if(typeof applyPassenger==='function')applyPassenger()}catch(e){useLocalPass()}}
 
 /* tapping the QR on the opened pass shows it large, with the name and PIN, ready for the door */
 addEventListener('click',e=>{const stub=e.target.closest&&e.target.closest('.env.open .bp-stub');if(!stub)return;e.preventDefault();e.stopPropagation();showPass()},true);
