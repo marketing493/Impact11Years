@@ -60,7 +60,8 @@ body = f'''<header class="top"><div class="wrap">
 </div></header>
 <canvas id="ambient" aria-hidden="true"></canvas>
 <main id="app"></main>
-<footer><div class="wrap">{LOGO11}<p class="sm muted ft-copy">© 2026 Impact Analytics. All rights reserved.</p></div></footer>
+<footer><div class="wrap">{LOGO11}<p class="sm muted ft-copy">© 2026 Impact Analytics. All rights reserved.</p></div>
+<div class="ft-admin"><a href="#admin"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 11h12v9H6zM8 11V8a4 4 0 118 0v3"/></svg>Organizer login</a></div></footer>
 <button class="totop" id="totop" aria-label="Back to the top" hidden><svg class="tt-ring" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21" class="tt-track"/><circle cx="24" cy="24" r="21" class="tt-prog" pathLength="1" transform="rotate(-90 24 24)"/></svg><svg class="tt-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
 <div id="toast" role="status" aria-live="polite"></div>
 <div class="curtain" aria-hidden="true"><i class="cl"></i><i class="cr"></i><span class="c-val"></span><span class="c-seal">11</span></div>
