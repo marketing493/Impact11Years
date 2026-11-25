@@ -13,7 +13,16 @@ const ZONES=[
  {id:'Main hall',x:28,y:4,w:44,h:54,h0:46,top:'#FFFFFF',note:'Stage, keynote and the evening show'},
  {id:'Atrium',x:28,y:64,w:44,h:34,h0:20,top:'#B3C9F7',note:'Food, networking and photo walls'},
  {id:'Arena',x:76,y:22,w:22,h:76,h0:30,top:'#F4F4F6',note:'Games and team challenges'}];
-const JOURNEY=[['2015','An idea and a lot of hustle','A small team sets out to change how retailers make decisions.'],['2017','First retail clients onboard','The first retailers put the platform to work.'],['2019','One platform, many solutions','Separate tools come together on one core.'],['2021','A team that works from anywhere','Colleagues connect across cities and time zones.'],['2024','Hundreds of people, one mission','The team grows and keeps pulling in one direction.'],['2026','800+ people, eleven years','The whole company celebrates together in Bangalore.']];
+/* the voyage: [year, heading, line, client logo key (a file in assets/clients/, shown as a watermark)] */
+const JOURNEY=[
+ ['2015','Where it all began','A small team sets out to change how retailers make decisions.'],
+ ['2016','Our first product, our first client','Inventory Optimization (IRT) goes live with Pandora.','pandora'],
+ ['2021','One platform, many smarts','Assort, Pricing, Promo and Attribute launch, and the Smart Platform goes live.'],
+ ['2023','Going multinational','Our first multinational inventory allocation, built for Ralph Lauren.','ralph-lauren'],
+ ['2024','Hello, Down Under','Our first client in New Zealand: Briscoes.','briscoes'],
+ ['2025','One icon, many regions',"Another multi-region rollout for an iconic US retailer, Levi's.",'levis'],
+ ['2026','Next stop, Africa',"Work begins for Levi's stores across the African region.",'levis'],
+ ['2026','To the end of the Earth','Inventory planning for a gift store in Antarctica. No one else in the world does this.']];
 const FAQ=[['Who can attend?','Every employee. You check in with your personal QR code at the entrance.'],
  ['Where is the venue?','Hilton Embassy TechVillage, Marathahalli, Bangalore. Open the Venue tab for the layout and directions.'],
  ['What time should I arrive?','Check-in and boarding opens at 10:00 AM. The keynote starts at 11:00 AM.'],

@@ -13,6 +13,9 @@ const LANDMARKS={
  eiffel:'M32 3v7M28 10h8M29 10l-5 22h16l-5-22M24 32l-7 27M40 32l7 27M15 59h34M25 45h14M21 46c4-7 18-7 22 0M27.5 21h9',
  colosseum:'M7 50h50M7 50V31c9-7 41-7 50 0v19M7 39h50M13 50v-7M21 50v-7M29 50v-7M37 50v-7M45 50v-7M53 50v-7M13 36v-4M21 35v-5M29 34v-5M37 34v-5M45 35v-5M53 36v-4M5 56h54',
  antarctica:'M6 58h52M10 58l8-20 5 6 7-16 9 14 4-6 9 22M23 44l-3 7M30 28l3 10M39 42l2 5M44 52c0-6 1.5-10 4-12 2.5 2 4 6 4 12M42 58c-1-5 0-10 2-14M54 58c1-5 0-10-2-14M48 40c-2.6 0-4-2-4-4.3 0-2.6 1.8-4.2 4-4.2s4 1.6 4 4.2c0 2.3-1.4 4.3-4 4.3M51.6 35.3l3-.8M46.6 35.4h.1M45 58h2M49 58h2',
+ skytower:'M26 60l4-12h4l4 12M24 60h16M30 48V24M34 48V24M30 40h4M30 32h4M26 24h12M26 24c0-3.5 2.5-6 6-6s6 2.5 6 6M25 18h14M28 18c0-2.5 1.8-4 4-4s4 1.5 4 4M32 14V3',
+ redeemer:'M26 60h12M28 60V50h8v10M29.5 50l-1.5-22M34.5 50l1.5-22M8 25h48M8 25l1.5 3h45l1.5-3M28 28h8M29 20.5a3 3 0 1 0 6 0a3 3 0 1 0-6 0',
+ hillbrow:'M27 60h10M29 60l1-38M35 60l-1-38M28 46h8M26 22h12M27 22v-8h10v8M26 14h12M29 14V9h6v5M32 9V3M25 32h14M27 32v5h10v-5',
  liberty:'M22 60h20M24 60V49h16v11M26 49l2-4h8l2 4M29 45l-1-15c0-3 1.5-4.5 4-4.5s4 1.5 4 4.5l-1 15M29.5 21.5a2.5 2.5 0 105 0 2.5 2.5 0 00-5 0M28.6 19.4l-2.4-3M32 18.6v-4M35.4 19.4l2.4-3M35.6 27.5L39.5 13M37.6 13h3.8l-1.9 3.4zM39.5 12.6c-1.4-1.8-.4-4.2 1-5.4.2 2 1.2 3.2-1 5.4M28.6 31.5l-3.4 4.5 2.4 3.4',
  pagoda:'M32 3v7M20 14h24l-4-4H24zM18 14l-4 4h36l-4-4M22 18v8M42 18v8M16 30h32l-4-4H20zM20 30v8M44 30v8M12 42h40l-4-4H16zM18 42v16M46 42v16M10 58h44M28 58V48h8v10',
  opera:'M5 50h54M10 50c2-14 10-22 18-24-2 8-2 18 0 24M24 50c2-14 10-22 20-24-4 8-4 18-2 24M40 50c2-10 8-16 16-18-2 6-2 12 0 18M3 56h58',
@@ -21,12 +24,14 @@ const lmSvg=(k,s=48,sw=1.6)=>`<svg width="${s}" height="${s}" viewBox="0 0 64 64
 
 /* the voyage: one stop per milestone (sample copy, replaced by the official story) */
 const STOPS=[
- {lm:'taj',lon:78.0,lat:27.2,place:'Where it began'},
- {lm:'bigben',lon:-0.13,lat:51.5,place:'Across the sea'},
- {lm:'eiffel',lon:2.35,lat:48.86,place:'New horizons'},
- {lm:'colosseum',lon:12.49,lat:41.9,place:'Built to last'},
- {lm:'liberty',lon:-74.04,lat:40.69,place:'Bigger dreams'},
- {lm:'crown',lon:77.59,lat:12.97,place:'Home to celebrate'}];
+ {lm:'vidhana',lon:77.59,lat:12.97,place:'Bengaluru'},
+ {lm:'liberty',lon:-74.04,lat:40.69,place:'New York'},
+ {lm:'vidhana',lon:77.59,lat:12.97,place:'Bengaluru'},
+ {lm:'bigben',lon:-0.13,lat:51.5,place:'London'},
+ {lm:'skytower',lon:174.76,lat:-36.85,place:'Auckland'},
+ {lm:'redeemer',lon:-46.63,lat:-23.55,place:'Brazil'},
+ {lm:'hillbrow',lon:28.05,lat:-26.2,place:'Johannesburg'},
+ {lm:'antarctica',lon:45,lat:-70,place:'Antarctica'}];
 
 /* SVG sprite: defined once, used everywhere with <use href="#..."> */
 const ROYAL_SPRITE=`<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>

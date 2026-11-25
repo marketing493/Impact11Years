@@ -214,7 +214,7 @@ class Voyage{
  loop(time){this.raf=0;if(!this.alive||!this.vis||document.hidden)return;this.lastT=time;
   const ds=this.target-this.s;if(LITE&&this.cam&&this.layer&&Math.abs(ds)<.0004&&this.settled>3)return;this.kick(MOTION_MS-16);this.settled=Math.abs(ds)<.0004?(this.settled||0)+1:0;this.s+=ds*(RMQ.matches?1:.08);const W=this.W,H=this.H,c=this.ctx,w=this.where(this.s),P=w.pos;
   /* camera follows the plane */
-  const want=[Math.max(Math.min(P[0]-W*(this.phone?.5:.6),this.mapW-W),0),this.mapH<H?(this.mapH-H)/2-H*.06:Math.max(Math.min(P[1]-H*.56,this.mapH-H),0)];
+  const want=[Math.max(Math.min(P[0]-W*(this.phone?.5:.6),this.mapW-W),0),this.mapH<H?Math.max((this.mapH-H)/2-H*.06,P[1]-H*.62):Math.max(Math.min(P[1]-H*.56,this.mapH-H),0)];
   if(!this.cam)this.cam=want;this.cam=[this.cam[0]+(want[0]-this.cam[0])*.08,this.cam[1]+(want[1]-this.cam[1])*.08];const cx=this.cam[0],cy=this.cam[1];
   c.clearRect(0,0,W,H);
   const blue=document.documentElement.dataset.tone==='blue';if(!this.layer||this.layerTone!==blue)this.buildLayer();const G=this.G,cs=this.cell,still=RMQ.matches||LITE,px=P[0]-cx,py=P[1]-cy;
@@ -241,9 +241,12 @@ class Voyage{
   this.pin.style.setProperty('--vp',(this.s/(this.n-1)).toFixed(4))}
  showCard(i){const s=STOPS[i],j=JOURNEY[i]||['','',''],last=i===this.n-1;this.card.classList.remove('in');this.card.offsetWidth;
   this.card.innerHTML=`<div class="pc-stamp">${lmSvg(s.lm,40,1.4)}<span>${j[0]}</span></div><div class="pc-mark"><span>IMPACT</span><b>${j[0]}</b><span>${String(i+1).padStart(2,'0')} / ${String(this.n).padStart(2,'0')}</span></div>
-  <div class="pc-year tn">${j[0]}</div><h3>${esc(j[1])}</h3><p>${esc(j[2])}</p>${last?``:''}`;
-  this.card.classList.add('in')}
+  <div class="pc-year tn">${j[0]}</div><h3>${esc(j[1])}</h3><p>${esc(j[2])}</p>${j[3]&&CLIENT_LOGOS[j[3]]?`<img class="pc-logo" src="${CLIENT_LOGOS[j[3]]}" alt="" aria-hidden="true">`:''}`;
+  this.card.classList.toggle('has-logo',!!(j[3]&&CLIENT_LOGOS[j[3]]));this.card.classList.add('in')}
 }
+
+/* client logos for the postcards, filled in by the build from assets/clients/ (a missing logo just shows nothing) */
+const CLIENT_LOGOS=__CLIENT_LOGOS__;
 
 /* split-flap departures board */
 const FLAP=' ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:-.&';
