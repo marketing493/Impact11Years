@@ -1,6 +1,6 @@
 /* 11 Years of Impact service worker: offline shell, push reminders, notification taps. */
 const CACHE = 'impact-events-v3';
-const SHELL = ['/', '/manifest.webmanifest', '/icons/icon-192.png', '/icons/badge-96.png'];
+const SHELL = ['/', '/manifest.webmanifest', '/icons/icon-192.png', '/icons/badge-96.png', '/icons/logo-11-years-gold.webp'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
