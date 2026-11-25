@@ -1,5 +1,5 @@
 > **Demo build (branch `11yearsofimpact-finaldemo`).** Same site as the main one without Google sign-in: anyone with the
-> link can view everything. Each device gets a guest boarding pass (name "Impacter") with its own entry QR and
+> link can view everything. Each device gets a guest boarding pass (name "Prashant Agrawal") with its own entry QR and
 > PIN, so the download and the organiser check-in scanner can be tried end to end. Host it as its own Vercel
 > project with its own database; do not set GOOGLE_CLIENT_ID or SESSION_SECRET here (they are not used).
 

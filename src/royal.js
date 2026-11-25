@@ -132,7 +132,7 @@ function invDeco(){return `<div class="inv-deco" aria-hidden="true">
 </div>`}
 /* ---------- demo: no sign-in; every device gets a guest boarding pass ---------- */
 S.user=null;
-const passengerName=()=>S.pass&&S.pass.name?S.pass.name:'Impacter';
+const passengerName=()=>'Prashant Agrawal';
 function applyPassenger(){const c=$('.env-card');if(c){c.classList.remove('portrait');c.innerHTML=boardingPass()}if(typeof mountPortraitPass==='function'){PP_KEY='';mountPortraitPass()}}
 function boardingPass(){return `<span class="bpass" role="img" aria-label="Boarding pass: Impact Analytics flight IA 011, passenger ${esc(passengerName())}, from WRK, Smartworks Global Tech Park, to PRTY, Hilton Embassy TechVillage, ${EVENT.dateLong}, boards 10:00 AM. Tap the QR code to enlarge your entry pass.">
  <span class="bp-main">

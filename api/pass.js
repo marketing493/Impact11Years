@@ -10,7 +10,7 @@ export default async function handler(req, res) {
   if (!/^[a-z0-9]{12}$/.test(id)) return send(res, 400, { error: 'Missing guest id.' });
   if (!hasStore()) return send(res, 503, { error: 'Entry passes need the database.' });
   try {
-    const p = await db.getOrCreatePass(`guest-${id}@demo.impactanalytics.co`, 'Impacter');
+    const p = await db.getOrCreatePass(`guest-${id}@demo.impactanalytics.co`, 'Prashant Agrawal');
     return send(res, 200, { name: p.name, email: p.email, pin: p.pin, code: passCode(p), checkedIn: Boolean(p.checkedInAt) });
   } catch (e) {
     return send(res, 500, { error: 'Could not load your pass. Please try again.' });

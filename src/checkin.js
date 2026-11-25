@@ -28,9 +28,9 @@ function passQr(){return passLogo()+(S.pass?qrSvg(S.pass.code):`<span class="qr-
 
 /* demo: if the server can't issue a pass (no database, offline), make this device's pass here so the QR always shows */
 function localPass(){let h=0;for(const c of GUEST)h=(h*31+c.charCodeAt(0))>>>0;const pin=String(100000+h%900000),email=`guest-${GUEST}@demo.impactanalytics.co`;
- return {name:'Impacter',email,pin,code:`IA11|${pin}|${email}|Impacter`,checkedIn:false,local:true}}
-function useLocalPass(){if(S.pass&&S.pass.pin)return;S.pass=localPass();if(typeof applyPassenger==='function')applyPassenger()}
-async function loadPass(force){if(!force&&S.pass&&S.pass.pin&&!S.pass.local)return;
+ return {name:'Prashant Agrawal',email,pin,code:`IA11|${pin}|${email}|Prashant Agrawal`,checkedIn:false,local:true}}
+function useLocalPass(){if(S.pass&&S.pass.pin&&S.pass.name==='Prashant Agrawal')return;S.pass=localPass();if(typeof applyPassenger==='function')applyPassenger()}
+async function loadPass(force){if(!force&&S.pass&&S.pass.pin&&!S.pass.local&&S.pass.name==='Prashant Agrawal')return;
  if(!S.server){useLocalPass();return}
  try{const r=await fetch('/api/pass',{cache:'no-store',headers:{'x-guest-id':GUEST}});if(!r.ok){useLocalPass();return}const p=await r.json();
   S.pass=p;store.set('ia11-pass',p);if(typeof applyPassenger==='function')applyPassenger()}catch(e){useLocalPass()}}
@@ -109,7 +109,7 @@ async function passImage(){
  /* a wallet-size pass (340 x 566, drawn at 3x = 1020 x 1698 px) in the ivory and gold of the on-screen pass, on a transparent background */
  const S2=3,W=340,H=566,R=14,cv=document.createElement('canvas');cv.width=W*S2;cv.height=H*S2;const c=cv.getContext('2d');c.scale(S2,S2);
  const INTER='"Inter Tight", Inter, system-ui, sans-serif',SERIF='Spectral, Georgia, serif',track=v=>{try{c.letterSpacing=v}catch(e){}};
- const p=S.pass,name=((p&&p.name)||(S.user&&S.user.name)||'Impacter').toUpperCase(),PX=18;
+ const p=S.pass,name=((p&&p.name)||(S.user&&S.user.name)||'Prashant Agrawal').toUpperCase(),PX=18;
  const label=(t,x,y,align='left')=>{c.fillStyle='rgba(28,27,27,.55)';c.font=`600 9.5px ${INTER}`;track('1.4px');c.textAlign=align;c.fillText(t.toUpperCase(),x+(align==='right'?1.4:0),y);track('0px');c.textAlign='left'};
  /* card: ivory to gold, a thin Impact Blue stripe along the top */
  c.save();c.beginPath();c.roundRect(0,0,W,H,R);c.clip();
