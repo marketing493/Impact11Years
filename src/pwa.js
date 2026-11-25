@@ -10,7 +10,7 @@ function notifyStatus(){const p=S.pwa,has='Notification' in window&&'serviceWork
  if(!has)return p.ios?'ios-update':'unsupported';
  return 'ok'}
 const NOTIFY_HELP={
- 'ios-install':'On iPhone and iPad, reminders only work from the home screen app. Add it to your home screen (step 1), open Impact Events from your home screen, then tap Turn on reminders.',
+ 'ios-install':'On iPhone and iPad, reminders only work from the home screen app. Add it to your home screen (step 1), open 11 Years of Impact from your home screen, then tap Turn on reminders.',
  'ios-update':'Reminders need iOS 16.4 or later. Update your iPhone or iPad in Settings, General, Software Update, then open the app from your home screen again.',
  'unsupported':'This browser cannot show notifications. Try Chrome, Edge, Firefox or Safari on a computer, or the home screen app on your phone.'};
 const inFrame=(()=>{try{return window.self!==window.top}catch(e){return true}})();
@@ -58,9 +58,9 @@ async function scheduleLocal(){clearLocal();if(!S.pwa.on||!('Notification' in wi
 /* ---------- how-to sheet for browsers that cannot install or allow reminders on a tap (iPhone Safari, Firefox, desktop Safari) ---------- */
 function howSheet(kind){const ios=S.pwa.ios,inApp=/CriOS|FxiOS|EdgiOS|FBAN|FBAV|Instagram|Line\//.test(navigator.userAgent);
  const steps=kind==='remind'
-  ?[[ic('addbox',22),'Add the app to your home screen','Use the Add to home screen button in step 1.'],[ic('star',22),'Open Impact Events from your home screen','iPhone and iPad only allow reminders from the home screen app.'],[ic('bell',22),'Tap Turn on reminders','Then allow notifications when your phone asks.']]
-  :ios?[[ic('share',22),inApp?'Open this page in Safari':'Tap Share',inApp?'You are in another app or browser right now. Copy the link and open it in Safari.':'The Share button is at the bottom of the screen in Safari.'],[ic('addbox',22),'Choose Add to Home Screen','Scroll down the list if you do not see it.'],[ic('check',22),'Tap Add','The Impact Events icon appears on your home screen.']]
-  :[[ic('addbox',22),'On Android','Open the browser menu (three dots) and choose Install app or Add to home screen.'],[ic('star',22),'On a computer','Click the install icon at the right of the address bar.'],[ic('check',22),'Then open it','The Impact Events app opens full screen, like any other app.']];
+  ?[[ic('addbox',22),'Add the app to your home screen','Use the Add to home screen button in step 1.'],[ic('star',22),'Open 11 Years of Impact from your home screen','iPhone and iPad only allow reminders from the home screen app.'],[ic('bell',22),'Tap Turn on reminders','Then allow notifications when your phone asks.']]
+  :ios?[[ic('share',22),inApp?'Open this page in Safari':'Tap Share',inApp?'You are in another app or browser right now. Copy the link and open it in Safari.':'The Share button is at the bottom of the screen in Safari.'],[ic('addbox',22),'Choose Add to Home Screen','Scroll down the list if you do not see it.'],[ic('check',22),'Tap Add','The 11 Years of Impact icon appears on your home screen.']]
+  :[[ic('addbox',22),'On Android','Open the browser menu (three dots) and choose Install app or Add to home screen.'],[ic('star',22),'On a computer','Click the install icon at the right of the address bar.'],[ic('check',22),'Then open it','The 11 Years of Impact app opens full screen, like any other app.']];
  const w=document.createElement('div');w.className='modal-w how-w';w.setAttribute('role','dialog');w.setAttribute('aria-modal','true');w.setAttribute('aria-label',kind==='remind'?'How to turn on reminders':'How to add to home screen');
  w.innerHTML=`<div class="modal how"><div class="how-h"><h3>${kind==='remind'?'Turn on reminders':'Add to home screen'}</h3><button class="icon-btn how-x" aria-label="Close">${ic('x',18)}</button></div>
   <ol class="how-s">${steps.map(([i,t,d],k)=>`<li><span class="how-n">${k+1}</span><span class="how-i">${i}</span><span class="how-t"><b>${t}</b><small>${d}</small></span></li>`).join('')}</ol>
