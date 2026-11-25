@@ -1439,6 +1439,12 @@ html::-webkit-scrollbar,body::-webkit-scrollbar,*::-webkit-scrollbar{display:non
 @supports (animation-timeline:view()){.istamp.s6{animation-name:driftC}}
 @media (max-width:900px){.istamp.s6{display:none}}
 
+/* footer: a slim organizer-login bar under the copyright line */
+.ft-admin{border-top:1px solid rgba(212,175,97,.22);display:flex;justify-content:center;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px))}
+.ft-admin a{display:inline-flex;align-items:center;gap:8px;min-height:36px;padding:0 14px;border-radius:999px;font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(243,223,162,.75);text-decoration:none;transition:color .2s,background .2s}
+.ft-admin a:hover,.ft-admin a:focus-visible{color:#F7E3A1;background:rgba(212,175,97,.1)}
+@media (max-width:900px){footer .wrap{padding-bottom:24px}.ft-admin{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}}
+
 /* ---------- logos: 15% smaller, with breathing room ---------- */
 .top .logo11{width:clamp(124px,10.8vw,152px)}
 .top .wrap>a:first-child{padding:10px 6px 10px 0}
