@@ -1513,7 +1513,7 @@ html,body{max-width:100%;overflow-x:clip}
 .is-in b{font-family:var(--f-body);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#1C1B1B;font-weight:600}
 .is-in i{position:absolute;top:10px;right:12px;font-style:normal;font-family:'Spectral',Georgia,serif;font-size:15px;color:#9C7A36}
 .istamp.s1{--r:-9deg;left:6%;top:9%}
-.istamp.s2{--r:7deg;left:38%;top:5%}
+.istamp.s2{--r:7deg;left:49%;top:5%}
 .istamp.s3{--r:-5deg;left:45%;bottom:9%}
 .istamp.s4{--r:11deg;right:5%;bottom:12%}
 .istamp.s3 .is-in,.istamp.s4 .is-in{width:70px}
@@ -2148,7 +2148,7 @@ html::-webkit-scrollbar,body::-webkit-scrollbar,*::-webkit-scrollbar{display:non
 @media (prefers-reduced-motion:reduce){.seal-glow{animation:none;opacity:.6}}
 
 
-/* invitation: the Antarctica stamp, inside the dotted route between Bengaluru and New York (wide screens only) */
+/* invitation: the New York stamp, inside the dotted route below the Antarctica stamp (wide screens only) */
 .istamp.s6{--r:-7deg;left:27%;top:24%}
 @supports (animation-timeline:view()){.istamp.s6{animation-name:driftC}}
 @media (max-width:900px){.istamp.s6{display:none}}
@@ -5340,7 +5340,7 @@ function invDeco(){return `<div class="inv-deco" aria-hidden="true">
   <text class="pm-big" x="110" y="106" text-anchor="middle">BLR</text><text class="pm-sm" x="110" y="132" text-anchor="middle">17 · XII · 2026</text></svg>
  <svg class="inv-waves" viewBox="0 0 300 90" preserveAspectRatio="none"><path d="M0 15 q 18.75 -12 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0M0 45 q 18.75 -12 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0M0 75 q 18.75 -12 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0"/></svg>
  <span class="ifl k1">✦</span><span class="ifl k2">✦</span><span class="ifl k3">✦</span><span class="ifl k4">✦</span><span class="ifl d1"></span><span class="ifl d2"></span><span class="ifl d3"></span><span class="ifl d4"></span><span class="ifl c1"></span><span class="ifl c2"></span><span class="ifl p1">${PLANE_SVG(16)}</span><span class="ifl p2">${PLANE_SVG(12)}</span>
- ${invStamp('vidhana','Bengaluru','11','s1')}${invStamp('liberty','New York','11','s2')}${invStamp('antarctica','Antarctica','11','s6')}${invStamp('opera','Sydney','11','s3')}${invStamp('bigben','London','11','s4')}${invStamp('eiffel','Paris','11','s5')}
+ ${invStamp('vidhana','Bengaluru','11','s1')}${invStamp('antarctica','Antarctica','11','s2')}${invStamp('liberty','New York','11','s6')}${invStamp('opera','Sydney','11','s3')}${invStamp('bigben','London','11','s4')}${invStamp('eiffel','Paris','11','s5')}
 </div>`}
 /* ---------- demo: no sign-in; every device gets a guest boarding pass ---------- */
 S.user=null;
