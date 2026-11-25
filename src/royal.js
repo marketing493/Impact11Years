@@ -241,11 +241,11 @@ class Voyage{
   this.pin.style.setProperty('--vp',(this.s/(this.n-1)).toFixed(4))}
  showCard(i){const s=STOPS[i],j=JOURNEY[i]||['','',''],last=i===this.n-1;this.card.classList.remove('in');this.card.offsetWidth;
   this.card.innerHTML=`<div class="pc-stamp">${lmSvg(s.lm,40,1.4)}<span>${j[0]}</span></div><div class="pc-mark"><span>IMPACT</span><b>${j[0]}</b><span>${String(i+1).padStart(2,'0')} / ${String(this.n).padStart(2,'0')}</span></div>
-  <div class="pc-year tn">${j[0]}</div><h3>${esc(j[1])}</h3><p>${esc(j[2])}</p>${j[3]&&CLIENT_LOGOS[j[3]]?`<img class="pc-logo" src="${CLIENT_LOGOS[j[3]]}" alt="" aria-hidden="true">`:''}`;
+  <div class="pc-year tn">${j[0]}</div><h3>${esc(j[1])}</h3><p>${esc(j[2])}</p>${j[3]&&CLIENT_LOGOS[j[3]]?`<img class="pc-logo" data-logo="${j[3]}" src="${CLIENT_LOGOS[j[3]]}" alt="" aria-hidden="true">`:''}`;
   this.card.classList.toggle('has-logo',!!(j[3]&&CLIENT_LOGOS[j[3]]));this.card.classList.add('in')}
 }
 
-/* client logos for the postcards, filled in by the build from assets/clients/ (a missing logo just shows nothing) */
+/* client logos for the postcards, inlined by the build from assets/clients/ so they appear with the card (a missing logo just shows nothing) */
 const CLIENT_LOGOS=__CLIENT_LOGOS__;
 
 /* split-flap departures board */
