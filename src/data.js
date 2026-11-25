@@ -17,7 +17,7 @@ const ZONES=[
 const JOURNEY=[
  ['2015','Where it all began','A small team sets out to change how retailers make decisions.'],
  ['2016','Our first product, our first client','Inventory Optimization (IRT) goes live.','pandora'],
- ['2021','One platform, many smarts','Assort, Pricing, Promo and Attribute launch, and the Smart Platform goes live.'],
+ ['2021','One platform, many smarts','Assort, Pricing, Promo and Attribute launch, and the Smart Platform goes live.','signet'],
  ['2023','Going multinational','Our first multinational inventory allocation goes live.','ralph-lauren'],
  ['2024','Hello, Down Under','We welcome our first client in New Zealand.','briscoes'],
  ['2025','One icon, many regions','Another multi-region rollout for an iconic US retailer.','levis'],
