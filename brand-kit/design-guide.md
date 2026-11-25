@@ -199,7 +199,7 @@ Warm, inclusive, a little playful; uses travel metaphors without overdoing them.
 Real lines from the site:
 - "Every one of us has a seat on this flight. The people who were here on day one, the ones who joined last month, and everyone in between."
 - "Eleven years in, this is the trip we take together."
-- "Your boarding pass is waiting." / "Tap to reveal" / "Get your boarding pass" / "Begin the voyage"
+- "Your boarding pass is waiting." / "Tap to reveal" / "Get your boarding pass" / "Explore the journey"
 - "Every Moment. Every Connection. Every Impact."
 - "Every pavilion hides its line-up. Tap a tent to draw back the curtains."
 - "All flights have departed. Thank you for travelling with us."
