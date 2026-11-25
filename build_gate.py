@@ -51,7 +51,7 @@ _gate_body = (
     '<script>\n' + _GATE_JS + '\n</script>')
 
 import re as _re
-_gate_head = _re.sub(r'<meta name="description"[^>]*>', '<meta name="description" content="Sign in with your Impact Analytics Google account.">', head).replace('<title>Impact Events</title>', '<title>Sign in · Impact Events</title>\n<meta name="robots" content="noindex">')
+_gate_head = _re.sub(r'<meta name="description"[^>]*>', '<meta name="description" content="Sign in with your Impact Analytics Google account.">', head).replace('<title>11 Years of Impact | Around the World in 11 Years</title>', '<title>11 Years of Impact | Around the World in 11 Years</title>\n<meta name="robots" content="noindex">')
 (pub / 'login.html').write_text(
     '<!doctype html>\n<html lang="en" data-skin="royal" data-tone="blue">\n<head>\n<meta charset="utf-8">\n'
     '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n' + _gate_head +

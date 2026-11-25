@@ -33,7 +33,7 @@ ICONS = {'home': 'M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10', 'calendar': 'M4 6h16v14H
          'bell': 'M6 16V11a6 6 0 1112 0v5l2 2H4zM10 21h4'}
 svg = lambda n, s=22: f'<svg width="{s}" height="{s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{ICONS[n]}"/></svg>'
 
-head = f'''<title>Impact Events</title>
+head = f'''<title>11 Years of Impact | Around the World in 11 Years</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="Countdown, schedule, venue and reminders for 11 Years of Impact, 17 December 2026 in Bangalore.">
 <meta name="theme-color" content="#264CD7">
