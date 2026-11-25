@@ -2147,10 +2147,11 @@ html::-webkit-scrollbar,body::-webkit-scrollbar,*::-webkit-scrollbar{display:non
 .env.open .seal-glow{animation:none;opacity:0}
 @media (prefers-reduced-motion:reduce){.seal-glow{animation:none;opacity:.6}}
 
-/* hero: the New York stamp in the open space between the title and the globe (wide screens only) */
-.rh-stamp{display:none}
-@media (min-width:1101px){.rh-copy{position:relative}.rh-stamp{display:block;position:absolute;z-index:3;left:calc(100% - 15px);top:40px;pointer-events:none;animation:riseIn 1.4s var(--ease) both .7s}
- .rh-stamp .istamp{position:relative;display:block;--r:8deg;scale:.96;transform-origin:50% 50%}}
+
+/* invitation: the Antarctica stamp, inside the dotted route between Bengaluru and New York (wide screens only) */
+.istamp.s6{--r:-7deg;left:27%;top:24%}
+@supports (animation-timeline:view()){.istamp.s6{animation-name:driftC}}
+@media (max-width:900px){.istamp.s6{display:none}}
 
 /* ---------- logos: 15% smaller, with breathing room ---------- */
 .top .logo11{width:clamp(124px,10.8vw,152px)}
@@ -5339,7 +5340,7 @@ function invDeco(){return `<div class="inv-deco" aria-hidden="true">
   <text class="pm-big" x="110" y="106" text-anchor="middle">BLR</text><text class="pm-sm" x="110" y="132" text-anchor="middle">17 · XII · 2026</text></svg>
  <svg class="inv-waves" viewBox="0 0 300 90" preserveAspectRatio="none"><path d="M0 15 q 18.75 -12 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0M0 45 q 18.75 -12 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0M0 75 q 18.75 -12 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0 t 37.5 0"/></svg>
  <span class="ifl k1">✦</span><span class="ifl k2">✦</span><span class="ifl k3">✦</span><span class="ifl k4">✦</span><span class="ifl d1"></span><span class="ifl d2"></span><span class="ifl d3"></span><span class="ifl d4"></span><span class="ifl c1"></span><span class="ifl c2"></span><span class="ifl p1">${PLANE_SVG(16)}</span><span class="ifl p2">${PLANE_SVG(12)}</span>
- ${invStamp('vidhana','Bengaluru','11','s1')}${invStamp('antarctica','Antarctica','11','s2')}${invStamp('opera','Sydney','11','s3')}${invStamp('bigben','London','11','s4')}${invStamp('eiffel','Paris','11','s5')}
+ ${invStamp('vidhana','Bengaluru','11','s1')}${invStamp('liberty','New York','11','s2')}${invStamp('antarctica','Antarctica','11','s6')}${invStamp('opera','Sydney','11','s3')}${invStamp('bigben','London','11','s4')}${invStamp('eiffel','Paris','11','s5')}
 </div>`}
 /* ---------- demo: no sign-in; every device gets a guest boarding pass ---------- */
 S.user=null;
@@ -5479,7 +5480,6 @@ function rHero(){return `<section class="r-hero" id="arch"><div class="rh-pin"><
  ${flourish('tl')}${flourish('tr')}${flourish('bl')}${flourish('br')}
  <div class="rh-grid">
   <div class="rh-copy">
-   <span class="rh-stamp" aria-hidden="true">${invStamp('liberty','New York','11','hs1')}</span>
    <p class="rh-eb"><i></i><span>11 Years of Impact</span><i></i></p>
    <h1 class="rh-title" aria-label="Around the World"><span class="t1">Around the</span><span class="t2">World</span></h1>
    <p class="rh-sub">Thursday, 17 December 2026<span>◆</span>Hilton Embassy TechVillage, Bangalore</p>
