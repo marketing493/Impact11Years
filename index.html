@@ -2159,8 +2159,9 @@ html::-webkit-scrollbar,body::-webkit-scrollbar,*::-webkit-scrollbar{display:non
 @media (max-width:900px){footer .wrap{padding-bottom:24px}.ft-admin{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}}
 
 /* postcards: the client's logo as a faint ink watermark, bottom right */
-.postcard .pc-logo{position:absolute;right:20px;bottom:16px;max-width:110px;max-height:38px;width:auto;height:auto;object-fit:contain;opacity:.16;filter:grayscale(1) brightness(0);mix-blend-mode:multiply;pointer-events:none}
-@media (max-width:820px){.postcard .pc-logo{right:14px;bottom:12px;max-width:72px;max-height:24px}.postcard.has-logo p{padding-right:80px}}
+.postcard .pc-logo{position:absolute;right:26px;bottom:24px;max-width:110px;max-height:38px;width:auto;height:auto;object-fit:contain;opacity:.16;filter:grayscale(1) brightness(0);mix-blend-mode:multiply;pointer-events:none;transform:rotate(-12deg);transform-origin:50% 50%}
+.postcard.has-logo p{max-width:27ch}
+@media (max-width:820px){.postcard.has-logo p{max-width:none}.postcard .pc-logo{right:18px;bottom:16px;max-width:72px;max-height:24px}.postcard.has-logo p{padding-right:80px}}
 
 /* ---------- logos: 15% smaller, with breathing room ---------- */
 .top .logo11{width:clamp(124px,10.8vw,152px)}
