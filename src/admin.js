@@ -2,8 +2,11 @@
 const A_=S.admin;
 A_.key=(()=>{try{return sessionStorage.getItem('ia11-admin')||''}catch(e){return ''}})();
 const adminHeaders=()=>({'Content-Type':'application/json','x-admin-key':A_.key});
-async function adminLogin(key){A_.key=key;const r=await fetch('/api/admin',{headers:adminHeaders(),cache:'no-store'}).catch(()=>null);
- if(r&&r.ok){A_.authed=true;A_.stats=await r.json();try{sessionStorage.setItem('ia11-admin',key)}catch(e){}return true}
+async function adminLogin(key){A_.key=String(key).trim();const r=await fetch('/api/admin',{headers:adminHeaders(),cache:'no-store'}).catch(()=>null);
+ if(r&&r.ok){A_.authed=true;A_.stats=await r.json();try{sessionStorage.setItem('ia11-admin',A_.key)}catch(e){}A_.err='';return true}
+ /* say why it failed: wrong password, password not set up, signed out, or no connection */
+ const j=r?await r.json().catch(()=>({})):{};
+ A_.err=!r?'Could not reach the server. Check your connection and try again.':r.status===401&&!/organizer/i.test(j.error||'')?'Your sign-in has expired. Reload the page and sign in again.':(j.error||'That password did not work. Try again.');
  A_.authed=false;A_.key='';try{sessionStorage.removeItem('ia11-admin')}catch(e){}return false}
 async function saveActs(list,msg){
  if(S.server){const r=await fetch('/api/activities',{method:'PUT',headers:adminHeaders(),body:JSON.stringify({activities:list})}).catch(()=>null);

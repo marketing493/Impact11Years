@@ -186,9 +186,10 @@ export { webpush };
 
 /** Constant-time password check against ADMIN_PASSWORD. */
 export function isAdmin(req) {
-  const want = process.env.ADMIN_PASSWORD, got = req.headers['x-admin-key'];
+  /* stray spaces or a newline pasted into Vercel's value (or the login box) should not lock organizers out */
+  const want = String(process.env.ADMIN_PASSWORD || '').trim(), got = req.headers['x-admin-key'];
   if (!want || typeof got !== 'string') return false;
-  const a = crypto.createHash('sha256').update(want).digest(), b = crypto.createHash('sha256').update(got).digest();
+  const a = crypto.createHash('sha256').update(want).digest(), b = crypto.createHash('sha256').update(got.trim()).digest();
   return crypto.timingSafeEqual(a, b);
 }
 
