@@ -1435,7 +1435,7 @@ html::-webkit-scrollbar,body::-webkit-scrollbar,*::-webkit-scrollbar{display:non
 
 /* hero: the New York stamp in the open space between the title and the globe (wide screens only) */
 .rh-stamp{display:none}
-@media (min-width:1101px){.rh-copy{position:relative}.rh-stamp{display:block;position:absolute;z-index:3;left:calc(100% - 115px);top:130px;pointer-events:none;animation:riseIn 1.4s var(--ease) both .7s}
+@media (min-width:1101px){.rh-copy{position:relative}.rh-stamp{display:block;position:absolute;z-index:3;left:calc(100% - 85px);top:100px;pointer-events:none;animation:riseIn 1.4s var(--ease) both .7s}
  .rh-stamp .istamp{position:relative;display:block;--r:8deg;scale:1.2;transform-origin:50% 50%}}
 
 /* ---------- logos: 15% smaller, with breathing room ---------- */
