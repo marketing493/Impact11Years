@@ -40,7 +40,7 @@ head = f'''<title>11 Years of Impact | Around the World in 11 Years</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Impact Events">
+<meta name="apple-mobile-web-app-title" content="11 Years of Impact">
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="icon" type="image/png" href="/icons/favicon-64.png">
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
@@ -52,7 +52,7 @@ head = f'''<title>11 Years of Impact | Around the World in 11 Years</title>
 LOGO11 = (R / 'assets/logo-11-years.svg').read_text().replace('<svg ', '<svg class="logo11" width="200" height="65" ', 1).strip()
 CROWN = '<svg width="14" height="14" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round" aria-hidden="true"><path d="M10 46l-4-24 14 12 12-20 12 20 14-12-4 24z"/></svg>'
 body = f'''<header class="top"><div class="wrap">
- <a href="#home" aria-label="Impact Events home">{LOGO11}</a>
+ <a href="#home" aria-label="11 Years of Impact home">{LOGO11}</a>
  <a class="btn sec sm bell" href="#reminders">{svg('bell', 18)}<span class="reminder-label">Reminders</span><span class="dot"></span></a>
  <div id="gsignin" class="gsignin" hidden></div>
 </div></header>

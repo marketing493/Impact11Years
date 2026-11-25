@@ -32,7 +32,7 @@ _gate_body = (
     '<stop offset="0" stop-color="#9C7A36"/><stop offset=".25" stop-color="#F3DFA2"/><stop offset=".5" stop-color="#D4AF61"/>'
     '<stop offset=".68" stop-color="#FFF1C1"/><stop offset=".85" stop-color="#B58C3F"/><stop offset="1" stop-color="#E9CD86"/></linearGradient></defs></svg>\n'
     '<header class="top"><div class="wrap">\n'
-    f' <a href="/" aria-label="Impact Events">{LOGO11}</a>\n'
+    f' <a href="/" aria-label="11 Years of Impact">{LOGO11}</a>\n'
     f' <a class="btn sec sm bell" href="#">{svg("bell", 18)}<span class="reminder-label">Reminders</span></a>\n'
     '</div></header>\n'
     '<main class="gate" id="main">\n'

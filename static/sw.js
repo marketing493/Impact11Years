@@ -1,5 +1,5 @@
-/* Impact Events service worker: offline shell, push reminders, notification taps. */
-const CACHE = 'impact-events-v2';
+/* 11 Years of Impact service worker: offline shell, push reminders, notification taps. */
+const CACHE = 'impact-events-v3';
 const SHELL = ['/', '/manifest.webmanifest', '/icons/icon-192.png', '/icons/badge-96.png'];
 
 self.addEventListener('install', e => {
@@ -19,8 +19,8 @@ self.addEventListener('fetch', e => {
 });
 self.addEventListener('push', e => {
   let d = {};
-  try { d = e.data ? e.data.json() : {}; } catch (_) { d = { title: 'Impact Events', body: e.data && e.data.text() }; }
-  e.waitUntil(self.registration.showNotification(d.title || 'Impact Events', {
+  try { d = e.data ? e.data.json() : {}; } catch (_) { d = { title: '11 Years of Impact', body: e.data && e.data.text() }; }
+  e.waitUntil(self.registration.showNotification(d.title || '11 Years of Impact', {
     body: d.body || '', tag: d.tag || 'impact-events', renotify: true,
     icon: '/icons/icon-192.png', badge: '/icons/badge-96.png', data: { url: d.url || '/' },
   }));
