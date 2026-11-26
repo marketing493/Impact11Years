@@ -235,7 +235,7 @@ class Voyage{
 const CLIENT_LOGOS=__CLIENT_LOGOS__;
 
 /* product implementations at each voyage stop: 2015, 2016, 2021, 2023, 2024, 2025, 2026 Johannesburg (300+ from there on) */
-const IMPL_AT_STOP=[1,4,32,71,127,202,300];
+const IMPL_AT_STOP=[1,4,32,71,127,222,300];
 
 /* split-flap departures board */
 const FLAP=' ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:-.&';
