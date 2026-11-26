@@ -47,7 +47,7 @@ function vRoyalHome(){const up=upcoming();
  <section class="r-voyage" id="voyage"><div class="vy-pin"><canvas aria-hidden="true"></canvas><div class="vy-vig" aria-hidden="true"></div><div class="vy-marks" aria-hidden="true"></div><div class="vy-plane" aria-hidden="true"><svg viewBox="0 0 40 40"><use href="#plane"/></svg></div>
   <div class="vy-head"><p class="eyebrow gold-eb">The voyage</p><h2 class="r-h2">Around the World in <em>11 Years</em></h2></div>
   <div class="postcard" aria-live="polite"></div>
-  <div class="vy-count" role="status" aria-live="off"><span>Clients on board</span> <b class="tn">0</b></div>
+  <div class="vy-count" role="status" aria-live="off"><span>Product Implementations</span> <b class="tn">1</b></div>
   <nav class="vy-stops" aria-label="Voyage stops">${STOPS.map((s,i)=>`<button data-act="voyageGo" data-arg="${i}"><i></i><span>${JOURNEY[i]?JOURNEY[i][0]:''}</span></button>`).join('')}</nav>
   <button class="sound vy-sound" data-sound aria-pressed="false" aria-label="Play the voyage score"><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="lbl">Play the score</span></button></div></section>
 
@@ -220,11 +220,11 @@ class Voyage{
  pinCount(eq){const el=this.cntBox||(this.cntBox=this.sec.querySelector('.vy-count'));if(!el)return;
   const head=this.sec.querySelector('.vy-head'),h=el.offsetHeight||34,lo=head?head.offsetTop+head.offsetHeight+12:120,hi=this.card.offsetTop-h-12;
   const y=Math.round(Math.max(lo,Math.min(hi,eq-h-8)));if(y!==this.cntY){this.cntY=y;el.style.top=y+'px'}}
- /* client counter: climbs with the plane, year by year (CLIENTS_BY_YEAR), from 0 in 2015 to the total at the last stop */
+ /* product implementations counter: climbs with the plane */
  paintCount(){if(!this.cnt){this.cnt=this.sec.querySelector('.vy-count b');if(!this.cnt)return}
-  const k=Math.min(this.n-2,Math.max(0,Math.floor(this.s))),f=Math.min(1,Math.max(0,this.s-k)),y0=+JOURNEY[k][0],y1=+JOURNEY[Math.min(this.n-1,k+1)][0],yr=y0+(y1-y0)*f;
-  /* the last leg, Johannesburg to Antarctica, adds the final client: 56 to 57 */
-  const v=k===this.n-2?Math.round(56+f):clientsAt(yr);if(v!==this.cntV){this.cntV=v;this.cnt.textContent=v}}
+  const k=Math.min(this.n-2,Math.max(0,Math.floor(this.s))),f=Math.min(1,Math.max(0,this.s-k));
+  /* starts slowly, then speeds up: 1 in 2015 to 300+ on arrival in Johannesburg, and holds there */
+  const P=Math.min(1,Math.max(0,this.s/(this.n-2))),v=P>=.999?'300+':String(Math.max(1,Math.round(1+299*Math.pow(P,2.5))));if(v!==this.cntV){this.cntV=v;this.cnt.textContent=v}}
  showCard(i){const s=STOPS[i],j=JOURNEY[i]||['','',''],last=i===this.n-1;this.card.classList.remove('in');this.card.offsetWidth;
   this.card.innerHTML=`<div class="pc-stamp">${lmSvg(s.lm,40,1.4)}<span>${j[0]}</span></div><div class="pc-mark"><span>IMPACT</span><b>${j[0]}</b><span>${String(i+1).padStart(2,'0')} / ${String(this.n).padStart(2,'0')}</span></div>
   <div class="pc-year tn">${j[0]}</div><h3>${esc(j[1])}</h3><p>${esc(j[2])}</p>${j[3]&&CLIENT_LOGOS[j[3]]?`<img class="pc-logo" data-logo="${j[3]}" src="${CLIENT_LOGOS[j[3]]}" alt="" aria-hidden="true">`:''}`;
@@ -233,10 +233,6 @@ class Voyage{
 
 /* client logos for the postcards, inlined by the build from assets/clients/ so they appear with the card (a missing logo just shows nothing) */
 const CLIENT_LOGOS=__CLIENT_LOGOS__;
-
-/* total clients over time: running total at the end of each year; between years it climbs evenly (the 57th arrives with Antarctica) */
-const CLIENTS_BY_YEAR=[[2015,0],[2016,1],[2017,2],[2018,3],[2019,4],[2020,9],[2021,15],[2022,18],[2023,24],[2024,35],[2025,45],[2026,56]];
-function clientsAt(yr){const T=CLIENTS_BY_YEAR;if(yr<=T[0][0])return T[0][1];for(let i=1;i<T.length;i++){const [a,va]=T[i-1],[b,vb]=T[i];if(yr<=b)return Math.round(va+(vb-va)*(yr-a)/(b-a))}return T[T.length-1][1]}
 
 /* split-flap departures board */
 const FLAP=' ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:-.&';
