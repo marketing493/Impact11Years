@@ -247,8 +247,8 @@ class Voyage{
  /* product implementations counter: climbs with the plane */
  paintCount(){if(!this.cnt){this.cnt=this.sec.querySelector('.vy-count b');if(!this.cnt)return}
   const k=Math.min(this.n-2,Math.max(0,Math.floor(this.s))),f=Math.min(1,Math.max(0,this.s-k));
-  /* starts slowly, then speeds up: 1 in 2015 to 300+ on arrival in Johannesburg, and holds there */
-  const P=Math.min(1,Math.max(0,this.s/(this.n-2))),v=P>=.999?'300+':String(Math.max(1,Math.round(1+299*Math.pow(P,2.5))));if(v!==this.cntV){this.cntV=v;this.cnt.textContent=v}}
+  /* the count at each stop (IMPL_AT_STOP), climbing evenly between stops; 300+ from Johannesburg on */
+  const A=IMPL_AT_STOP,last=A.length-1,j=Math.min(last-1,k),g=k>=last?1:f,raw=A[j]+(A[j+1]-A[j])*g,v=raw>=299.5?'300+':String(Math.round(raw));if(v!==this.cntV){this.cntV=v;this.cnt.textContent=v}}
  showCard(i){const s=STOPS[i],j=JOURNEY[i]||['','',''],last=i===this.n-1;this.card.classList.remove('in');this.card.offsetWidth;
   this.card.innerHTML=`<div class="pc-stamp">${lmSvg(s.lm,40,1.4)}<span>${j[0]}</span></div><div class="pc-mark"><span>IMPACT</span><b>${j[0]}</b><span>${String(i+1).padStart(2,'0')} / ${String(this.n).padStart(2,'0')}</span></div>
   <div class="pc-year tn">${j[0]}</div><h3>${esc(j[1])}</h3><p>${esc(j[2])}</p>${j[3]&&CLIENT_LOGOS[j[3]]?`<img class="pc-logo" data-logo="${j[3]}" src="${CLIENT_LOGOS[j[3]]}" alt="" aria-hidden="true">`:''}`;
@@ -257,6 +257,9 @@ class Voyage{
 
 /* client logos for the postcards, inlined by the build from assets/clients/ so they appear with the card (a missing logo just shows nothing) */
 const CLIENT_LOGOS=__CLIENT_LOGOS__;
+
+/* product implementations at each voyage stop: 2015, 2016, 2021, 2023, 2024, 2025, 2026 Johannesburg (300+ from there on) */
+const IMPL_AT_STOP=[1,4,32,71,127,202,300];
 
 /* split-flap departures board */
 const FLAP=' ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:-.&';
