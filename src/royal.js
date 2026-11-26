@@ -219,7 +219,8 @@ class Voyage{
  /* client counter: climbs with the plane, year by year (CLIENTS_BY_YEAR), from 0 in 2015 to the total at the last stop */
  paintCount(){if(!this.cnt){this.cnt=this.sec.querySelector('.vy-count b');if(!this.cnt)return}
   const k=Math.min(this.n-2,Math.max(0,Math.floor(this.s))),f=Math.min(1,Math.max(0,this.s-k)),y0=+JOURNEY[k][0],y1=+JOURNEY[Math.min(this.n-1,k+1)][0],yr=y0+(y1-y0)*f;
-  const v=clientsAt(yr);if(v!==this.cntV){this.cntV=v;this.cnt.textContent=v}}
+  /* the last leg, Johannesburg to Antarctica, adds the final client: 56 to 57 */
+  const v=k===this.n-2?Math.round(56+f):clientsAt(yr);if(v!==this.cntV){this.cntV=v;this.cnt.textContent=v}}
  showCard(i){const s=STOPS[i],j=JOURNEY[i]||['','',''],last=i===this.n-1;this.card.classList.remove('in');this.card.offsetWidth;
   this.card.innerHTML=`<div class="pc-stamp">${lmSvg(s.lm,40,1.4)}<span>${j[0]}</span></div><div class="pc-mark"><span>IMPACT</span><b>${j[0]}</b><span>${String(i+1).padStart(2,'0')} / ${String(this.n).padStart(2,'0')}</span></div>
   <div class="pc-year tn">${j[0]}</div><h3>${esc(j[1])}</h3><p>${esc(j[2])}</p>${j[3]&&CLIENT_LOGOS[j[3]]?`<img class="pc-logo" data-logo="${j[3]}" src="${CLIENT_LOGOS[j[3]]}" alt="" aria-hidden="true">`:''}`;
@@ -229,8 +230,8 @@ class Voyage{
 /* client logos for the postcards, inlined by the build from assets/clients/ so they appear with the card (a missing logo just shows nothing) */
 const CLIENT_LOGOS=__CLIENT_LOGOS__;
 
-/* total clients over time: running total at the end of each year; between years it climbs evenly */
-const CLIENTS_BY_YEAR=[[2015,0],[2016,1],[2017,2],[2018,3],[2019,4],[2020,9],[2021,15],[2022,18],[2023,24],[2024,35],[2025,45],[2026,57]];
+/* total clients over time: running total at the end of each year; between years it climbs evenly (the 57th arrives with Antarctica) */
+const CLIENTS_BY_YEAR=[[2015,0],[2016,1],[2017,2],[2018,3],[2019,4],[2020,9],[2021,15],[2022,18],[2023,24],[2024,35],[2025,45],[2026,56]];
 function clientsAt(yr){const T=CLIENTS_BY_YEAR;if(yr<=T[0][0])return T[0][1];for(let i=1;i<T.length;i++){const [a,va]=T[i-1],[b,vb]=T[i];if(yr<=b)return Math.round(va+(vb-va)*(yr-a)/(b-a))}return T[T.length-1][1]}
 
 /* split-flap departures board */
