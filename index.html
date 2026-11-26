@@ -2174,7 +2174,7 @@ html::-webkit-scrollbar,body::-webkit-scrollbar,*::-webkit-scrollbar{display:non
 .vy-count{position:absolute;z-index:6;right:max(24px,calc((100vw - var(--max))/2));top:calc(124px + env(safe-area-inset-top,0px));display:flex;align-items:baseline;gap:10px;padding:10px 18px 11px;border-radius:999px;border:1px solid rgba(212,175,97,.7);background:rgba(28,27,27,.34);box-shadow:0 14px 30px -16px rgba(0,0,0,.6);pointer-events:none}
 .vy-count span{font:500 12.5px/1 var(--f-body);letter-spacing:.18em;text-transform:uppercase;color:#F3DFA2}
 .vy-count b{font:300 32px/1 'Spectral',Georgia,serif;min-width:2ch;text-align:right;background:var(--gold-sweep,linear-gradient(170deg,#FFFBEA,#F7E3A1 40%,#EBC96B 75%,#F7E3A1));-webkit-background-clip:text;background-clip:text;color:transparent}
-/* phones: the counter sits top left on the map, under the title, on a solid pill so passing stops don't show through */
+/* phones: the counter sits on the map just above the equator (its top is set from the script as the map moves), on a solid pill so passing stops don't show through */
 @media (max-width:820px){.vy-count{right:auto;left:16px;transform:none;top:calc(196px + env(safe-area-inset-top,0px));bottom:auto;height:34px;background:rgba(20,30,92,.92);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);box-sizing:border-box;align-items:center;padding:0 12px;gap:7px}.vy-count span{font-size:10px;letter-spacing:.12em}.vy-count b{font-size:21px;min-width:1.4ch}}
 
 /* ---------- logos: 15% smaller, with breathing room ---------- */
@@ -5479,7 +5479,7 @@ class Voyage{
   c.lineWidth=1;c.strokeStyle=blue?'rgba(244,244,246,.10)':'rgba(212,175,97,.09)';c.setLineDash([2,6]);c.beginPath();
   for(let lon=-180;lon<=180;lon+=15){const x=(lon+180)/360*this.mapW-cx;if(x<-2||x>W+2)continue;c.moveTo(x,0);c.lineTo(x,H)}
   for(let lat=-60;lat<=75;lat+=15){const y=(G.lat0-lat)/(G.lat0-G.lat1)*this.mapH-cy;if(y<-2||y>H+2)continue;c.moveTo(0,y);c.lineTo(W,y)}c.stroke();c.setLineDash([]);
-  const eq=(G.lat0)/(G.lat0-G.lat1)*this.mapH-cy;c.strokeStyle=blue?'rgba(243,223,162,.28)':'rgba(212,175,97,.22)';c.beginPath();c.moveTo(0,eq);c.lineTo(W,eq);c.stroke();
+  const eq=(G.lat0)/(G.lat0-G.lat1)*this.mapH-cy;if(this.phone)this.pinCount(eq);c.strokeStyle=blue?'rgba(243,223,162,.28)':'rgba(212,175,97,.22)';c.beginPath();c.moveTo(0,eq);c.lineTo(W,eq);c.stroke();
   /* land, evenly lit: no spotlight and no shimmer */
   c.drawImage(this.layer,-cx,-cy,this.mapW,this.mapH);
   /* route: the whole voyage as marching gold dashes */
@@ -5496,6 +5496,10 @@ class Voyage{
   const ang=Math.atan2(w.tan[1]-w.prev[1],w.tan[0]-w.prev[0])*180/Math.PI+90;this.planeEl.style.transform=`translate(${(P[0]-cx).toFixed(1)}px,${(P[1]-cy).toFixed(1)}px) rotate(${(w.t>0&&w.t<1?ang:this.lastAng||90).toFixed(1)}deg)`;if(w.t>0&&w.t<1)this.lastAng=ang;
   if(reached!==this.stop_){this.stop_=reached;this.showCard(reached);SCORE.setChapter(Math.min(5,reached));this.btns.forEach((b,i)=>b.classList.toggle('on',i===reached))}
   this.pin.style.setProperty('--vp',(this.s/(this.n-1)).toFixed(4))}
+ /* phones: the counter rides just above the equator line as the map moves, kept between the title and the postcard */
+ pinCount(eq){const el=this.cntBox||(this.cntBox=this.sec.querySelector('.vy-count'));if(!el)return;
+  const head=this.sec.querySelector('.vy-head'),h=el.offsetHeight||34,lo=head?head.offsetTop+head.offsetHeight+12:120,hi=this.card.offsetTop-h-12;
+  const y=Math.round(Math.max(lo,Math.min(hi,eq-h-8)));if(y!==this.cntY){this.cntY=y;el.style.top=y+'px'}}
  /* client counter: climbs with the plane, year by year (CLIENTS_BY_YEAR), from 0 in 2015 to the total at the last stop */
  paintCount(){if(!this.cnt){this.cnt=this.sec.querySelector('.vy-count b');if(!this.cnt)return}
   const k=Math.min(this.n-2,Math.max(0,Math.floor(this.s))),f=Math.min(1,Math.max(0,this.s-k)),y0=+JOURNEY[k][0],y1=+JOURNEY[Math.min(this.n-1,k+1)][0],yr=y0+(y1-y0)*f;
