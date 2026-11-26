@@ -47,6 +47,7 @@ function vRoyalHome(){const up=upcoming();
  <section class="r-voyage" id="voyage"><div class="vy-pin"><canvas aria-hidden="true"></canvas><div class="vy-vig" aria-hidden="true"></div><div class="vy-marks" aria-hidden="true"></div><div class="vy-plane" aria-hidden="true"><svg viewBox="0 0 40 40"><use href="#plane"/></svg></div>
   <div class="vy-head"><p class="eyebrow gold-eb">The voyage</p><h2 class="r-h2">Around the World in <em>11 Years</em></h2></div>
   <div class="postcard" aria-live="polite"></div>
+  <div class="vy-count" role="status" aria-live="off"><span>Total Clients:</span> <b class="tn">1</b></div>
   <nav class="vy-stops" aria-label="Voyage stops">${STOPS.map((s,i)=>`<button data-act="voyageGo" data-arg="${i}"><i></i><span>${JOURNEY[i]?JOURNEY[i][0]:''}</span></button>`).join('')}</nav>
   <button class="sound vy-sound" data-sound aria-pressed="false" aria-label="Play the voyage score"><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="lbl">Play the score</span></button></div></section>
 
@@ -212,7 +213,7 @@ class Voyage{
  goTo(i){const span=this.sec.offsetHeight-innerHeight,top=this.sec.getBoundingClientRect().top+scrollY;scrollTo({top:top+i/(this.n-1)*span+2,behavior:RMQ.matches?'auto':'smooth'})}
  where(s){const k=Math.min(this.n-2,Math.floor(s)),f=s-k,t=f<.18?0:f>.82?1:ease((f-.18)/.64);return {k,t,pos:this.bez(this.legs[k],t),tan:this.bez(this.legs[k],Math.min(1,t+.01)),prev:this.bez(this.legs[k],Math.max(0,t-.01))}}
  loop(time){this.raf=0;if(!this.alive||!this.vis||document.hidden)return;this.lastT=time;
-  const ds=this.target-this.s;if(LITE&&this.cam&&this.layer&&Math.abs(ds)<.0004&&this.settled>3)return;this.kick(MOTION_MS-16);this.settled=Math.abs(ds)<.0004?(this.settled||0)+1:0;this.s+=ds*(RMQ.matches?1:.08);const W=this.W,H=this.H,c=this.ctx,w=this.where(this.s),P=w.pos;
+  this.paintCount();const ds=this.target-this.s;if(LITE&&this.cam&&this.layer&&Math.abs(ds)<.0004&&this.settled>3)return;this.kick(MOTION_MS-16);this.settled=Math.abs(ds)<.0004?(this.settled||0)+1:0;this.s+=ds*(RMQ.matches?1:.08);const W=this.W,H=this.H,c=this.ctx,w=this.where(this.s),P=w.pos;
   /* camera follows the plane */
   const want=[Math.max(Math.min(P[0]-W*(this.phone?.5:.6),this.mapW-W),0),this.mapH<H?Math.max((this.mapH-H)/2-H*.06,P[1]-H*.62):Math.max(Math.min(P[1]-H*.56,this.mapH-H),0)];
   if(!this.cam)this.cam=want;this.cam=[this.cam[0]+(want[0]-this.cam[0])*.08,this.cam[1]+(want[1]-this.cam[1])*.08];const cx=this.cam[0],cy=this.cam[1];
@@ -239,6 +240,10 @@ class Voyage{
   const ang=Math.atan2(w.tan[1]-w.prev[1],w.tan[0]-w.prev[0])*180/Math.PI+90;this.planeEl.style.transform=`translate(${(P[0]-cx).toFixed(1)}px,${(P[1]-cy).toFixed(1)}px) rotate(${(w.t>0&&w.t<1?ang:this.lastAng||90).toFixed(1)}deg)`;if(w.t>0&&w.t<1)this.lastAng=ang;
   if(reached!==this.stop_){this.stop_=reached;this.showCard(reached);SCORE.setChapter(Math.min(5,reached));this.btns.forEach((b,i)=>b.classList.toggle('on',i===reached))}
   this.pin.style.setProperty('--vp',(this.s/(this.n-1)).toFixed(4))}
+ /* client counter: climbs with the plane, year by year (CLIENTS_BY_YEAR), from 1 at the start to the total at the last stop */
+ paintCount(){if(!this.cnt){this.cnt=this.sec.querySelector('.vy-count b');if(!this.cnt)return}
+  const k=Math.min(this.n-2,Math.max(0,Math.floor(this.s))),f=Math.min(1,Math.max(0,this.s-k)),y0=+JOURNEY[k][0],y1=+JOURNEY[Math.min(this.n-1,k+1)][0],yr=y0+(y1-y0)*f;
+  const v=clientsAt(yr);if(v!==this.cntV){this.cntV=v;this.cnt.textContent=v}}
  showCard(i){const s=STOPS[i],j=JOURNEY[i]||['','',''],last=i===this.n-1;this.card.classList.remove('in');this.card.offsetWidth;
   this.card.innerHTML=`<div class="pc-stamp">${lmSvg(s.lm,40,1.4)}<span>${j[0]}</span></div><div class="pc-mark"><span>IMPACT</span><b>${j[0]}</b><span>${String(i+1).padStart(2,'0')} / ${String(this.n).padStart(2,'0')}</span></div>
   <div class="pc-year tn">${j[0]}</div><h3>${esc(j[1])}</h3><p>${esc(j[2])}</p>${j[3]&&CLIENT_LOGOS[j[3]]?`<img class="pc-logo" data-logo="${j[3]}" src="${CLIENT_LOGOS[j[3]]}" alt="" aria-hidden="true">`:''}`;
@@ -247,6 +252,10 @@ class Voyage{
 
 /* client logos for the postcards, inlined by the build from assets/clients/ so they appear with the card (a missing logo just shows nothing) */
 const CLIENT_LOGOS=__CLIENT_LOGOS__;
+
+/* total clients over time: running total at the end of each year; between years it climbs evenly */
+const CLIENTS_BY_YEAR=[[2016,1],[2017,2],[2018,3],[2019,4],[2020,9],[2021,15],[2022,18],[2023,24],[2024,35],[2025,45],[2026,57]];
+function clientsAt(yr){const T=CLIENTS_BY_YEAR;if(yr<=T[0][0])return T[0][1];for(let i=1;i<T.length;i++){const [a,va]=T[i-1],[b,vb]=T[i];if(yr<=b)return Math.round(va+(vb-va)*(yr-a)/(b-a))}return T[T.length-1][1]}
 
 /* split-flap departures board */
 const FLAP=' ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:-.&';
