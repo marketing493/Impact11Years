@@ -47,7 +47,7 @@ function vRoyalHome(){const up=upcoming();
  <section class="r-voyage" id="voyage"><div class="vy-pin"><canvas aria-hidden="true"></canvas><div class="vy-vig" aria-hidden="true"></div><div class="vy-marks" aria-hidden="true"></div><div class="vy-plane" aria-hidden="true"><svg viewBox="0 0 40 40"><use href="#plane"/></svg></div>
   <div class="vy-head"><p class="eyebrow gold-eb">The voyage</p><h2 class="r-h2">Around the World in <em>11 Years</em></h2></div>
   <div class="postcard" aria-live="polite"></div>
-  <div class="vy-count" role="status" aria-live="off"><span>Total Clients:</span> <b class="tn">1</b></div>
+  <div class="vy-count" role="status" aria-live="off"><span>Clients on board</span> <b class="tn">0</b></div>
   <nav class="vy-stops" aria-label="Voyage stops">${STOPS.map((s,i)=>`<button data-act="voyageGo" data-arg="${i}"><i></i><span>${JOURNEY[i]?JOURNEY[i][0]:''}</span></button>`).join('')}</nav>
   <button class="sound vy-sound" data-sound aria-pressed="false" aria-label="Play the voyage score"><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="lbl">Play the score</span></button></div></section>
 
@@ -240,7 +240,7 @@ class Voyage{
   const ang=Math.atan2(w.tan[1]-w.prev[1],w.tan[0]-w.prev[0])*180/Math.PI+90;this.planeEl.style.transform=`translate(${(P[0]-cx).toFixed(1)}px,${(P[1]-cy).toFixed(1)}px) rotate(${(w.t>0&&w.t<1?ang:this.lastAng||90).toFixed(1)}deg)`;if(w.t>0&&w.t<1)this.lastAng=ang;
   if(reached!==this.stop_){this.stop_=reached;this.showCard(reached);SCORE.setChapter(Math.min(5,reached));this.btns.forEach((b,i)=>b.classList.toggle('on',i===reached))}
   this.pin.style.setProperty('--vp',(this.s/(this.n-1)).toFixed(4))}
- /* client counter: climbs with the plane, year by year (CLIENTS_BY_YEAR), from 1 at the start to the total at the last stop */
+ /* client counter: climbs with the plane, year by year (CLIENTS_BY_YEAR), from 0 in 2015 to the total at the last stop */
  paintCount(){if(!this.cnt){this.cnt=this.sec.querySelector('.vy-count b');if(!this.cnt)return}
   const k=Math.min(this.n-2,Math.max(0,Math.floor(this.s))),f=Math.min(1,Math.max(0,this.s-k)),y0=+JOURNEY[k][0],y1=+JOURNEY[Math.min(this.n-1,k+1)][0],yr=y0+(y1-y0)*f;
   const v=clientsAt(yr);if(v!==this.cntV){this.cntV=v;this.cnt.textContent=v}}
@@ -254,7 +254,7 @@ class Voyage{
 const CLIENT_LOGOS=__CLIENT_LOGOS__;
 
 /* total clients over time: running total at the end of each year; between years it climbs evenly */
-const CLIENTS_BY_YEAR=[[2016,1],[2017,2],[2018,3],[2019,4],[2020,9],[2021,15],[2022,18],[2023,24],[2024,35],[2025,45],[2026,57]];
+const CLIENTS_BY_YEAR=[[2015,0],[2016,1],[2017,2],[2018,3],[2019,4],[2020,9],[2021,15],[2022,18],[2023,24],[2024,35],[2025,45],[2026,57]];
 function clientsAt(yr){const T=CLIENTS_BY_YEAR;if(yr<=T[0][0])return T[0][1];for(let i=1;i<T.length;i++){const [a,va]=T[i-1],[b,vb]=T[i];if(yr<=b)return Math.round(va+(vb-va)*(yr-a)/(b-a))}return T[T.length-1][1]}
 
 /* split-flap departures board */
