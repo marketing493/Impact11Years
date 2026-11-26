@@ -2167,6 +2167,9 @@ html::-webkit-scrollbar,body::-webkit-scrollbar,*::-webkit-scrollbar{display:non
 .postcard .pc-logo:is([data-logo="briscoes"],[data-logo="uk-antarctic-heritage-trust"]){max-height:60px;bottom:32px}
 @media (max-width:820px){.postcard.has-logo p{max-width:none}.postcard .pc-logo{right:18px;bottom:24px;max-width:72px;max-height:24px}.postcard.has-logo{min-height:140px}.postcard.has-logo p{padding-right:80px;-webkit-line-clamp:3}.postcard .pc-logo:is([data-logo="briscoes"],[data-logo="uk-antarctic-heritage-trust"]){max-height:38px;bottom:18px}}
 
+/* phones: the voyage "Sound on" button sits in the empty strip under the postcard, centred (clear of the back-to-top button) */
+@media (max-width:820px){.vy-sound{top:auto;left:50%;right:auto;transform:translateX(-50%);bottom:calc(22px + env(safe-area-inset-bottom,0px))}}
+
 /* ---------- logos: 15% smaller, with breathing room ---------- */
 .top .logo11{width:clamp(124px,10.8vw,152px)}
 .top .wrap>a:first-child{padding:10px 6px 10px 0}
