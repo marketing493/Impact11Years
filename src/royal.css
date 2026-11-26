@@ -1453,14 +1453,15 @@ html::-webkit-scrollbar,body::-webkit-scrollbar,*::-webkit-scrollbar{display:non
 .postcard .pc-logo:is([data-logo="briscoes"],[data-logo="uk-antarctic-heritage-trust"]){max-height:60px;bottom:32px}
 @media (max-width:820px){.postcard.has-logo p{max-width:none}.postcard .pc-logo{right:18px;bottom:24px;max-width:72px;max-height:24px}.postcard.has-logo{min-height:140px}.postcard.has-logo p{padding-right:80px;-webkit-line-clamp:3}.postcard .pc-logo:is([data-logo="briscoes"],[data-logo="uk-antarctic-heritage-trust"]){max-height:38px;bottom:18px}}
 
-/* phones: the voyage "Sound on" button sits in the empty strip under the postcard, centred (clear of the back-to-top button) */
-@media (max-width:820px){.vy-sound{top:auto;left:50%;right:auto;transform:translateX(-50%);bottom:calc(22px + env(safe-area-inset-bottom,0px))}}
+/* phones: the voyage "Sound on" button sits in the empty strip under the postcard, beside the client counter and clear of the back-to-top button */
+@media (max-width:820px){.vy-sound{top:auto;left:auto;right:72px;transform:none;bottom:calc(22px + env(safe-area-inset-bottom,0px))}}
 
 /* voyage: running total of clients, top right under the title bar (phones: top left, under the title) */
-.vy-count{position:absolute;z-index:3;right:max(24px,calc((100vw - var(--max))/2));top:calc(124px + env(safe-area-inset-top,0px));display:flex;align-items:baseline;gap:10px;padding:10px 18px 11px;border-radius:999px;border:1px solid rgba(212,175,97,.7);background:rgba(28,27,27,.34);box-shadow:0 14px 30px -16px rgba(0,0,0,.6);pointer-events:none}
+.vy-count{position:absolute;z-index:6;right:max(24px,calc((100vw - var(--max))/2));top:calc(124px + env(safe-area-inset-top,0px));display:flex;align-items:baseline;gap:10px;padding:10px 18px 11px;border-radius:999px;border:1px solid rgba(212,175,97,.7);background:rgba(28,27,27,.34);box-shadow:0 14px 30px -16px rgba(0,0,0,.6);pointer-events:none}
 .vy-count span{font:500 12.5px/1 var(--f-body);letter-spacing:.18em;text-transform:uppercase;color:#F3DFA2}
 .vy-count b{font:300 32px/1 'Spectral',Georgia,serif;min-width:2ch;text-align:right;background:var(--gold-sweep,linear-gradient(170deg,#FFFBEA,#F7E3A1 40%,#EBC96B 75%,#F7E3A1));-webkit-background-clip:text;background-clip:text;color:transparent}
-@media (max-width:820px){.vy-count{right:auto;left:16px;top:calc(196px + env(safe-area-inset-top,0px));padding:8px 14px 9px;gap:8px}.vy-count span{font-size:11px;letter-spacing:.14em}.vy-count b{font-size:24px}}
+/* phones: the map moves under everything, so the counter lives in the always-empty strip under the postcard, left of Sound on */
+@media (max-width:820px){.vy-count{right:auto;left:16px;top:auto;bottom:calc(22px + env(safe-area-inset-bottom,0px));height:34px;background:rgba(20,30,92,.92);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);box-sizing:border-box;align-items:center;padding:0 12px;gap:7px}.vy-count span{font-size:10px;letter-spacing:.12em}.vy-count b{font-size:21px;min-width:1.4ch}}
 
 /* ---------- logos: 15% smaller, with breathing room ---------- */
 .top .logo11{width:clamp(124px,10.8vw,152px)}
